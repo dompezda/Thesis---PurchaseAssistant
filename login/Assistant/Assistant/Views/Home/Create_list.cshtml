@@ -1,0 +1,81 @@
+﻿@model Assistant.ViewModels.ListViewModel
+@{
+    ViewData["Title"] = "Stworz Liste";
+}
+<div class="row" style="margin-left:0%">
+    <h4>Tworzenie Listy</h4>
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroć" style="margin-bottom:3px; width:60px; margin-left:37%;" />
+</div>
+
+<div class="lead">Podaj Nazwe Produktu</div>
+
+<div class="row">
+    <div class="col-md-4">
+        @*<form action="AddProduct">*@
+        <form action="AddProduct" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <input asp-for="product.Name" class="form-control" id="Name" />
+                <span asp-validation-for="product.Name" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+
+                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj produkt</button>
+                @*<input type="submit" class="btn btn-outline-primary" style="margin-left:16px" />*@
+
+
+            </div>
+
+        </form>
+
+        <form action="FinishList" method="post">
+            <button class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj Liste</button>
+
+        </form>
+
+    </div>
+</div>
+
+
+
+@*</div>
+    </div>*@
+
+@if (Model.productsToPartial.Count() > 0)
+{
+    await Html.RenderPartialAsync("ProductList", Model.productsToPartial);
+}
+else
+{
+    <h1> Lista jest pusta</h1>
+}
+
+
+
+
+
+
+
+@*<div class="form-group">
+        <label asp-for="Price" class="control-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>*@
+
+
+
+
+@*<form action="AddProduct" method="post">
+        <input type="submit" id="AddProduct" name="AddProduct" value="Dodaj Produkt" class="btn btn-outline-primary"
+               style="margin-left:16px" />
+    </form>
+    <form action="" method="post">
+        <input type="submit" id="AddList" name="AddList" value="Zatwierdz Liste"
+               class="btn btn-outline-primary" style="margin-left:94px" />
+    </form>*@
+@*<input type="submit" value="Dodaj produkt" class="btn btn-outline-primary" style="margin-left:16px" />
+    <input type="submit" value="Zatwierdz Liste" class="btn btn-outline-primary" style="margin-left:94px" />*@
