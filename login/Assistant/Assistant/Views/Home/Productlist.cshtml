@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "ProductList";
 }
-<h2>Lista Produktów</h2>
+<h2>Product list</h2>
 
 <table class="table">
     <thead>
@@ -21,8 +21,9 @@
                     <form action="DeleteProduct" method="post">
                         <input type="hidden" name="product.Name" value="@item.Name" />
                         @Html.DisplayFor(modelItem => item.Name)
+                        
 
-                        <button type="submit"><img src="~/cross.png" width="15px" height="15px" /></button>
+                        <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
                     </form>
                 </td>
             </tr>

@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="C:\Users\Dominik\Desktop\ThesisWithLogin\ApplicationDbContext.cs" Link="ApplicationDbContext.cs" />
+    <Compile Remove="Migrations\20190814092708_test.cs" />
+    <Compile Remove="Migrations\20190814092708_test.Designer.cs" />
+    <Compile Remove="Migrations\20190816092805_test.cs" />
+    <Compile Remove="Migrations\20190816092805_test.Designer.cs" />
   </ItemGroup>
 
 

@@ -10,8 +10,8 @@ namespace Assistant.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext()
+            : base()
         {
         }
         public Microsoft.EntityFrameworkCore.DbSet<Product> Products { get; set; }

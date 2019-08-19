@@ -10,6 +10,12 @@ namespace Assistant.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public List<ProductList> ProductList { get; set; }
+        public DateTime CreateDate { get; set; }
+
+        public List()
+        {
+            CreateDate = DateTime.Now;
+        }
 
     }
 }
