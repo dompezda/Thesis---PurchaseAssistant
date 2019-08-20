@@ -109,6 +109,7 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult SelectList()
         {
+            
             listViewModel.productLists = new List<ProductList>();
             using (var db = new ApplicationDbContext())
             {
@@ -120,12 +121,27 @@ namespace Assistant.Controllers
 
             }
 
+
             return View();
         }
 
         [HttpGet]
         public IActionResult Load_List()
         {
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var item in db.Lists)
+                {
+                    var listToCheck = db.ProductLists.Where(n => n.ListId == item.Id).Count();
+
+                    if (listToCheck == 0)
+                    {
+                        var ListToRemove = db.Lists.Where(n => n.Id == item.Id).FirstOrDefault();
+                        db.Remove(ListToRemove);
+                        db.SaveChanges();
+                    }
+                }
+            }
             using (var db = new ApplicationDbContext())
             {
                 listViewModel.productLists = db.ProductLists.ToList();
@@ -155,7 +171,6 @@ namespace Assistant.Controllers
                     item.Product = tempItem.FirstOrDefault();
                 }
             }
-
 
             var amount = listToEdit.ProductList.Count();
             return RedirectToAction(nameof(Create_list), listToEdit);
@@ -207,10 +222,10 @@ namespace Assistant.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                // Policz ile jest produktów w liście którą teraz edytujemy
+                
                 var count = db.ProductLists.Where(x => x.ListId == currentlyEditedListId)
                 .Select(x => x.Product).Count();
-                System.Console.WriteLine($"count: {count}, currentid: {currentlyEditedListId}");
+               
 
                 if (count != 0)
                 {
@@ -225,17 +240,29 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult DeleteProduct(Product product)
         {
-
             using (var db = new ApplicationDbContext())
             {
-                Product ToRemove = db.Products.Include(x => x.ProductList)
-                    .Where(n => n.Name == product.Name).FirstOrDefault();
-                db.Products.Remove(ToRemove);
-                db.SaveChanges();
-            }
+                var ProductToCheck = db.Products.Where(n => n.Name == product.Name).FirstOrDefault();
+                var amount = db.ProductLists.Where(p => p.ProductId == ProductToCheck.Id).Count();
+                if (amount == 1)
+                {
+                    Product ToRemove = db.Products.Include(x => x.ProductList)
+                                       .Where(n => n.Name == product.Name).FirstOrDefault();
+                    db.Products.Remove(ToRemove);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    var newListId = db.Lists.Last();
+                    var ToRemove = db.ProductLists.Where(n => n.ListId == newListId.Id).Where(p => p.ProductId == ProductToCheck.Id).FirstOrDefault();
+                    db.Remove(ToRemove);
+                    db.SaveChanges();
+                }
 
+            }
             return RedirectToAction(nameof(Create_list));
         }
+   
 
         [HttpPost]
         public IActionResult DeleteList(List list)

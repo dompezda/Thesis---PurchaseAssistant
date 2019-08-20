@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dominik\\Desktop\\Thesis\\login\\Assistant\\Assistant\\Assistant.csproj": {}
+    "C:\\Users\\Dominik\\Documents\\GitHub\\inzynierka\\login\\Assistant\\Assistant\\Assistant.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dominik\\Desktop\\Thesis\\login\\Assistant\\Assistant\\Assistant.csproj": {
+    "C:\\Users\\Dominik\\Documents\\GitHub\\inzynierka\\login\\Assistant\\Assistant\\Assistant.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dominik\\Desktop\\Thesis\\login\\Assistant\\Assistant\\Assistant.csproj",
+        "projectUniqueName": "C:\\Users\\Dominik\\Documents\\GitHub\\inzynierka\\login\\Assistant\\Assistant\\Assistant.csproj",
         "projectName": "Assistant",
-        "projectPath": "C:\\Users\\Dominik\\Desktop\\Thesis\\login\\Assistant\\Assistant\\Assistant.csproj",
+        "projectPath": "C:\\Users\\Dominik\\Documents\\GitHub\\inzynierka\\login\\Assistant\\Assistant\\Assistant.csproj",
         "packagesPath": "C:\\Users\\Dominik\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dominik\\Desktop\\Thesis\\login\\Assistant\\Assistant\\obj\\",
+        "outputPath": "C:\\Users\\Dominik\\Documents\\GitHub\\inzynierka\\login\\Assistant\\Assistant\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\dotnet\\sdk\\NuGetFallbackFolder"
