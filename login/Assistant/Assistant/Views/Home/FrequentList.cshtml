@@ -1,0 +1,26 @@
+﻿@model List<Product>
+
+<h5>Najczesciej kupowane produkty:</h5>
+
+<table class="table">
+
+    @if (Model != null)
+    {
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    
+
+                        @Html.DisplayFor(modelItem => item.Name)
+
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+       <h6>czesc </h6>
+    }
+
+</table>
