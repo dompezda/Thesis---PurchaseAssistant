@@ -40,7 +40,28 @@ namespace Assistant.Controllers
         public IActionResult Main_menu()
         {
 
-            return View();
+            List<Product> frequentList = new List<Product>();
+            using (var db = new ApplicationDbContext())
+            {
+                var prodIds = db.Products.Select(x => x.Id);
+                int amount = db.Products.Count();
+
+                var groupedProd = db.ProductLists
+                                   .GroupBy(q => q.ProductId)
+                                   .OrderByDescending(gp => gp.Count())
+                                   .Take(amount/2)
+                                   .Select(g => g.Key).ToList();
+
+                foreach (var item in groupedProd)
+                {
+                    frequentList.Add(db.Products.Where(n => n.Id == item).FirstOrDefault());
+                }
+
+            }
+
+
+
+            return View(frequentList);
         }
         public static bool CheckForInternetConnection()
         {
@@ -171,7 +192,7 @@ namespace Assistant.Controllers
                     item.Product = tempItem.FirstOrDefault();
                 }
             }
-
+            currentlyEditedListId = listToEdit.Id;
             var amount = listToEdit.ProductList.Count();
             return RedirectToAction(nameof(Create_list), listToEdit);
             
@@ -195,6 +216,10 @@ namespace Assistant.Controllers
                         db.Lists.Add(currentlyEditedList);
                         db.SaveChanges();
                         currentlyEditedListId = currentlyEditedList.Id;
+                    }
+                    else
+                    {
+                        currentlyEditedList = db.Lists.Where(p => p.Id == currentlyEditedListId).FirstOrDefault();
                     }
                     var ProdList = db.Products.Select(p=>p.Name);
                     if (!ProdList.Contains(recvListViewModel.product.Name))
@@ -280,13 +305,18 @@ namespace Assistant.Controllers
             return RedirectToAction(nameof(Load_List));
         }
 
-       
-
-
 
 
         [HttpGet]
         public IActionResult ProductList(List<Product> list)
+        {
+
+            return PartialView(list);
+        }
+
+
+        [HttpGet]
+        public IActionResult FrequentList(List<Product> list)
         {
 
             return PartialView(list);
