@@ -14,6 +14,8 @@ namespace Assistant.Controllers
 {
     public class GenerateController : Controller
     {
+       
+        public static int? currentlyEditedListId = null;
         public IActionResult Index()
         {
             return View();
@@ -38,6 +40,75 @@ namespace Assistant.Controllers
 
 
                 return View();
+        }
+
+
+       public IActionResult Interpolation()
+        {
+            List<Product> products = new List<Product>();
+            ProductList helperList = new ProductList();
+            List currentlyEditedList;
+            var productList = new ProductList();
+
+
+            using (var db = new ApplicationDbContext())
+            {
+                currentlyEditedList = new List { Name = "Lista z " + DateTime.Now.ToString() };
+                db.Lists.Add(currentlyEditedList);
+                db.SaveChanges();
+                currentlyEditedListId = currentlyEditedList.Id;
+
+                int newId = db.Lists.OrderBy(x => x.Id).Select(p=>p.Id).Last();
+
+                var dateCheck = DateTime.Now.AddDays(-21);
+                var Lists = db.Lists.Where(x => x.CreateDate > dateCheck).Select(c => c.Id);
+                
+
+                foreach (var item in Lists)
+                {
+                    var prodId=db.ProductLists.Where(x => x.ListId == item).Select(c => c.ProductId);
+                    foreach (var q in prodId)
+                    {
+                        var productToCheck = db.Products.Where(p => p.Id == q).FirstOrDefault();
+                        int amount = db.ProductLists.Where(p => p.ProductId == q).Count();
+                        if(!products.Contains(productToCheck) && amount>=2)
+                        {
+                            products.Add(productToCheck);
+                        }
+                    }
+                    
+                }
+
+
+                foreach (var itemToAdd in products)
+                {
+                    var listsWithTheProduct = db.ProductLists.Where(x => x.ProductId == itemToAdd.Id).Select(w => w.List.CreateDate);
+                    var twoLastUses = listsWithTheProduct.OrderByDescending(x=>x.Date).Take(2);
+                    var EndDate = twoLastUses.First();
+                    var StartDate = twoLastUses.Last();
+                    var interval = (EndDate - StartDate).TotalDays;
+                    var TodayPlus = DateTime.Now.AddDays(3);
+                    var TodayMinus = DateTime.Now.AddDays(-3);
+                    var dateToCheck = EndDate.AddDays(interval);
+                    if(dateToCheck>=TodayMinus && dateToCheck<=TodayPlus)
+                    {
+                        //var prodId = db.Products.Where(x => x.Name == itemToAdd.Name).Select(t=>t.Id).FirstOrDefault();
+                        //var prodName= db.Products.Where(x => x.Name == itemToAdd.Name).Select(w => w.Name).FirstOrDefault();
+                        currentlyEditedList = db.Lists.Single(x => x.Id == currentlyEditedListId);
+                        productList.List = currentlyEditedList;
+                        productList.Product = itemToAdd;
+                        db.ProductLists.Add(productList);
+                        db.SaveChanges();
+                    }
+                    
+
+                }
+               
+
+            }
+
+            
+            return RedirectToAction("Create_list", "Home",new { id = currentlyEditedListId });//productList
         }
     }
 }

@@ -45,6 +45,10 @@ namespace Assistant.Controllers
             {
                 var prodIds = db.Products.Select(x => x.Id);
                 int amount = db.Products.Count();
+                if(amount/2>5)
+                {
+                    amount = 5;
+                }
 
                 var groupedProd = db.ProductLists
                                    .GroupBy(q => q.ProductId)
