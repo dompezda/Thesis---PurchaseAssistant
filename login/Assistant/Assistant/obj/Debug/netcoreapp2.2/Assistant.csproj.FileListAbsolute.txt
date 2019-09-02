@@ -56,7 +56,6 @@ C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Index.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Load_list.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Main_menu.g.cshtml.cs
-C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Privacy.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Productlist.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Starting_screen.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Error.g.cshtml.cs
