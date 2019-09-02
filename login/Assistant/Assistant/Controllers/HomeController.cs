@@ -18,7 +18,7 @@ namespace Assistant.Controllers
 
         public static ListViewModel listViewModel = new ListViewModel();
         public int IdList = 0;
-
+        public string listName;
         public static int? currentlyEditedListId = null;
 
 
@@ -102,8 +102,7 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Create_list(int? id)
         {
-            
-           
+
            if(id!=null)
             {
                 using (var db = new ApplicationDbContext())
@@ -123,11 +122,7 @@ namespace Assistant.Controllers
 
                 }
             }
-           
-           
-
-
-
+            
             return View(listViewModel);
         }
   
@@ -203,29 +198,48 @@ namespace Assistant.Controllers
         }
 
 
+
+        [HttpGet]
+        public IActionResult List_name()
+        {
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Send_Name(string Name)
+        {
+            listName = Name;
+            using (var db = new ApplicationDbContext())
+            {
+
+                List currentlyEditedList;
+                
+                    currentlyEditedList = new List { Name = listName };
+                    db.Lists.Add(currentlyEditedList);
+                    db.SaveChanges();
+                    currentlyEditedListId = currentlyEditedList.Id;
+ 
+                
+            }
+                return View("Create_list");
+        }
+
+
+
+
         [HttpPost]
         public IActionResult AddProduct(ListViewModel recvListViewModel)
         {
-
+            
             var productList = new ProductList();
             if (recvListViewModel.product.Name != null)
             {
+             
                 using (var db = new ApplicationDbContext())
                 {
-
-                    List currentlyEditedList;
-                    if (currentlyEditedListId == null)
-                    {
-                        currentlyEditedList = new List { Name = "Lista z " + DateTime.Now.ToString() };
-                        db.Lists.Add(currentlyEditedList);
-                        db.SaveChanges();
-                        currentlyEditedListId = currentlyEditedList.Id;
-                    }
-                    else
-                    {
-                        currentlyEditedList = db.Lists.Where(p => p.Id == currentlyEditedListId).FirstOrDefault();
-                    }
-                    var ProdList = db.Products.Select(p=>p.Name);
+                    var ProdList = db.Products.Select(p => p.Name);
                     if (!ProdList.Contains(recvListViewModel.product.Name))
                     {
                         db.Products.Add(recvListViewModel.product);
@@ -235,13 +249,14 @@ namespace Assistant.Controllers
                         recvListViewModel.product = db.Products.Where(p => p.Name == recvListViewModel.product.Name).FirstOrDefault();
                     }
 
-                    currentlyEditedList = db.Lists.Single(x => x.Id == currentlyEditedListId);
+                    var currentlyEditedList = db.Lists.Single(x => x.Id == currentlyEditedListId);
 
-                    productList.List = currentlyEditedList;                 
+                    productList.List = currentlyEditedList;
                     productList.Product = recvListViewModel.product;
                     db.ProductLists.Add(productList);
                     db.SaveChanges();
                 }
+                
             }
             return RedirectToAction(nameof(Create_list));
         }

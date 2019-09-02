@@ -17,7 +17,7 @@
             <h5 class="mb-0"></h5>
                 <div class="row">
                     <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne_@k" aria-expanded="true" aria-controls="collapseOne">
-                        List @k
+                        @list.Name
                   
                        
                     <form action="Edit_List" method="post">
@@ -40,7 +40,6 @@
         <div class="card">
             @foreach (var productList in list.ProductList)
             {
-                //var prods = productList.Select(w => w.Product).ToList();
                 <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
                     <div class="card-body">
 
