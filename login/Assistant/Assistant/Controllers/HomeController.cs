@@ -43,6 +43,12 @@ namespace Assistant.Controllers
         }
 
         [HttpGet]
+        public IActionResult Get_lists()
+        {
+
+            return View();
+        }
+        [HttpGet]
         public IActionResult Main_menu()
         {
 
@@ -115,6 +121,7 @@ namespace Assistant.Controllers
                 {
                     var listFromDB = db.ProductLists.Where(x => x.ListId == id).Select(v => v.Product).ToList();
                     listViewModel.productsToPartial = listFromDB;
+                    
 
                 }
             }
@@ -128,7 +135,14 @@ namespace Assistant.Controllers
 
                 }
             }
-            
+            listViewModel.productList = new ProductList();
+            listViewModel.productList.List = new List();
+            using (var db = new ApplicationDbContext())
+            {
+                var currentList = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                listViewModel.productList.List.UserId = currentList.UserId;
+                listViewModel.productList.List.Id = currentList.Id;
+            }
             return View(listViewModel);
         }
         [HttpPost]
@@ -150,6 +164,7 @@ namespace Assistant.Controllers
                 }
                 currentlyEditedList.ProductList = new List<ProductList>();
                 listViewModel.productsToPartial = new List<Product>();
+                listViewModel.productList.List.Id = currentlyEditedList.Id;
                 db.SaveChanges();
                 currentlyEditedListId = currentlyEditedList.Id;
 
@@ -185,6 +200,70 @@ namespace Assistant.Controllers
             return View();
         }
 
+
+
+
+        [HttpGet]
+        public IActionResult Private_list_load()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var item in db.Lists)
+                {
+                    var listToCheck = db.ProductLists.Where(n => n.ListId == item.Id).Count();
+
+                    if (listToCheck == 0)
+                    {
+                        var ListToRemove = db.Lists.Where(n => n.Id == item.Id).FirstOrDefault();
+                        db.Remove(ListToRemove);
+                        db.SaveChanges();
+                    }
+                }
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                listViewModel.productLists = db.ProductLists.ToList();
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                ViewBag.Lists = db.Lists.Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+            }
+
+            return View(listViewModel.productLists);
+        }
+        [HttpGet]
+        public IActionResult Public_list_load()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var item in db.Lists)
+                {
+                    var listToCheck = db.ProductLists.Where(n => n.ListId == item.Id).Count();
+
+                    if (listToCheck == 0)
+                    {
+                        var ListToRemove = db.Lists.Where(n => n.Id == item.Id).FirstOrDefault();
+                        db.Remove(ListToRemove);
+                        db.SaveChanges();
+                    }
+                }
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                listViewModel.productLists = db.ProductLists.ToList();
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                ViewBag.Lists = db.Lists.Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+            }
+
+            return View(listViewModel.productLists);
+        }
+
+
+
+
         [HttpGet]
         public IActionResult Load_List()
         {
@@ -208,7 +287,7 @@ namespace Assistant.Controllers
             }
             using (var db = new ApplicationDbContext())
             {
-                ViewBag.Lists = db.Lists.Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+                ViewBag.Lists = db.Lists.Where(x=>x.UserId==null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             }
 
             return View(listViewModel.productLists);
@@ -237,7 +316,31 @@ namespace Assistant.Controllers
             
         }
 
+     
+        [HttpPost]
+        public IActionResult ChangeType(int ListId, string UserId)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var listToChange = db.Lists.Where(x => x.UserId == UserId).Where(p => p.Id == ListId).FirstOrDefault();
+                if(listToChange.UserId!=null)
+                {
+                    listToChange.UserId = null;
+                    db.SaveChanges();
+                    return RedirectToAction(nameof(Public_list_load));
+                }
+                if(listToChange.UserId==null)
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    listToChange.UserId = userId;
+                    db.SaveChanges();
+                    return RedirectToAction(nameof(Private_list_load));
+                }
+            }
 
+
+                return RedirectToAction(nameof(Create_list));
+        }
 
 
       
@@ -280,21 +383,32 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult FinishList()
         {
+            List ToCheck = new List();
             using (var db = new ApplicationDbContext())
             {
                 
                 var count = db.ProductLists.Where(x => x.ListId == currentlyEditedListId)
                 .Select(x => x.Product).Count();
-               
-
                 if (count != 0)
                 {
                     currentlyEditedListId = null;
                 }
-
+                if(currentlyEditedListId!=null)
+                {
+                    ToCheck = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                }
+                
             }
 
-            return RedirectToAction(nameof(Load_List));
+            if (ToCheck.UserId == null)
+            {
+                return RedirectToAction(nameof(Private_list_load));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Public_list_load));
+            }
+            //return RedirectToAction(nameof(Load_List));
         }
 
         [HttpPost]
@@ -327,17 +441,25 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult DeleteList(List list)
         {
+            List ToRemove = new List();
             using (var db = new ApplicationDbContext())
             {
 
-                List ToRemove = db.Lists.Include(x => x.ProductList)
+               ToRemove = db.Lists.Include(x => x.ProductList)
                     .Where(n => n.Id == list.Id).FirstOrDefault();
                 db.Lists.Remove(ToRemove);
                 db.SaveChanges();
 
             }
+            if(ToRemove.UserId!=null)
+            {
+                return RedirectToAction(nameof(Public_list_load));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Private_list_load));
+            }
 
-            return RedirectToAction(nameof(Load_List));
         }
 
 

@@ -16,12 +16,16 @@
                 <input asp-for="Name" class="form-control" id="Name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
 
-                <div class="row">
-                    Lista prywatna
-                    <input id="IsPrivate" type="checkbox" asp-for="UserId"  name="IsPrivate"/>
-                   
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="row">
+                        Lista prywatna
+                        <input id="IsPrivate" type="checkbox" asp-for="UserId" name="IsPrivate" />
+
+                    </div>
+                 }
                 </div>
-            </div>
+               
 
             <div class="form-group">
 

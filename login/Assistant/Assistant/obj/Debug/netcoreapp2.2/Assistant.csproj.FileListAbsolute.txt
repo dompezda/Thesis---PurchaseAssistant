@@ -108,3 +108,5 @@ C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Generate\Select_list.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\FrequentList.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\List_name.g.cshtml.cs
+C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Private_list_load.g.cshtml.cs
+C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Public_list_load.g.cshtml.cs
