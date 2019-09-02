@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assistant.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190816093527_test")]
+    [Migration("20190902135603_test")]
     partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,8 @@ namespace Assistant.Migrations
                     b.Property<DateTime>("CreateDate");
 
                     b.Property<string>("Name");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 

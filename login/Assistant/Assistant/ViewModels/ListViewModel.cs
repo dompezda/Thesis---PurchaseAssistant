@@ -13,10 +13,7 @@ namespace Assistant.ViewModels
         public List<Product> productsToPartial { get; set; }
 
         public List<ProductList> productLists { get; set; }
-        //public ListViewModel()
-        //{
-        //    productsToPartial = new List<Product>();
-        //}
+
     }
    
 }

@@ -11,6 +11,7 @@ namespace Assistant.Models
         public string Name { get; set; }
         public List<ProductList> ProductList { get; set; }
         public DateTime CreateDate { get; set; }
+        public string UserId { get; set; }
 
         public List()
         {

@@ -9,6 +9,8 @@ using System.Net;
 using Assistant.Data;
 using Assistant.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Assistant.Controllers
 {
@@ -20,7 +22,11 @@ namespace Assistant.Controllers
         public int IdList = 0;
         public string listName;
         public static int? currentlyEditedListId = null;
+    
+        protected ApplicationDbContext ApplicationDbContext { get; set; }
 
+
+       
 
 
         [HttpGet]
@@ -125,7 +131,41 @@ namespace Assistant.Controllers
             
             return View(listViewModel);
         }
-  
+        [HttpPost]
+        public IActionResult Send_Name(string Name, bool IsPrivate)
+        {
+            listName = Name;
+            using (var db = new ApplicationDbContext())
+            {
+                
+                List currentlyEditedList;
+
+                currentlyEditedList = new List { Name = listName };
+                db.Lists.Add(currentlyEditedList);
+                if (IsPrivate == true)
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    currentlyEditedList.UserId = userId;
+
+                }
+                currentlyEditedList.ProductList = new List<ProductList>();
+                listViewModel.productsToPartial = new List<Product>();
+                db.SaveChanges();
+                currentlyEditedListId = currentlyEditedList.Id;
+
+
+            }
+            return View("Create_list", listViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult List_name()
+        {
+
+
+            return View();
+        }
+
         [HttpGet]
         public IActionResult SelectList()
         {
@@ -199,32 +239,8 @@ namespace Assistant.Controllers
 
 
 
-        [HttpGet]
-        public IActionResult List_name()
-        {
 
-
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Send_Name(string Name)
-        {
-            listName = Name;
-            using (var db = new ApplicationDbContext())
-            {
-
-                List currentlyEditedList;
-                
-                    currentlyEditedList = new List { Name = listName };
-                    db.Lists.Add(currentlyEditedList);
-                    db.SaveChanges();
-                    currentlyEditedListId = currentlyEditedList.Id;
- 
-                
-            }
-                return View("Create_list");
-        }
+      
 
 
 

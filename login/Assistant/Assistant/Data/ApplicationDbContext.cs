@@ -24,7 +24,7 @@ namespace Assistant.Data
         {
             base.OnConfiguring(optionsBuilder);
             
-             optionsBuilder.UseSqlite("Data Source=assistant.db");
+             optionsBuilder.UseSqlite("Data Source=Passistant.db");
            
         }
 
