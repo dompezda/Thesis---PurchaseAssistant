@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Get_share_email";
+ 
+}
+
+<h4>Podaj Email uzytkownika, <br /> ktoremu chcesz udosptenic liste</h4>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" action="Send_email">
+            <input type="text" name="mail"><br>
+            <input type="text" name="ListId" hidden />
+            <input type="submit" value="Submit">
+        </form>
+        @ViewData["ErrorMessage"]
+    </div>
+</div>

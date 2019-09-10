@@ -22,7 +22,8 @@ namespace Assistant.Controllers
         public int IdList = 0;
         public string listName;
         public static int? currentlyEditedListId = null;
-    
+        public static int IdToShare = 0;
+
         protected ApplicationDbContext ApplicationDbContext { get; set; }
 
 
@@ -164,6 +165,8 @@ namespace Assistant.Controllers
                 }
                 currentlyEditedList.ProductList = new List<ProductList>();
                 listViewModel.productsToPartial = new List<Product>();
+                listViewModel.productList = new ProductList();
+                listViewModel.productList.List = new List();
                 listViewModel.productList.List.Id = currentlyEditedList.Id;
                 db.SaveChanges();
                 currentlyEditedListId = currentlyEditedList.Id;
@@ -411,6 +414,111 @@ namespace Assistant.Controllers
             //return RedirectToAction(nameof(Load_List));
         }
 
+
+
+        [HttpGet]
+        public IActionResult Share_list()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var item in db.Lists)
+                {
+                    var listToCheck = db.ProductLists.Where(n => n.ListId == item.Id).Count();
+
+                    if (listToCheck == 0)
+                    {
+                        var ListToRemove = db.Lists.Where(n => n.Id == item.Id).FirstOrDefault();
+                        db.Remove(ListToRemove);
+                        db.SaveChanges();
+                    }
+                }
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                listViewModel.productLists = db.ProductLists.ToList();
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                ViewBag.Lists = db.Lists.Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+            }
+
+            return View(listViewModel.productLists);
+        }
+
+        [HttpPost]
+        public IActionResult Get_share_email(int ListId)
+        {
+           IdToShare = ListId;
+                return View();
+        }
+
+        [HttpPost]
+        public IActionResult Send_email(string mail)
+        {
+            int test = IdToShare;
+             List ListToShare = new List();
+            string userEmail;
+            List<string> usersEmails = new List<string>();
+            bool Exist = false;
+            using (var db = new ApplicationDbContext())
+            {
+                usersEmails = db.Users.Select(x => x.Email).ToList();
+            }
+            foreach (var item in usersEmails)
+            {
+                if(item==mail)
+                {
+                    Exist = true;
+                }
+            }
+
+            if(Exist==true)
+            {
+                ProductList newProdToSave = new ProductList();
+                string NewUserId;
+                using (var db = new ApplicationDbContext())
+                {
+                    var friendMail = User.FindFirstValue(ClaimTypes.Email);
+                    NewUserId = db.Users.Where(x => x.Email == mail).Select(y=>y.Id).FirstOrDefault();
+                    List newList = new List();
+                    newList.UserId =NewUserId;
+                    newList.Name = "list shared by " + friendMail;
+                    db.Lists.Add(newList);
+                    db.SaveChanges();
+                    var getProd = db.ProductLists.Where(x => x.ListId == IdToShare).Select(w => w.ProductId);
+                    foreach (var item in getProd)
+                    {
+
+                        var newProd = db.Products.Where(x => x.Id == item).FirstOrDefault();
+                        newProdToSave.ListId = newList.Id;
+                        newProdToSave.List = newList;
+                        newProdToSave.ProductId = newProd.Id;
+                        newProdToSave.Product = newProd;
+                        db.ProductLists.Add(newProdToSave);
+                        
+                        db.SaveChanges();
+                        
+                    }
+                    
+                   
+
+                }
+
+            }
+            else
+            {
+              
+                ViewData["ErrorMessage"] = "mail niepoprawny lub nie isnieje w bazie";
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ViewBag.Lists = db.Lists.Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+            }
+            return View("Private_list_load");
+        }
+
         [HttpPost]
         public IActionResult DeleteProduct(Product product)
         {
@@ -453,11 +561,11 @@ namespace Assistant.Controllers
             }
             if(ToRemove.UserId!=null)
             {
-                return RedirectToAction(nameof(Public_list_load));
+                return RedirectToAction(nameof(Private_list_load));
             }
             else
             {
-                return RedirectToAction(nameof(Private_list_load));
+                return RedirectToAction(nameof(Public_list_load));
             }
 
         }
