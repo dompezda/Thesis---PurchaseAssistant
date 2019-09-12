@@ -495,11 +495,13 @@ namespace Assistant.Controllers
                 string NewUserId;
                 using (var db = new ApplicationDbContext())
                 {
-                    var friendMail = User.FindFirstValue(ClaimTypes.Email);
+                    var friendMail = User.FindFirstValue(ClaimTypes.Name);
                     NewUserId = db.Users.Where(x => x.Email == mail).Select(y=>y.Id).FirstOrDefault();
                     List newList = new List();
                     newList.UserId =NewUserId;
-                    newList.Name = "list shared by " + friendMail;
+
+                    newList.Name = "Lista udostepniona przez " + friendMail;
+                    //newList.Name = "list shared by " + friendMail;
                     db.Lists.Add(newList);
                     db.SaveChanges();
                     var getProd = db.ProductLists.Where(x => x.ListId == IdToShare).Select(w => w.ProductId);

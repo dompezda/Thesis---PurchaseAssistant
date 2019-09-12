@@ -8,51 +8,56 @@
 
     <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
 </div>
-
-<div class="accordion" id="accordionExample">
-    @{int k = 0;}
-    @foreach (var list in ViewBag.Lists)
-    {
-        <div class="card-header" id="headingOne_@k">
-            <h5 class="mb-0"></h5>
-            <div class="row">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne_@k" aria-expanded="true" aria-controls="collapseOne">
-                    @list.Name
-
-
-                    <form action="Edit_List" method="post">
-                        <input type="hidden" name="list.Id" value="@list.Id" />
-
-                        <button class="btn-primary" style="margin-bottom:3px; width:100px; margin-left:25%;">Edytuj</button>
-                    </form>
-                    <form action="DeleteList" method="post">
-                        <input type="hidden" name="list.Id" value="@list.Id" />
-
-
-                        <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
-                    </form>
-                
-
-                </button>
-            </div>
-
-        </div>
-
-        <div class="card">
-            @foreach (var productList in list.ProductList)
+<div class="col-sm-10">
+    <div class="accordion" id="accordionExample">
+        @{int k = 0;}
+    
+            @foreach (var list in ViewBag.Lists)
             {
-                <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
-                    <div class="card-body">
+                <div class="card-header" id="headingOne_@k">
+                    <h5 class="mb-0"></h5>
+                    <div class="row">
 
-                        @productList.Product.Name
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne_@k" aria-expanded="true" aria-controls="collapseOne">
+                            @list.Name
 
+
+                            <form action="Edit_List" method="post">
+                                <input type="hidden" name="list.Id" value="@list.Id" />
+
+                                <button class="btn-primary" style="margin-bottom:3px; width:100px; margin-left:25%;">Edytuj</button>
+                            </form>
+
+
+                            <form action="DeleteList" method="post">
+                                <input type="hidden" name="list.Id" value="@list.Id" />
+
+
+                                <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
+                            </form>
+
+
+                        </button>
                     </div>
+
                 </div>
+
+                <div class="card">
+                    @foreach (var productList in list.ProductList)
+                    {
+                        <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
+                            <div class="card-body">
+
+                                @productList.Product.Name
+
+                            </div>
+                        </div>
+                    }
+                </div>
+                k++;
             }
         </div>
-        k++;
-    }
-</div>
+    </div>
 
 
 
