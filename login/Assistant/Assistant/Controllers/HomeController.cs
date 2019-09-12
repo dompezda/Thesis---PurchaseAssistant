@@ -115,13 +115,14 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Create_list(int? id)
         {
-
+            
            if(id!=null)
             {
                 using (var db = new ApplicationDbContext())
                 {
                     var listFromDB = db.ProductLists.Where(x => x.ListId == id).Select(v => v.Product).ToList();
                     listViewModel.productsToPartial = listFromDB;
+                    currentlyEditedListId = id;
                     
 
                 }
@@ -140,8 +141,20 @@ namespace Assistant.Controllers
             listViewModel.productList.List = new List();
             using (var db = new ApplicationDbContext())
             {
-                var currentList = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                var currentList = new List();
+                if(id!=null)
+                {
+                    currentList = db.Lists.Where(x => x.Id == id).FirstOrDefault();
+                }
+                else
+                {
+                    currentList = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                }
+                
+                if(User.FindFirstValue(ClaimTypes.NameIdentifier)!=null)
+                { 
                 listViewModel.productList.List.UserId = currentList.UserId;
+                }
                 listViewModel.productList.List.Id = currentList.Id;
             }
             return View(listViewModel);
@@ -384,12 +397,15 @@ namespace Assistant.Controllers
         }
 
         [HttpPost]
-        public IActionResult FinishList()
+        public IActionResult FinishList(int? id)
         {
             List ToCheck = new List();
             using (var db = new ApplicationDbContext())
             {
-                
+                if(id!=null)
+                {
+                    currentlyEditedListId = id;
+                }
                 var count = db.ProductLists.Where(x => x.ListId == currentlyEditedListId)
                 .Select(x => x.Product).Count();
                 if (count != 0)
