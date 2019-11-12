@@ -459,7 +459,7 @@ namespace Assistant.Controllers
                 ViewBag.Lists = db.Lists.Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             }
 
-            return View(listViewModel.productLists);
+            return View("~/Views/Utility/Share_list.cshtml",listViewModel.productLists);
         }
 
         [HttpPost]
@@ -533,7 +533,7 @@ namespace Assistant.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 ViewBag.Lists = db.Lists.Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             }
-            return View("Private_list_load");
+            return View("~/Views/ListDisplay/Private_list_load.cshtml");
         }
 
         [HttpPost]
