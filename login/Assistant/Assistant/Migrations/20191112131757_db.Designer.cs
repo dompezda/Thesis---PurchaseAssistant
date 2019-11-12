@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assistant.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190902135603_test")]
-    partial class test
+    [Migration("20191112131757_db")]
+    partial class db
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

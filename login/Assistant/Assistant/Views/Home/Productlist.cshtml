@@ -18,12 +18,13 @@
             <tr>
                 <td>
                     <form action="DeleteProduct" method="post">
-                        <input type="hidden" name="product.Name" value="@item.Name" />
-                        @Html.DisplayFor(modelItem => item.Name)
-                        
+
+                        <input type="hidden" name="product.Id" value="@item.Id" />
+
 
                         <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
                     </form>
+                  
                 </td>
             </tr>
         }

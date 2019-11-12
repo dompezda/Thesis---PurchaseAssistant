@@ -78,7 +78,7 @@ namespace Assistant.Controllers
 
 
 
-            return View(frequentList);
+            return View("~/Views/Utility/Main_menu.cshtml", frequentList);
         }
         public static bool CheckForInternetConnection()
         {
@@ -107,7 +107,7 @@ namespace Assistant.Controllers
             }
             else
             {
-                return View("Connection_Error");
+                return View("~/View/Utility/Connection_Error.cshtml");
             }
 
         }
@@ -157,7 +157,7 @@ namespace Assistant.Controllers
                 }
                 listViewModel.productList.List.Id = currentList.Id;
             }
-            return View(listViewModel);
+            return View("~/Views/Home/Create_list.cshtml",listViewModel);
         }
         [HttpPost]
         public IActionResult Send_Name(string Name, bool IsPrivate)
@@ -186,7 +186,7 @@ namespace Assistant.Controllers
 
 
             }
-            return View("Create_list", listViewModel);
+            return View("~/Views/Home/Create_list.cshtml", listViewModel);
         }
 
         [HttpGet]
@@ -194,7 +194,7 @@ namespace Assistant.Controllers
         {
 
 
-            return View();
+            return View("~/Views/Utility/List_name.cshtml");
         }
 
         [HttpGet]
@@ -246,7 +246,7 @@ namespace Assistant.Controllers
                 ViewBag.Lists = db.Lists.Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             }
 
-            return View(listViewModel.productLists);
+            return View("~/Views/ListDisplay/Private_list_load.cshtml", listViewModel.productLists);
         }
         [HttpGet]
         public IActionResult Public_list_load()
@@ -274,7 +274,7 @@ namespace Assistant.Controllers
                 ViewBag.Lists = db.Lists.Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             }
 
-            return View(listViewModel.productLists);
+            return View("~/Views/ListDisplay/Public_list_load.cshtml", listViewModel.productLists);
         }
 
 
@@ -306,7 +306,7 @@ namespace Assistant.Controllers
                 ViewBag.Lists = db.Lists.Where(x=>x.UserId==null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             }
 
-            return View(listViewModel.productLists);
+            return View("~/Views/ListDisplay/Load_list.cshtml", listViewModel.productLists);
         }
 
         [HttpPost]
@@ -474,7 +474,6 @@ namespace Assistant.Controllers
         {
             int test = IdToShare;
              List ListToShare = new List();
-            string userEmail;
             List<string> usersEmails = new List<string>();
             bool Exist = false;
             using (var db = new ApplicationDbContext())
@@ -538,16 +537,16 @@ namespace Assistant.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteProduct(Product product)
+        public IActionResult DeleteProduct(int IdToRemove)
         {
             using (var db = new ApplicationDbContext())
             {
-                var ProductToCheck = db.Products.Where(n => n.Name == product.Name).FirstOrDefault();
+                var ProductToCheck = db.Products.Where(n => n.Id == IdToRemove).FirstOrDefault();
                 var amount = db.ProductLists.Where(p => p.ProductId == ProductToCheck.Id).Count();
                 if (amount == 1)
                 {
                     Product ToRemove = db.Products.Include(x => x.ProductList)
-                                       .Where(n => n.Name == product.Name).FirstOrDefault();
+                                       .Where(n => n.Id == IdToRemove).FirstOrDefault();
                     db.Products.Remove(ToRemove);
                     db.SaveChanges();
                 }
