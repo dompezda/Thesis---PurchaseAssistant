@@ -3,16 +3,22 @@
  
 }
 
-<h4>Podaj Email uzytkownika, <br /> ktoremu chcesz udosptenic liste</h4>
+<h4>Podaj Email uzytkownika, <br /> ktoremu chcesz udostepnic liste</h4>
 
 
 <div class="row">
     <div class="col-md-4">
-        <form method="post" action="Send_email">
+        @*<form method="post" action="Send_email">
             <input type="text" name="mail"><br>
             <input type="text" name="ListId" hidden />
-            <input type="submit" value="Submit">
+            <input type="submit" value="Udostepnij">
+        </form>*@
+
+        <form asp-controller="Home" asp-action="Send_email" method="post">
+            <input type="text" name="mail"><br>
+            <input type="text" name="ListId" hidden />
+            <input type="submit" value="Udostepnij">
         </form>
-        @ViewData["ErrorMessage"]
+            @ViewData["ErrorMessage"]
     </div>
 </div>
