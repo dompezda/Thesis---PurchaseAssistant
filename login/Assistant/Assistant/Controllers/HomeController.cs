@@ -21,7 +21,7 @@ namespace Assistant.Controllers
         public static ListViewModel listViewModel = new ListViewModel();
         public int IdList = 0;
         public string listName;
-        public static int? currentlyEditedListId = null;
+        public static int? currentlyEditedListId = 0;
         public static int IdToShare = 0;
 
         protected ApplicationDbContext ApplicationDbContext { get; set; }
@@ -151,10 +151,11 @@ namespace Assistant.Controllers
                     currentList = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
                 }
                 
-                if(User.FindFirstValue(ClaimTypes.NameIdentifier)!=null)
+                if(User.FindFirstValue(ClaimTypes.NameIdentifier)!=null && currentList!=null)
                 { 
                 listViewModel.productList.List.UserId = currentList.UserId;
                 }
+                if(currentList!=null)
                 listViewModel.productList.List.Id = currentList.Id;
             }
             return View("~/Views/Home/Create_list.cshtml",listViewModel);

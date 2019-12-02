@@ -16,7 +16,7 @@
     <div class="row mt-3"></div>
     <input type="button" class="btn-primary" onclick="location.href='@Url.Action("List_name", "Home")'" value="Stworz nowa listę" style=" margin-bottom:3px;width:200px" />
     <div class="row mt-3"></div>
-    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Select_list", "Generate")'" value="Wygeneruj listę zakupów" style=" margin-bottom:3px; width:200px" />
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Select_mode", "Generate")'" value="Wygeneruj listę zakupów" style=" margin-bottom:3px; width:200px" />
 
     <div class="row mt-3"></div>
     @if (User.Identity.IsAuthenticated)

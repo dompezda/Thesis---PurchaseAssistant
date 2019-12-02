@@ -100,7 +100,6 @@ C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Areas\Identity\Pages\Error.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Areas\Identity\Pages\_ViewImports.g.cshtml.cs
-C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Generate\Select_list.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\FrequentList.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\Get_share_email.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\ListDisplay\Load_list.g.cshtml.cs
@@ -111,3 +110,4 @@ C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Utility\Share_list.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Utility\Starting_screen.g.cshtml.cs
 C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Utility\List_name.g.cshtml.cs
+C:\Users\Dominik\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Generate\Select_mode.g.cshtml.cs
