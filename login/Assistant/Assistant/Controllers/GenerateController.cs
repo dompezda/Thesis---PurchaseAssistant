@@ -17,6 +17,8 @@ using Encog.ML.Data;
 using Encog.ML.Data.Basic;
 using Encog.ML.Train;
 using Encog.Neural.Networks.Training.Propagation.Resilient;
+using Encog.Neural.Networks.Training.Lma;
+using Encog.Util;
 
 namespace Assistant.Controllers
 {
@@ -150,6 +152,7 @@ namespace Assistant.Controllers
             List<int> inputFirstList = new List<int>();
             double[][] inputNetwork;
             double[][] idealOutput;
+
             using (var db = new ApplicationDbContext())
             {
                 GetLists = db.Lists.Where(p => p.UserId == userId).Where(w => w.CreateDate >= DateTime.Now.AddDays(-60)).Select(w=>w.Id);
@@ -193,6 +196,7 @@ namespace Assistant.Controllers
                         if(inputFirstList[count]==null)
                         {
                             inputNetwork[w] = new double[] { 0, inputSecondList[count] };
+                            
                         }
                         if (inputSecondList[count] == null)
                         {
@@ -215,15 +219,62 @@ namespace Assistant.Controllers
                     IMLTrain train = new ResilientPropagation(network, trainingSet);
 
                     int epoch = 1;
-
+                    int counterLevenberg = 0;
+                    int counterResilient = 0;
+                    double ErrorResilient = 20;
+                    double ErrorLavenberg = 20;
                     do
                     {
+                        var StartError = train.Error;
                         train.Iteration();
                         System.Diagnostics.Debug.WriteLine(@"Epoch #" + epoch + @" Error:" + train.Error);
+                        System.Diagnostics.Debug.WriteLine(@"Current Error: " + ErrorResilient);
+                        
+                        
+                        
                         epoch++;
-                    } while (train.Error > 20);
+                        var EndError = train.Error;
+                        if (StartError == EndError)
+                        {
+                            counterResilient++;
+                        }
+                        if (counterResilient >= 10)
+                        {
+                            ErrorResilient++;
+                            counterResilient = 0;
+                        }
+                        System.Diagnostics.Debug.WriteLine(@"Current iteration: " + counterResilient);
+                        System.Diagnostics.Debug.WriteLine(@"Current error start: " + StartError);
+                        System.Diagnostics.Debug.WriteLine(@"Current error end: " + EndError);
+                    } while (train.Error > ErrorResilient);
 
-                 
+
+                    train = new LevenbergMarquardtTraining(network, trainingSet);
+                    do
+                    {
+                        
+                        var StartError = train.Error;
+                        train.Iteration();
+                        System.Diagnostics.Debug.WriteLine(@"Epoch #" + epoch + @" Error:" + train.Error);
+                        System.Diagnostics.Debug.WriteLine(@"Current Error: " + ErrorLavenberg);
+                        epoch++;
+                        var EndError = train.Error;
+                        if (EndError+ 0.0000000099999>StartError)
+                        {
+                            counterLevenberg++;
+                        }
+                        if (counterLevenberg >= 10)
+                        {
+                            ErrorLavenberg++;
+                            counterLevenberg = 0;
+                        }
+                        System.Diagnostics.Debug.WriteLine(@"Current iteration: " + counterLevenberg);
+                        System.Diagnostics.Debug.WriteLine(@"Current error start: " + StartError);
+                        System.Diagnostics.Debug.WriteLine(@"Current error end: " + EndError);
+
+                    } while (train.Error > ErrorLavenberg);
+
+
                     System.Diagnostics.Debug.WriteLine(@"Neural Network Results:");
                     foreach (IMLDataPair pair in trainingSet)
                     {
@@ -234,10 +285,15 @@ namespace Assistant.Controllers
 
                 }
 
-               
+
                 
             }
-           
+
+
+
+            SerializeObject.Save(userId + ".ser", network);
+            
+
             int Id = 5;
             return RedirectToAction("Create_list","Home",Id);
         }
