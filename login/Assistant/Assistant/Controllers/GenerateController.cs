@@ -188,15 +188,18 @@ namespace Assistant.Controllers
                     {
                         maxLength = secondListLen;
                     }
-                    inputNetwork=new double[maxLength][];
+                    int maxSize = secondListLen * firstListLen;
+                    inputNetwork =new double[maxSize][];
+                    idealOutput = new double[maxSize][];
+
                     idealOutput = new double[idealListLen][];
                     int count = 0;
                     for (int w = 0; w < maxLength; w++)
-                    {                      
-                        if(inputFirstList[count]==null)
+                    {
+                        if (inputFirstList[count] == null)
                         {
                             inputNetwork[w] = new double[] { 0, inputSecondList[count] };
-                            
+
                         }
                         if (inputSecondList[count] == null)
                         {
@@ -206,15 +209,37 @@ namespace Assistant.Controllers
                         {
                             inputNetwork[w] = new double[] { inputFirstList[count], inputSecondList[count] };
                         }
-                       
+
                         count++;
-                        
+
                     }
                     for (int ideal = 0; ideal < idealListLen; ideal++)
                     {
                         idealOutput[ideal] = new double[] { inputIdealList[ideal] };
                     }
 
+                    //new part
+                    //int count = 0;
+                    //for (int p = 0; p < secondListLen; p++)
+                    //{
+                    //    inputNetwork[count] = new double[] { inputFirstList[0], inputSecondList[p] };
+                    //    count++;
+                    //}
+
+                    //for (int j = 1; j < firstListLen; j++)
+                    //{
+                    //    for (int k = 0; k < secondListLen; k++)
+                    //    {
+                    //        inputNetwork[count] = new double[] { inputFirstList[j], inputSecondList[k] };
+                    //        count++;
+                    //    }
+                    //}
+                    //int outputCounter = 0;
+                    //int maxOutput = inputNetwork.Length * idealListLen;
+                    //for (int ideal = 0; ideal < idealListLen; ideal++)
+                    //{
+                    //    idealOutput[ideal] = new double[] { inputIdealList[ideal] };
+                    //}
                     IMLDataSet trainingSet = new BasicMLDataSet(inputNetwork, idealOutput);
                     IMLTrain train = new ResilientPropagation(network, trainingSet);
 
@@ -290,7 +315,7 @@ namespace Assistant.Controllers
             }
 
 
-
+            
             SerializeObject.Save(userId + ".ser", network);
             
 
