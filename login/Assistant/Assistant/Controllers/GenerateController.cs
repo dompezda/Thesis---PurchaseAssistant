@@ -19,6 +19,7 @@ using Encog.ML.Train;
 using Encog.Neural.Networks.Training.Propagation.Resilient;
 using Encog.Neural.Networks.Training.Lma;
 using Encog.Util;
+using Encog.Util.Arrayutil;
 
 namespace Assistant.Controllers
 {
@@ -180,7 +181,7 @@ namespace Assistant.Controllers
                         break;
                     }
                     int maxLength;
-                    if(firstListLen>secondListLen)
+                    if (firstListLen > secondListLen)
                     {
                         maxLength = firstListLen;
                     }
@@ -188,26 +189,103 @@ namespace Assistant.Controllers
                     {
                         maxLength = secondListLen;
                     }
-                    int maxSize = secondListLen * firstListLen;
-                    inputNetwork =new double[maxSize][];
-                    idealOutput = new double[maxSize][];
-
+                    
+                    inputNetwork = new double[maxLength][];
                     idealOutput = new double[idealListLen][];
+
+              
+
+
+
+
+                    //int count = 0;
+                    //for (int w = 0; w < maxLength; w++)
+                    //{
+                    //    if (inputFirstList[count] == null)
+                    //    {
+                    //        inputNetwork[w] = new double[] { 0, inputSecondList[count] };
+
+                    //    }
+                    //    if (inputSecondList[count] == null)
+                    //    {
+                    //        inputNetwork[w] = new double[] { inputFirstList[count], 0 };
+                    //    }
+                    //    else
+                    //    {
+                    //        inputNetwork[w] = new double[] { inputFirstList[count], inputSecondList[count] };
+                    //    }
+
+                    //    count++;
+
+                    //}
+                    //for (int ideal = 0; ideal < idealListLen; ideal++)
+                    //{
+                    //    idealOutput[ideal] = new double[] { inputIdealList[ideal] };
+                    //}
+
+
+                    var hi = 1;
+                    var lo = 0;
+                    var norm = new NormalizeArray { NormalizedHigh = hi, NormalizedLow = lo };
+                   
+                    double[] normalizedInput1 = new double[firstListLen];
+                    double[] normalizedInput2 = new double[secondListLen];
+                    double[] normalizedOutput = new double[idealListLen];
+                    double[] helperInput1=new double[firstListLen];
+                    double[] helperInput2 = new double[secondListLen];
+                    double[] helperOutput = new double[idealListLen];
+
+
+
+                    double[] NormalizeIandO = new double[firstListLen + secondListLen + idealListLen];
+                    for (int o = 0; o < firstListLen; o++)
+                    {
+                        NormalizeIandO[o] = inputFirstList[o];
+                    }
+                    for (int o = 0; o < secondListLen; o++)
+                    {
+                        NormalizeIandO[firstListLen + o] = inputSecondList[o];
+                    }
+                    for (int o = 0; o < idealListLen; o++)
+                    {
+                        NormalizeIandO[firstListLen + secondListLen + o] = inputIdealList[o];
+                    }
+                    var Normalized = norm.Process(NormalizeIandO);
+
+
+
+                    for (int o = 0; o < firstListLen; o++)
+                    {
+                        helperInput1[o] = Normalized[o];
+                    }
+                    
+
+                    for (int o = 0; o < secondListLen; o++)
+                    {
+                        helperInput2[o] = Normalized[o+firstListLen];
+                    }
+                    
+
+                    for (int o = 0; o < idealListLen; o++)
+                    {
+                        helperOutput[o] = Normalized[o + firstListLen+ secondListLen];
+                    }
+
                     int count = 0;
                     for (int w = 0; w < maxLength; w++)
                     {
                         if (inputFirstList[count] == null)
                         {
-                            inputNetwork[w] = new double[] { 0, inputSecondList[count] };
+                            inputNetwork[w] = new double[] { 0, helperInput2[count] };
 
                         }
                         if (inputSecondList[count] == null)
                         {
-                            inputNetwork[w] = new double[] { inputFirstList[count], 0 };
+                            inputNetwork[w] = new double[] { helperInput1[count], 0 };
                         }
                         else
                         {
-                            inputNetwork[w] = new double[] { inputFirstList[count], inputSecondList[count] };
+                            inputNetwork[w] = new double[] { helperInput1[count], helperInput2[count] };
                         }
 
                         count++;
@@ -215,8 +293,10 @@ namespace Assistant.Controllers
                     }
                     for (int ideal = 0; ideal < idealListLen; ideal++)
                     {
-                        idealOutput[ideal] = new double[] { inputIdealList[ideal] };
+                        idealOutput[ideal] = new double[] { helperOutput[ideal] };
                     }
+
+
 
                     //new part
                     //int count = 0;
@@ -284,7 +364,7 @@ namespace Assistant.Controllers
                         System.Diagnostics.Debug.WriteLine(@"Current Error: " + ErrorLavenberg);
                         epoch++;
                         var EndError = train.Error;
-                        if (EndError+ 0.0000000099999>StartError)
+                        if (EndError+ 0.0000000000009>StartError)
                         {
                             counterLevenberg++;
                         }
