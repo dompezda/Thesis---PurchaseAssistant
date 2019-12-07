@@ -153,19 +153,21 @@ namespace Assistant.Controllers
             List<int> inputFirstList = new List<int>();
             double[][] inputNetwork;
             double[][] idealOutput;
-
+            int[] ListsToUse;
+            List<double> Products=new List<double>();
             using (var db = new ApplicationDbContext())
             {
-                GetLists = db.Lists.Where(p => p.UserId == userId).Where(w => w.CreateDate >= DateTime.Now.AddDays(-60)).Select(w=>w.Id);
-                var ListsToUse=GetLists.ToArray();
-            
-            for (int i = 0; i < ListsToUse.Count() ; i++)
-            {
+                GetLists = db.Lists.Where(p => p.UserId == userId).Where(w => w.CreateDate >= DateTime.Now.AddDays(-60)).Select(w => w.Id);
+                ListsToUse=GetLists.ToArray();
+                
+
+                for (int i = 0; i < ListsToUse.Count(); i++)
+                {
                     int firstListLen;
                     int secondListLen;
                     int idealListLen;
-                    if (i+2<ListsToUse.Count())
-                    { 
+                    if (i + 2 < ListsToUse.Count())
+                    {
                         var firstList = ListsToUse[i];
                         var secondList = ListsToUse[i + 1];
                         var idealList = ListsToUse[i + 2];
@@ -189,87 +191,42 @@ namespace Assistant.Controllers
                     {
                         maxLength = secondListLen;
                     }
-                    
+                
                     inputNetwork = new double[maxLength][];
                     idealOutput = new double[idealListLen][];
-
-              
-
-
-
-
-                    //int count = 0;
-                    //for (int w = 0; w < maxLength; w++)
-                    //{
-                    //    if (inputFirstList[count] == null)
-                    //    {
-                    //        inputNetwork[w] = new double[] { 0, inputSecondList[count] };
-
-                    //    }
-                    //    if (inputSecondList[count] == null)
-                    //    {
-                    //        inputNetwork[w] = new double[] { inputFirstList[count], 0 };
-                    //    }
-                    //    else
-                    //    {
-                    //        inputNetwork[w] = new double[] { inputFirstList[count], inputSecondList[count] };
-                    //    }
-
-                    //    count++;
-
-                    //}
-                    //for (int ideal = 0; ideal < idealListLen; ideal++)
-                    //{
-                    //    idealOutput[ideal] = new double[] { inputIdealList[ideal] };
-                    //}
+                    Products = GetAllProducts(inputFirstList, inputSecondList, inputIdealList);
+                    var min = Products.OrderBy(x => x).Take(1).ToArray();
+                    var max = Products.OrderByDescending(y => y).Take(1).ToArray();
+                    var deNormalizeMin = min[0];
+                    var deNormalizeMax = max[0];
 
 
-                    var hi = 1;
-                    var lo = 0;
-                    var norm = new NormalizeArray { NormalizedHigh = hi, NormalizedLow = lo };
-                   
-                    double[] normalizedInput1 = new double[firstListLen];
-                    double[] normalizedInput2 = new double[secondListLen];
-                    double[] normalizedOutput = new double[idealListLen];
-                    double[] helperInput1=new double[firstListLen];
+                    Products.ToArray();
+                    var NormalizedProducts = GetNormalizedArray(Products);
+                    var deNormalizaeArray = GetDeNormalizerArray(deNormalizeMin, deNormalizeMax, NormalizedProducts);
+
+                    double[] helperInput1 = new double[firstListLen];
                     double[] helperInput2 = new double[secondListLen];
                     double[] helperOutput = new double[idealListLen];
 
-
-
-                    double[] NormalizeIandO = new double[firstListLen + secondListLen + idealListLen];
                     for (int o = 0; o < firstListLen; o++)
                     {
-                        NormalizeIandO[o] = inputFirstList[o];
+                        helperInput1[o] = NormalizedProducts[o];
                     }
-                    for (int o = 0; o < secondListLen; o++)
-                    {
-                        NormalizeIandO[firstListLen + o] = inputSecondList[o];
-                    }
-                    for (int o = 0; o < idealListLen; o++)
-                    {
-                        NormalizeIandO[firstListLen + secondListLen + o] = inputIdealList[o];
-                    }
-                    var Normalized = norm.Process(NormalizeIandO);
 
-
-
-                    for (int o = 0; o < firstListLen; o++)
-                    {
-                        helperInput1[o] = Normalized[o];
-                    }
-                    
 
                     for (int o = 0; o < secondListLen; o++)
                     {
-                        helperInput2[o] = Normalized[o+firstListLen];
+                        helperInput2[o] = NormalizedProducts[o + firstListLen];
                     }
-                    
+
 
                     for (int o = 0; o < idealListLen; o++)
                     {
-                        helperOutput[o] = Normalized[o + firstListLen+ secondListLen];
+                        helperOutput[o] = NormalizedProducts[o + firstListLen + secondListLen];
                     }
+
+
 
                     int count = 0;
                     for (int w = 0; w < maxLength; w++)
@@ -298,28 +255,7 @@ namespace Assistant.Controllers
 
 
 
-                    //new part
-                    //int count = 0;
-                    //for (int p = 0; p < secondListLen; p++)
-                    //{
-                    //    inputNetwork[count] = new double[] { inputFirstList[0], inputSecondList[p] };
-                    //    count++;
-                    //}
-
-                    //for (int j = 1; j < firstListLen; j++)
-                    //{
-                    //    for (int k = 0; k < secondListLen; k++)
-                    //    {
-                    //        inputNetwork[count] = new double[] { inputFirstList[j], inputSecondList[k] };
-                    //        count++;
-                    //    }
-                    //}
-                    //int outputCounter = 0;
-                    //int maxOutput = inputNetwork.Length * idealListLen;
-                    //for (int ideal = 0; ideal < idealListLen; ideal++)
-                    //{
-                    //    idealOutput[ideal] = new double[] { inputIdealList[ideal] };
-                    //}
+                
                     IMLDataSet trainingSet = new BasicMLDataSet(inputNetwork, idealOutput);
                     IMLTrain train = new ResilientPropagation(network, trainingSet);
 
@@ -401,6 +337,49 @@ namespace Assistant.Controllers
 
             int Id = 5;
             return RedirectToAction("Create_list","Home",Id);
+        }
+
+
+
+        public List<double> GetAllProducts(List<int> input1,List<int> input2, List<int> output)
+        {
+            List<double> ListToReturn = new List<double>();
+            for (int i = 0; i < input1.Count; i++)
+            {
+                var number=Convert.ToDouble(input1[i]);
+                ListToReturn.Add(number);
+            }
+            for (int i = 0; i < input2.Count; i++)
+            {
+                var number = Convert.ToDouble(input2[i]);
+                ListToReturn.Add(number);
+            }
+            for (int i = 0; i < output.Count; i++)
+            {
+                var number = Convert.ToDouble(output[i]);
+                ListToReturn.Add(number);
+            }
+
+            return ListToReturn;
+        }
+        public double[] GetNormalizedArray(List<double> ArrayToNormalize)
+        {
+            var hi = 1;
+            var lo = 0;
+            var norm = new NormalizeArray { NormalizedHigh = hi, NormalizedLow = lo };
+            var Normalized = norm.Process(ArrayToNormalize.ToArray());
+            return Normalized;
+
+        }
+        public double[] GetDeNormalizerArray(double min,double max, double[] Array)
+        {
+            var difference = max - min;
+            double[] deNormalizedArray = new double[Array.Length];
+            for (int i = 0; i < Array.Length; i++)
+            {
+                deNormalizedArray[i] = (Array[i] * 10) + 1;
+            }
+            return deNormalizedArray;
         }
     }
 }
