@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Assistant.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebEssentials.AspNetCore.Pwa;
 
 namespace Assistant
 {
@@ -39,8 +40,10 @@ namespace Assistant
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
+           
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddProgressiveWebApp();
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
