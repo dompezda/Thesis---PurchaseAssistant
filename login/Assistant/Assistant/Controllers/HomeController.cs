@@ -340,13 +340,13 @@ namespace Assistant.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var listToChange = db.Lists.Where(x => x.UserId == UserId).Where(p => p.Id == ListId).FirstOrDefault();
-                if (listToChange.UserId != null)
+                if (listToChange.UserId == null)
                 {
                     listToChange.UserId = null;
                     db.SaveChanges();
                     return RedirectToAction(nameof(Public_list_load));
                 }
-                if (listToChange.UserId == null)
+                if (listToChange.UserId != null)
                 {
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     listToChange.UserId = userId;
@@ -420,7 +420,7 @@ namespace Assistant.Controllers
 
             }
 
-            if (ToCheck.UserId == null)
+            if (ToCheck.UserId != null)
             {
                 return RedirectToAction(nameof(Private_list_load));
             }
