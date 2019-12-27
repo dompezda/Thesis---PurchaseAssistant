@@ -43,12 +43,31 @@ namespace Assistant
            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddProgressiveWebApp();
-          
+
+
+            //new PwaOptions
+            //{
+            //    RoutesToPreCache = "/Views/Utility/Main_menu.cshtml",
+            //    Strategy = ServiceWorkerStrategy.CacheFirst
+            //});
+
+           
+            //new PwaOptions
+            //{
+            //    Strategy = ServiceWorkerStrategy.CacheFirst,
+            //    CacheId = "v3",
+            //    RoutesToPreCache = "/Views/Utility/Main_menu.html",
+            //    RegisterWebmanifest = true,
+
+            //});
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -64,7 +83,7 @@ namespace Assistant
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            
             app.UseAuthentication();
 
             app.UseMvc(routes =>

@@ -5,7 +5,9 @@
     ViewData["Title"] = "Main_menu";
 }
 
-
+<head>
+        <link rel='manifest' href='~/manifest.json'>
+</head>
 <nav class="navbar">
 
     <h2> Asystent Zakupow </h2>
@@ -14,29 +16,34 @@
 <div class="col-sm-3 text-center">
 
     <div class="row mt-3"></div>
-    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("List_name", "Home")'" value="Stworz nowa listę" style=" margin-bottom:3px;width:200px" />
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("List_name", "Home")'" value="Stworz nowa listę" style=" margin-bottom:3px; width:215px" />
     <div class="row mt-3"></div>
-    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Select_mode", "Generate")'" value="Wygeneruj listę zakupów" style=" margin-bottom:3px; width:200px" />
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Select_mode", "Generate")'" value="Wygeneruj listę zakupów" style=" margin-bottom:3px; width:215px" />
 
     <div class="row mt-3"></div>
     @if (User.Identity.IsAuthenticated)
     {
-        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Edytuj listy publiczne" style="margin-bottom:3px; width:200px" />
+        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Edytuj listy publiczne" style="margin-bottom:3px; width:215px" />
         <div class="row mt-3"></div>
-        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Private_list_load", "Home")'" value="Listy prywatne" style=" margin-bottom:3px; width:200px" />
+        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Private_list_load", "Home")'" value="Listy prywatne" style=" margin-bottom:3px; width:215px" />
         <div class="row mt-3"></div>
-        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Share_list", "Home")'" value="Udostepnij liste" style=" margin-bottom:3px; width:200px" />
+        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Share_list", "Home")'" value="Udostepnij liste" style=" margin-bottom:3px; width:215px" />
+        <div class="row mt-3"></div>
+        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Select_list_to_save_offline", "Progressive")'" value="Zapisz listę do trybu offline" style=" margin-bottom:3px; width:215px" />
 
     }
     else
     {
-        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Edytuj liste zakupów" style="margin-bottom:3px; width:200px" />
+        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Edytuj liste zakupów" style="margin-bottom:3px; width:215px" />
     }
 
 
 
 </div>
 
-
 @await Html.PartialAsync("FrequentList")
-
+<script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('serviceWorker');
+}
+</script>
