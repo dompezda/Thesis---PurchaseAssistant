@@ -11,27 +11,15 @@ using Assistant.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Newtonsoft.Json;
+using System.IO;
+
 
 namespace Assistant.Controllers
 {
     public class ProgressiveController : Controller
     {
-        public IActionResult Progressive(int Id)
-        {
-            List<string> Products = new List<string>();
-            List<string> currentList = new List<string>();
-            using (var db = new ApplicationDbContext())
-            {
-                currentList = db.ProductLists.Where(w => w.ListId == Id).Select(p => p.Product.Name).ToList();
-                foreach (var item in currentList)
-                {
-                    Products.Add(item);
-                    //Products.Add(db.Products.Where(x => x.Id == ProdId).Select(w => w.Name).Take(1).ToString());
-                }
-            }
-           
-                return View(Products);
-        }
+        
 
         public IActionResult Select_list_to_save_offline()
         {

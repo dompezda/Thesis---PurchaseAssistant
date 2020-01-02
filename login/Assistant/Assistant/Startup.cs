@@ -42,24 +42,24 @@ namespace Assistant
                 .AddEntityFrameworkStores<ApplicationDbContext>();
            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddProgressiveWebApp();
+            services.AddMemoryCache();
+            services.AddProgressiveWebApp(
+            new PwaOptions
+            {
+                RegisterServiceWorker = true,
+                RegisterWebmanifest = false,
+                Strategy = ServiceWorkerStrategy.NetworkFirst,
+                RoutesToPreCache = "/OfflineList.json",
+                OfflineRoute = "/SavedOfflineList.html",
 
 
-            //new PwaOptions
-            //{
-            //    RoutesToPreCache = "/Views/Utility/Main_menu.cshtml",
-            //    Strategy = ServiceWorkerStrategy.CacheFirst
-            //});
 
-           
-            //new PwaOptions
-            //{
-            //    Strategy = ServiceWorkerStrategy.CacheFirst,
-            //    CacheId = "v3",
-            //    RoutesToPreCache = "/Views/Utility/Main_menu.html",
-            //    RegisterWebmanifest = true,
 
-            //});
+            }); ;
+
+
+
+
 
 
         }

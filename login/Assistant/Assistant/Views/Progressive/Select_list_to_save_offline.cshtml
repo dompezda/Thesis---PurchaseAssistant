@@ -3,6 +3,10 @@
     ViewData["Title"] = "Wczytaj Liste";
 }
 
+
+    <head>
+        <link rel='manifest' href='~/manifest.json'>
+    </head>
 <div class="row">
     <h4>Listy do wczytania</h4>
 
@@ -24,8 +28,8 @@
             </button>
         </div>
         <div class="row">
-            <form asp-controller="Progressive" asp-action="Progressive" method="post">
-                <input type="hidden" name="Id" value="@list.Id" />
+            <form asp-controller="Offline" asp-action="GetList" method="post">
+                <input type="hidden" name="GetListId" value="@list.Id" />
                 <button class="btn-primary" style="margin-bottom:3px; width:100px;height:30px; margin-left:15px">Zapisz listę</button>
             </form>
 

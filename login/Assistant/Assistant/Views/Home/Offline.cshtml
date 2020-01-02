@@ -1,0 +1,23 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Offline";
+}
+
+
+<div class="row">
+    <h4>
+        Lista zakupów do zapisu offline
+    </h4>
+
+
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+</div>
+@foreach (var item in Model)
+{
+    <br />
+    @item
+
+}
+
+
+

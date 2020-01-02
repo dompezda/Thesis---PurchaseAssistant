@@ -2,7 +2,7 @@
   "name": "Assistant",
   "short_name": "PA",
   "description": "DP",
-  "start_url": "/",
+  "start_url": "/Home",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",

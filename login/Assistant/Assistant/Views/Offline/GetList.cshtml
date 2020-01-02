@@ -1,0 +1,46 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Progressive";
+}
+
+<head>
+    <link rel='manifest' href='~/manifest.json'>
+</head>
+<div class="row">
+    <h4>
+        Lista zakupów do zapisu offline
+    </h4>
+
+
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+</div>
+@foreach (var item in Model)
+{
+    <br />
+    @item
+
+}
+
+
+
+<script>
+    function fetchJsonFile(path, callback) {
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState === 4) {
+                if (httpRequest.status === 200) {
+                    var data = JSON.parse(httpRequest.responseText);
+                    if (callback) callback(data);
+                }
+            }
+        };
+        httpRequest.open('GET', path);
+        httpRequest.send();
+    }
+
+
+    fetchJsonFile('/OfflineList.json', function (data) {
+        console.log(data);
+    });
+
+</script>

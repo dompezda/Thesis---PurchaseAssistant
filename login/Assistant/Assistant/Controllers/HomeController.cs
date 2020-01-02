@@ -11,6 +11,7 @@ using Assistant.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Newtonsoft.Json;
 
 namespace Assistant.Controllers
 {
@@ -21,6 +22,7 @@ namespace Assistant.Controllers
         public static ListViewModel listViewModel = new ListViewModel();
         public int IdList = 0;
         public string listName;
+        public bool isPrivateList;
         public static int? currentlyEditedListId = 0;
         public static int IdToShare = 0;
 
@@ -164,6 +166,7 @@ namespace Assistant.Controllers
         public IActionResult Send_Name(string Name, bool IsPrivate)
         {
             listName = Name;
+            isPrivateList = IsPrivate;
             using (var db = new ApplicationDbContext())
             {
 
@@ -401,26 +404,28 @@ namespace Assistant.Controllers
         public IActionResult FinishList(int? id)
         {
             List ToCheck = new List();
+
+            string checkPrivate=null;
             using (var db = new ApplicationDbContext())
             {
-                if (id != null)
+                if (id == null)
                 {
-                    currentlyEditedListId = id;
+                    id=currentlyEditedListId;
                 }
                 var count = db.ProductLists.Where(x => x.ListId == currentlyEditedListId)
                 .Select(x => x.Product).Count();
-                if (count != 0)
-                {
-                    currentlyEditedListId = null;
-                }
-                if (currentlyEditedListId != null)
+                
+             
+                if (currentlyEditedListId != null && isPrivateList==true)
                 {
                     ToCheck = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                    checkPrivate = db.Lists.Where(x => x.Id == currentlyEditedListId).Select(w => w.UserId).ToString();
+
                 }
 
             }
-
-            if (ToCheck.UserId != null)
+            
+            if (checkPrivate!=null)
             {
                 return RedirectToAction(nameof(Private_list_load));
             }
@@ -612,7 +617,7 @@ namespace Assistant.Controllers
         }
 
 
-
+       
 
 
 
