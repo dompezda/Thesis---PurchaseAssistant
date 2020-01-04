@@ -1,47 +1,117 @@
 ﻿<head>
     <title>Zapisana lista</title>
 </head>
-<body onload="GetSavedList()">
-    <h4>Brak połączenia internetowego!</h4>
+<body>
+    <!--onload="GetSavedList()"-->
+    <h4>No internet Access</h4>
     <br />
-    
-        <h4>Ostatnia zapisana lista</h4>
-    
-    <div id="ShowData"></div>
+
+    <h4>Last Saved List</h4>
+
+    <!--<div id="ShowData"></div>
+    <h4> Already bought</h4>
+    <div id="ReadProducts"></div>-->
+
+
+    <h3> Lista vue test</h3>
+    <ul id="example-1">
+        <li v-for="item in items">
+            {{item.message}}
+        </li>
+    </ul>
+
+    <h3> Lista 1</h3>
+    <ul id="lista1"></ul>
 </body>
 
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
 <script>
-    function fetchJsonFile(path, callback) {
-        var httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = function () {
-            if (httpRequest.readyState === 4) {
-                if (httpRequest.status === 200) {
-                    var data = JSON.parse(httpRequest.responseText);
-                    if (callback) callback(data);
-                }
-            }
-        };
-        httpRequest.open('GET', path);
-        httpRequest.send();
-    }
-    
+    //function fetchJsonFile(path, callback) {
+    //    var httpRequest = new XMLHttpRequest();
+    //    httpRequest.onreadystatechange = function () {
+    //        if (httpRequest.readyState === 4) {
+    //            if (httpRequest.status === 200) {
+    //                var data = JSON.parse(httpRequest.responseText);
+    //                if (callback) callback(data);
+    //            }
+    //        }
+    //    };
+    //    httpRequest.open('GET', path);
+    //    httpRequest.send();
+    //}
 
-    function GetSavedList() {
-        fetchJsonFile('/OfflineList.json', function (data) {
-            console.log("data "+data);
-   
 
-            var dataRepaired = testS.replace("[\"", "");
-            dataRepaired = dataRepaired.replace(/\",\"/g, '<input type=checkbox> <br/>  ');
-            dataRepaired = dataRepaired.replace("\"]", "<input type=checkbox>");
-            console.log("data "+dataRepaired);
-            
-            var showData = document.getElementById("ShowData");
-            showData.innerHTML = dataRepaired;
+    //function GetSavedList() {
+    //    fetchJsonFile('/OfflineList.json', function (data) {
+    //        console.log("data " + data);
+    //        var ShowData = document.getElementById("ShowData");
 
+
+    //        var test4 = JSON.stringify(data);
+
+
+    //        console.log("test4="+test4);
+    //        var dataRepaired = test4.replace("[\"", "<div class='col'><input type=button value='Bought' onclick='Bought(this)'>");
+    //        dataRepaired = dataRepaired.replace(/\",\"/g, "</div><div class='col'><input type=button value='Bought' onclick='Bought(this)'>");
+    //        dataRepaired = dataRepaired.replace("\"]", "</div>");
+    //        console.log("data "+dataRepaired);
+
+    //        var showData = document.getElementById("ShowData");
+    //        showData.innerHTML = dataRepaired;
+
+    //    }
+
+    //    )
+    //};
+
+    //function Bought() {
+
+
+
+    //}
+
+    //const itemsList = ["item1", "item2", "item3"];
+    //caches.open('PAnetwork').then((cache) => {
+    //    cache.add("/OfflineList.json");
+    //}).catch((err) => {
+    //    console.log(err)
+    //})
+
+    var example1 = new Vue({
+        el: '#example-1',
+        data: {
+            items: [
+                { message: 'Foo' },
+                { message: 'Bar' }
+            ]
         }
-        
-    )};
+    })
 
 
+
+    fetch("/OffflineList.json", {
+        method: "POST",
+        body: `json=${JSON.stringify(itemsList)}`,
+    })
+        .then((response) => response.json())
+        .then((jsonData) => {
+            console.log(jsonData)
+            const ul = document.getElementById("lista1");
+            console.log(ul);
+            for (const [index, item] of jsonData.entries()) {
+                console.log(index, item)
+                ul.appendChild(createListItem(index, item));
+            }
+        })
+    //.catch((error) => {
+    //  console.log(error)
+    //})
+
+    function createListItem(index, item) {
+        const li = document.createElement('li');
+        li.setAttribute('class', index);
+        li.innerHTML = li.innerHTML + item;
+        return li;
+    }
 </script>

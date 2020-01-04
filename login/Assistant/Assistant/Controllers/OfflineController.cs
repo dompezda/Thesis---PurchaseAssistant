@@ -11,12 +11,14 @@ using Newtonsoft.Json;
 
 namespace Assistant.Controllers
 {
+    
     public class OfflineController : Controller
     {
     
         [HttpPost]
         public async Task<IActionResult> GetList(int GetListId)
         {
+            
             List<string> Products = new List<string>();
             List<string> currentList = new List<string>();
             using (var db = new ApplicationDbContext())
@@ -36,16 +38,15 @@ namespace Assistant.Controllers
             string json = JsonConvert.SerializeObject(currentList);
             string path = "./wwwroot/OfflineList.json";
 
-            //System.IO.File.WriteAllText(path, json);
             if(System.IO.File.Exists(path))
             {
-
+                
                 await System.IO.File.WriteAllTextAsync(path, string.Empty);
-                await FileWriteAsync(path, json);
+                
+                await System.IO.File.WriteAllTextAsync(path, json);
+                
+                //await FileWriteAsync(path, json);
             }
-            //System.IO.File.Delete(filePath);
-            //System.IO.File.Create(filePath);
-            //return await System.IO.File.WriteAllText(filePath, text);
 
             return View(Products);
         }

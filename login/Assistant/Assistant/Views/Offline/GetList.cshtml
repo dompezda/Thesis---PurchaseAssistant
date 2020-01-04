@@ -12,14 +12,19 @@
     </h4>
 
 
-    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
-</div>
+    </div>
 @foreach (var item in Model)
 {
     <br />
     @item
 
 }
+<br /> <br />
+       <div class="row">
+           <input type="button" class="btn-primary" onclick="location.href = '@Url.Action("Main_menu", "Home")', fetchJsonFile('/OfflineList.json')" value="Potwierdz" style="margin-bottom:3px; width:120px; margin-left:10%;" />
+           <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Select_list_to_save_offline", "Progressive")'" value="Cofnij" style="margin-bottom:3px; width:120px; margin-left:10%;" />
+           
+       </div>
 
 
 

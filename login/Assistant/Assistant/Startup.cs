@@ -51,6 +51,7 @@ namespace Assistant
                 Strategy = ServiceWorkerStrategy.NetworkFirst,
                 RoutesToPreCache = "/OfflineList.json",
                 OfflineRoute = "/SavedOfflineList.html",
+                CacheId="PAnetwork"
 
 
 
