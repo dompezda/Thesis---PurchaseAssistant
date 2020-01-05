@@ -2,116 +2,127 @@
     <title>Zapisana lista</title>
 </head>
 <body>
-    <!--onload="GetSavedList()"-->
     <h4>No internet Access</h4>
     <br />
 
     <h4>Last Saved List</h4>
 
-    <!--<div id="ShowData"></div>
-    <h4> Already bought</h4>
-    <div id="ReadProducts"></div>-->
 
+    <div id="app">
+        <h2>Lista vue:</h2>
+        <ol>
+            <li v-for="item in items">
+                <label>
+                    <input type="checkbox"
+                           v-on:change="toggle(item)"
+                           v-bind:checked="item.Done">
 
-    <h3> Lista vue test</h3>
-    <ul id="example-1">
-        <li v-for="item in items">
-            {{item.message}}
-        </li>
-    </ul>
-
-    <h3> Lista 1</h3>
-    <ul id="lista1"></ul>
+                    <del v-if="item.Done">
+                        {{ item.Name}}
+                    </del>
+                    <span v-else>
+                        {{ item.Name }}
+                    </span>
+                </label>
+            </li>
+        </ol>
+    </div>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
 <script>
-    //function fetchJsonFile(path, callback) {
-    //    var httpRequest = new XMLHttpRequest();
-    //    httpRequest.onreadystatechange = function () {
-    //        if (httpRequest.readyState === 4) {
-    //            if (httpRequest.status === 200) {
-    //                var data = JSON.parse(httpRequest.responseText);
-    //                if (callback) callback(data);
-    //            }
-    //        }
-    //    };
-    //    httpRequest.open('GET', path);
-    //    httpRequest.send();
-    //}
-
-
-    //function GetSavedList() {
-    //    fetchJsonFile('/OfflineList.json', function (data) {
-    //        console.log("data " + data);
-    //        var ShowData = document.getElementById("ShowData");
-
-
-    //        var test4 = JSON.stringify(data);
-
-
-    //        console.log("test4="+test4);
-    //        var dataRepaired = test4.replace("[\"", "<div class='col'><input type=button value='Bought' onclick='Bought(this)'>");
-    //        dataRepaired = dataRepaired.replace(/\",\"/g, "</div><div class='col'><input type=button value='Bought' onclick='Bought(this)'>");
-    //        dataRepaired = dataRepaired.replace("\"]", "</div>");
-    //        console.log("data "+dataRepaired);
-
-    //        var showData = document.getElementById("ShowData");
-    //        showData.innerHTML = dataRepaired;
-
-    //    }
-
-    //    )
-    //};
-
-    //function Bought() {
+    var objArray = [];
+    async function fetchItems() {
+        fetch('/OfflineList.json').then(Response => {
+            return Response.json();
+        }).then(data => {
 
 
 
-    //}
+            
+            for (var i = 0; i < data.length; i++) {
+            var newObj = { Name: data[i].Name, ID: data[i].ID, Done: data[i].Done };
 
-    //const itemsList = ["item1", "item2", "item3"];
-    //caches.open('PAnetwork').then((cache) => {
-    //    cache.add("/OfflineList.json");
-    //}).catch((err) => {
-    //    console.log(err)
-    //})
+            objArray.push(newObj);
 
-    var example1 = new Vue({
-        el: '#example-1',
+                    }
+            if (objArray.length != 0) {
+                        console.log('have some items');
+            }
+
+           
+            console.log(objArray);
+    
+        return objArray;   
+        }).catch(err => {
+            console.log(err);
+        })
+        
+    }
+    new Vue({
+        el: "#app",
         data: {
             items: [
-                { message: 'Foo' },
-                { message: 'Bar' }
+                
             ]
-        }
-    })
-
-
-
-    fetch("/OffflineList.json", {
-        method: "POST",
-        body: `json=${JSON.stringify(itemsList)}`,
-    })
-        .then((response) => response.json())
-        .then((jsonData) => {
-            console.log(jsonData)
-            const ul = document.getElementById("lista1");
-            console.log(ul);
-            for (const [index, item] of jsonData.entries()) {
-                console.log(index, item)
-                ul.appendChild(createListItem(index, item));
+        },
+        created() {
+            this.getItems();
+        },
+        methods: {
+            toggle: function (item) {
+                item.Done = !item.Done
+            },
+            getItems: async function () {
+                this.items = await fetchItems();
+                this.items = objArray;
             }
-        })
-    //.catch((error) => {
-    //  console.log(error)
-    //})
+        }
+    });
+  
+        
+        
 
-    function createListItem(index, item) {
-        const li = document.createElement('li');
-        li.setAttribute('class', index);
-        li.innerHTML = li.innerHTML + item;
-        return li;
-    }
 </script>
+<style>
+
+
+li {
+  margin: 8px 0;
+}
+
+h2 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+del {
+  color: rgba(0, 0, 0, 0.3);
+}
+</style>
+
+    <!--console.log("test czy dziala console log");
+
+
+    fetchJsonFile('/OfflineList.json', function (data) {
+        return Promise.resolve(data);
+        });-->
+
+
+
+
+
+
+
+
+<!--var ShowData = document.getElementById("ShowData");
+           console.log(data);
+           console.log("test 100000");
+           var objArray = [];
+
+           for (var i = 0; i < 3; i++) {
+               var newObj = { Name: data[i].Name, ID: data[i].ID, done: false };
+
+               objArray.push(newObj);
+               console.log(newObj);
+           }-->

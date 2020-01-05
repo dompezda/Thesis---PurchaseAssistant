@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assistant.Data;
+using Assistant.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -30,12 +31,20 @@ namespace Assistant.Controllers
                     //Products.Add(db.Products.Where(x => x.Id == ProdId).Select(w => w.Name).Take(1).ToString());
                 }
             }
-
+            List<OfflineProduct> ListToCache = new List<OfflineProduct>();
             JsonSerializer serializer = new JsonSerializer();
+            for (int i = 0; i < currentList.Count; i++)
+            {
+                var Prod = new OfflineProduct();
+                Prod.ID = i;
+                Prod.Name = currentList[i];
+                Prod.Done = false;
+                ListToCache.Add(Prod);
+            }
+           
 
 
-
-            string json = JsonConvert.SerializeObject(currentList);
+            string json = JsonConvert.SerializeObject(ListToCache);
             string path = "./wwwroot/OfflineList.json";
 
             if(System.IO.File.Exists(path))
