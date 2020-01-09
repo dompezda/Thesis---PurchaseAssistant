@@ -2,14 +2,11 @@
     <title>Zapisana lista</title>
 </head>
 <body>
-    <h4>No internet Access</h4>
-    <br />
-
     <h4>Last Saved List</h4>
 
 
     <div id="app">
-        <h2>Lista vue:</h2>
+        <h2>List vue:</h2>
         <ol>
             <li v-for="item in items">
                 <label>
@@ -31,39 +28,37 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
+    var getList = localStorage.getItem("IdSavedList");
+
     var objArray = [];
     async function fetchItems() {
-        fetch('/OfflineList.json').then(Response => {
+        fetch('/Offline/GetList/' + getList).then(Response => {
             return Response.json();
+
         }).then(data => {
+            console.log(data);
+            var test = JSON.parse(data);
+            for (var i = 0; i < test.length; i++) {
+                console.log(data);
+                var newObj = { Name: test[i].Name, ID: test[i].ID, Done: test[i].Done };
 
-
-
-            
-            for (var i = 0; i < data.length; i++) {
-            var newObj = { Name: data[i].Name, ID: data[i].ID, Done: data[i].Done };
-
-            objArray.push(newObj);
-
-                    }
+                objArray.push(newObj);
+            }
             if (objArray.length != 0) {
-                        console.log('have some items');
+                console.log('have some items');
             }
 
-           
-            console.log(objArray);
-    
-        return objArray;   
+            return objArray;
         }).catch(err => {
             console.log(err);
         })
-        
+
     }
     new Vue({
         el: "#app",
         data: {
             items: [
-                
+
             ]
         },
         created() {
@@ -74,55 +69,28 @@
                 item.Done = !item.Done
             },
             getItems: async function () {
+                //fetch(data).then(Response => Response.json()).then(data => this.items = data).catch(err => console.log(err));
                 this.items = await fetchItems();
                 this.items = objArray;
             }
         }
     });
-  
-        
-        
 
 </script>
 <style>
 
 
-li {
-  margin: 8px 0;
-}
+    li {
+        margin: 8px 0;
+    }
 
-h2 {
-  font-weight: bold;
-  margin-bottom: 15px;
-}
+    h2 {
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
 
-del {
-  color: rgba(0, 0, 0, 0.3);
-}
+    del {
+        color: rgba(0, 0, 0, 0.3);
+    }
 </style>
 
-    <!--console.log("test czy dziala console log");
-
-
-    fetchJsonFile('/OfflineList.json', function (data) {
-        return Promise.resolve(data);
-        });-->
-
-
-
-
-
-
-
-
-<!--var ShowData = document.getElementById("ShowData");
-           console.log(data);
-           console.log("test 100000");
-           var objArray = [];
-
-           for (var i = 0; i < 3; i++) {
-               var newObj = { Name: data[i].Name, ID: data[i].ID, done: false };
-
-               objArray.push(newObj);
-               console.log(newObj);
-           }-->

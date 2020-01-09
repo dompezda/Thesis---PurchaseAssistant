@@ -14,6 +14,7 @@ using Assistant.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebEssentials.AspNetCore.Pwa;
+using Microsoft.AspNetCore.Routing;
 
 namespace Assistant
 {
@@ -48,13 +49,10 @@ namespace Assistant
             {
                 RegisterServiceWorker = true,
                 RegisterWebmanifest = false,
-                Strategy = ServiceWorkerStrategy.NetworkFirst,
-                RoutesToPreCache = "/OfflineList.json",
+                Strategy = ServiceWorkerStrategy.NetworkFirst,                
                 OfflineRoute = "/SavedOfflineList.html",
-                CacheId="PAnetwork"
 
-
-
+                
 
             }); ;
 
@@ -92,7 +90,15 @@ namespace Assistant
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                //routes.MapRoute(
+                //    name: "offline",
+                //    template: "{controller}/{action}/{id}",
+                //    defaults: new { controller = "Offline", action = "GetList"}
+                //    );
+
             });
+            
         }
     }
 }

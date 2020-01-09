@@ -190,6 +190,7 @@ C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\n
 C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.dll
 C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.pdb
 C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.csproj.CopyComplete
-C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Progressive\Select_list_to_save_offline.cshtml.g.cs
 C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\OfflineList.json
-C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\GetList.cshtml.g.cs
+C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\Select_list_to_save_offline.cshtml.g.cs
+C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\DisplayOfflineList.cshtml.g.cs
+C:\Users\domin\Documents\GitHub\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\OfflineListChoice.cshtml.g.cs
