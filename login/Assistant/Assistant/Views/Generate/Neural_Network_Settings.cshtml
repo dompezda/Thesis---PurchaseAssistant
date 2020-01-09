@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Neural_Network_Settings";
+}
+
+<h1>Ustawienie Sieci Neuronowej</h1>
+
+<form asp-controller="Generate" asp-action="NeuralNetwork" method="post">
+    Podaj ilość dni, z której sieć ma pobrać listy:
+    <br /><input type="text" pattern="[0-9]+" name="Days" style="margin-bottom:3px; width:200px; margin-left:20%;" value="60" />
+    <div class="row mt-3"></div>
+    <h4> Wybierz algorytm trenowania</h4>
+    <div>
+        <label>
+            <input type="checkbox" class="radio" value="1" name="alghoritm" /> Propagacja wsteczna
+        </label>
+        <div class="row mt-3"></div>
+        <label>
+            <input type="checkbox" class="radio" value="2" name="alghoritm" /> Zasada Manhattanu
+        </label>
+        <div class="row mt-3"></div>
+        <label>
+            <input type="checkbox" class="radio" value="3" name="alghoritm" /> Szybka propagacja
+        </label>
+        <div class="row mt-3"></div>
+        <label>
+            <input type="checkbox" class="radio" value="4" name="alghoritm" /> Sprężsyta Propagacja wsteczna
+        </label>
+        <div class="row mt-3"></div>
+        <label>
+            <input type="checkbox" class="radio" value="5" name="alghoritm" /> Trening Gradientowy
+        </label>
+        <div class="row mt-3"></div>
+        <label>
+            <input type="checkbox" class="radio" value="6" name="alghoritm" /> Levenberg
+        </label>
+        <div class="row mt-3"></div>
+    </div>
+
+
+
+    <div class="form-group">
+        <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Zatwierdz ustawienia</button>
+    </div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $("input:checkbox").on('click', function () {
+        var $box = $(this);
+        if ($box.is(":checked")) {
+            var group = "input:checkbox[name='" + $box.attr("name") + "']";
+
+            $(group).prop("checked", false);
+            $box.prop("checked", true);
+        } else {
+            $box.prop("checked", false);
+        }
+    });
+</script>
