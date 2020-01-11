@@ -257,11 +257,8 @@ C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\ListDisplay\Private_list_load.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\ListDisplay\Public_list_load.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\DisplayOfflineList.cshtml.g.cs
-C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\GetList.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\OfflineListChoice.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Offline\Select_list_to_save_offline.cshtml.g.cs
-C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Progressive\ProgressiveList.cshtml.g.cs
-C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Progressive\Select_list_to_save_offline.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Error.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_CookieConsentPartial.cshtml.g.cs
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_Layout.cshtml.g.cs
@@ -281,3 +278,4 @@ C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.pdb
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.csproj.CopyComplete
 C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Generate\Neural_Network_Settings.cshtml.g.cs
+C:\Users\domin\Desktop\inzynierka\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Razor\Views\Home\ShoppingView.cshtml.g.cs

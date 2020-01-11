@@ -25,7 +25,7 @@
         <div class="row">
             <form asp-controller="Home" asp-action="Edit_List" method="post">
                 <input type="hidden" name="list.Id" value="@list.Id" />
-                <button class="btn-primary" style="margin-bottom:3px; width:100px;height:30px; margin-left:15px">Edytuj</button>
+                <button class="btn-primary"  style="margin-bottom:3px; width:100px;height:30px; margin-left:15px">Edytuj</button>
             </form>
 
             <form asp-controller="Home" asp-action="DeleteList" method="post">
@@ -33,9 +33,9 @@
                 <button class="btn-primary" style="margin-bottom:3px; width:100px; height:30px; margin-left:20px">Usuń</button>
             </form>
 
-            <form asp-controller="Home" asp-action="ListToShop" method="post">
-                <input type="hidden" name="list.Id" value="@list.Id" />
-                <button class="btn-primary" style="margin-bottom:3px; width:100px;height:30px; margin-left:20px">Wybierz</button>
+            <form asp-controller="Home" asp-action="ShoppingView" method="post">
+                <input type="hidden" name="id" value="@list.Id" />
+                <button class="btn-primary" onclick="GetListId(@list.Id)" style="margin-bottom:3px; width:100px;height:30px; margin-left:20px">Wybierz</button>
             </form>
         </div>
         <div class="card">
@@ -54,5 +54,10 @@
     }
 </div>
 
-
+<script>
+        function GetListId(Id) {
+        localStorage.setItem("IdSelectedList", Id);
+        sessionStorage.setItem("IdSelectedList", Id);
+        }
+</script>
 

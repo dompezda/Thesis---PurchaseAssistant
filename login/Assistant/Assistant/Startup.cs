@@ -82,6 +82,7 @@ namespace Assistant
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+          
             
             app.UseAuthentication();
 
@@ -91,11 +92,6 @@ namespace Assistant
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 
-                //routes.MapRoute(
-                //    name: "offline",
-                //    template: "{controller}/{action}/{id}",
-                //    defaults: new { controller = "Offline", action = "GetList"}
-                //    );
 
             });
             

@@ -15,6 +15,7 @@ using Encog.Neural.Networks.Training.Propagation.Resilient;
 using Encog.Neural.Networks.Training.Lma;
 using Encog.Util;
 using Encog.Util.Arrayutil;
+using Encog.ML.Data.Versatile;
 
 namespace Assistant.Controllers
 {
@@ -58,6 +59,10 @@ namespace Assistant.Controllers
             var network = new BasicNetwork();
             CreateNetwork(network);
 
+           
+            List<int> firstList = new List<int>();
+            List<int> secondList = new List<int>();
+            List<int> idealList = new List<int>();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int[] GetLists;
             DateTime Today = DateTime.Now;
@@ -66,8 +71,70 @@ namespace Assistant.Controllers
             {
                 GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o=>o.UserId==userId).OrderBy(w => w.CreateDate).Select(p => p.Id).ToArray();
             }
+            for (int i = 0; i < GetLists.Length-2; i++)
+            {
+                int IdFirst = GetLists[i];
+                using (var db = new ApplicationDbContext())
+                {
+                    firstList =db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(o => o.ProductId).ToList();
+                    secondList = db.ProductLists.Where(x => x.ListId == GetLists[i+1]).Select(o => o.ProductId).ToList();
+                    idealList = db.ProductLists.Where(x => x.ListId == GetLists[i+2]).Select(o => o.ProductId).ToList();
+                }
+
+                double[] inputIdealList = new double[idealList.Count];
+                double[] inputSecondList = new double[secondList.Count];
+                double[] inputFirstList = new double[firstList.Count];
 
 
+                for (int first = 0; first < firstList.Count-1; first++)
+                {
+                    inputFirstList[first] = Convert.ToDouble(firstList[first]);
+                }
+                for (int second = 0; second < secondList.Count-1; second++)
+                {
+                    inputSecondList[second] = Convert.ToDouble(firstList[second]);
+                }
+                for (int ideal = 0; ideal < idealList.Count-1; ideal++)
+                {
+                    inputIdealList[ideal] = Convert.ToDouble(firstList[ideal]);
+                }
+                BasicMLDataSet dataSet = new BasicMLDataSet();
+                
+                BasicMLData inputFirst = new BasicMLData(inputFirstList);
+                BasicMLData inputSecond = new BasicMLData(inputSecondList);
+                BasicMLData outputIdeal = new BasicMLData(inputIdealList);
+
+
+                
+                //BasicMLDataPair pair = new BasicMLDataPair();
+
+
+
+                dataSet.Add(inputFirst);
+                dataSet.Add(inputSecond);
+                
+                dataSet.Add(outputIdeal);
+                
+                
+                var train = new ResilientPropagation(network, dataSet, 0.001, 0.001);
+                int epoch = 1;
+                double trainError = 0.005;
+                do
+                {
+                    train.Iteration();
+                    if (epoch % 1000 == 0)
+                    {
+                        Console.WriteLine($"Epoch #{epoch} Error: {train.Error}");
+                    }
+                    epoch++;
+                }
+                while (train.Error > trainError);
+
+                Console.WriteLine($"Epoch #{epoch}");
+                train.FinishTraining();
+                
+                
+            }
 
 
 
@@ -121,7 +188,7 @@ namespace Assistant.Controllers
         public BasicNetwork CreateNetwork(BasicNetwork Network)
         {
             Network.AddLayer(new BasicLayer(null, true, 3));
-            Network.AddLayer(new BasicLayer(new ActivationSigmoid(), true, 15));
+            Network.AddLayer(new BasicLayer(new ActivationTANH(), true, 12));
             Network.AddLayer(new BasicLayer(new ActivationCompetitive(), true, 10));
             Network.Structure.FinalizeStructure();
             Network.Reset();
@@ -129,6 +196,7 @@ namespace Assistant.Controllers
             return Network;
         }
 
+        
 
 
 

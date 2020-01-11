@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 
 namespace Assistant.Controllers
 {
+    
     public class HomeController : Controller
     {
 
@@ -405,18 +406,18 @@ namespace Assistant.Controllers
         {
             List ToCheck = new List();
 
-            string checkPrivate=null;
+            string checkPrivate = null;
             using (var db = new ApplicationDbContext())
             {
                 if (id == null)
                 {
-                    id=currentlyEditedListId;
+                    id = currentlyEditedListId;
                 }
                 var count = db.ProductLists.Where(x => x.ListId == currentlyEditedListId)
                 .Select(x => x.Product).Count();
-                
-             
-                if (currentlyEditedListId != null && isPrivateList==true)
+
+
+                if (currentlyEditedListId != null && isPrivateList == true)
                 {
                     ToCheck = db.Lists.Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
                     checkPrivate = db.Lists.Where(x => x.Id == currentlyEditedListId).Select(w => w.UserId).ToString();
@@ -424,8 +425,8 @@ namespace Assistant.Controllers
                 }
 
             }
-            
-            if (checkPrivate!=null)
+
+            if (checkPrivate != null)
             {
                 return RedirectToAction(nameof(Private_list_load));
             }
@@ -616,10 +617,45 @@ namespace Assistant.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [HttpGet("{id}")]
 
-       
+        [Route("[controller]/[action]/{id?}")]
+        //[Route("{id}")]
+        public JsonResult ListToShop(int id)
+        {
+
+            List<string> Products = new List<string>();
+            List<string> currentList = new List<string>();
+            using (var db = new ApplicationDbContext())
+            {
+                currentList = db.ProductLists.Where(w => w.ListId == id).Select(p => p.Product.Name).ToList();
+                foreach (var item in currentList)
+                {
+                    Products.Add(item);
+                }
+            }
+            List<OfflineProduct> ListToCache = new List<OfflineProduct>();
+            JsonSerializer serializer = new JsonSerializer();
+            for (int i = 0; i < currentList.Count; i++)
+            {
+                var Prod = new OfflineProduct();
+                Prod.ID = i;
+                Prod.Name = currentList[i];
+                Prod.Done = false;
+                ListToCache.Add(Prod);
+            }
+            string json = JsonConvert.SerializeObject(ListToCache);
+
+            return Json(json);
+        }
 
 
+        [HttpPost]
+        public IActionResult ShoppingView(int id)
+        {
+            var JsonData = ListToShop(id);
 
+            return View(JsonData);
+        }
     }
 }

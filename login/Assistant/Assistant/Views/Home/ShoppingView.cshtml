@@ -28,13 +28,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    var getList=localStorage.getItem("IdSavedList");
+    var getList=localStorage.getItem("IdSelectedList");
 
     var objArray = [];
     async function fetchItems() {
-        fetch('/Offline/GetList/'+getList).then(Response => {
+        fetch('/Home/ListToShop/'+getList).then(Response => {
             return Response.json();
             
+
         }).then(data => {
             console.log(data);
             var test = JSON.parse(data);
@@ -92,3 +93,4 @@
         color: rgba(0, 0, 0, 0.3);
     }
 </style>
+
