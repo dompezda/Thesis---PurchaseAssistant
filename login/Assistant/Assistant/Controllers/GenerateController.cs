@@ -17,6 +17,7 @@ using Encog.Util;
 using Encog.Util.Arrayutil;
 using Encog.ML.Data.Versatile;
 
+
 namespace Assistant.Controllers
 {
     public class GenerateController : Controller
@@ -48,18 +49,22 @@ namespace Assistant.Controllers
 
             return View();
         }
+        public IActionResult NeuralNetworkTest()
+        {
+            NeuralNetwork();
+            return View();
+        }
 
-
-
+        //, string alghoritm
         [HttpPost]
-        public IActionResult NeuralNetwork(int Days, string alghoritm)
+        public IActionResult NeuralNetwork(int Days = 60)
         {
             //[wiersze][kolumny]
 
             var network = new BasicNetwork();
             CreateNetwork(network);
 
-           
+
             List<int> firstList = new List<int>();
             List<int> secondList = new List<int>();
             List<int> idealList = new List<int>();
@@ -69,53 +74,73 @@ namespace Assistant.Controllers
 
             using (var db = new ApplicationDbContext())
             {
-                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o=>o.UserId==userId).OrderBy(w => w.CreateDate).Select(p => p.Id).ToArray();
+                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).ToArray();
             }
-            for (int i = 0; i < GetLists.Length-2; i++)
+            for (int i = 0; i < GetLists.Length - 2; i++)
             {
                 int IdFirst = GetLists[i];
                 using (var db = new ApplicationDbContext())
                 {
-                    firstList =db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(o => o.ProductId).ToList();
-                    secondList = db.ProductLists.Where(x => x.ListId == GetLists[i+1]).Select(o => o.ProductId).ToList();
-                    idealList = db.ProductLists.Where(x => x.ListId == GetLists[i+2]).Select(o => o.ProductId).ToList();
+                    firstList = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(o => o.ProductId).ToList();
+                    secondList = db.ProductLists.Where(x => x.ListId == GetLists[i + 1]).Select(o => o.ProductId).ToList();
+                    idealList = db.ProductLists.Where(x => x.ListId == GetLists[i + 2]).Select(o => o.ProductId).ToList();
                 }
 
-                double[] inputIdealList = new double[idealList.Count];
-                double[] inputSecondList = new double[secondList.Count];
-                double[] inputFirstList = new double[firstList.Count];
+                List<int> GetAllIds = new List<int>();
+
+                GetAllIds = firstList.Concat(secondList).Concat(idealList).ToList();
+
+                int[] AllProductsIds = GetAllIds.Select(x => x).Distinct().ToArray();
+                double[,] InputArray = new double[AllProductsIds.Count(), 2];
+                double[] CheckArray = new double[AllProductsIds.Count()];
+
+                double[,] OutputArray = new double[AllProductsIds.Count(), 2];
+                for (int p = 0; p < AllProductsIds.Count(); p++)
+                {
+                    var test = AllProductsIds[p];
+                    var test2 = Convert.ToDouble(test);
+                    CheckArray[p] = test2;
+                    InputArray[p, 0] = test2;
+                    OutputArray[p, 0] = test2;
+                }
+
+                for (int o = 0; o < AllProductsIds.Count(); o++)
+                {
+                    if (firstList.Contains((int)InputArray[o, 0]) || secondList.Contains((int)InputArray[o, 0])) {
+                        InputArray[o, 1] = 1;
+                    }
+                    else
+                    {
+                        InputArray[o, 1] = 0;
+                    }
+                }
+                for (int w = 0; w < AllProductsIds.Count(); w++)
+                {
+                    if (idealList.Contains((int)InputArray[w, 0]))
+                    {
+                        OutputArray[w, 1] = 1;
+
+                    }
+                    else
+                    {
+                        OutputArray[w, 1] = 0;
+                    }
+                }
 
 
-                for (int first = 0; first < firstList.Count-1; first++)
-                {
-                    inputFirstList[first] = Convert.ToDouble(firstList[first]);
-                }
-                for (int second = 0; second < secondList.Count-1; second++)
-                {
-                    inputSecondList[second] = Convert.ToDouble(firstList[second]);
-                }
-                for (int ideal = 0; ideal < idealList.Count-1; ideal++)
-                {
-                    inputIdealList[ideal] = Convert.ToDouble(firstList[ideal]);
-                }
                 BasicMLDataSet dataSet = new BasicMLDataSet();
-                
-                BasicMLData inputFirst = new BasicMLData(inputFirstList);
-                BasicMLData inputSecond = new BasicMLData(inputSecondList);
-                BasicMLData outputIdeal = new BasicMLData(inputIdealList);
 
 
-                
-                //BasicMLDataPair pair = new BasicMLDataPair();
+                //BasicMLData inputFirst = new BasicMLData(inputFirstList);
+                //BasicMLData inputSecond = new BasicMLData(inputSecondList);
+                //BasicMLData outputIdeal = new BasicMLData(inputIdealList);
 
 
 
-                dataSet.Add(inputFirst);
-                dataSet.Add(inputSecond);
-                
-                dataSet.Add(outputIdeal);
-                
-                
+
+
+                //train 
+
                 var train = new ResilientPropagation(network, dataSet, 0.001, 0.001);
                 int epoch = 1;
                 double trainError = 0.005;
@@ -132,12 +157,12 @@ namespace Assistant.Controllers
 
                 Console.WriteLine($"Epoch #{epoch}");
                 train.FinishTraining();
-                
-                
+
+
             }
 
 
-
+        
 
                 return RedirectToAction("Create_list","Home");
         }
