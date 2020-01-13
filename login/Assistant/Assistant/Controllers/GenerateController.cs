@@ -61,21 +61,37 @@ namespace Assistant.Controllers
         {
             //[wiersze][kolumny]
 
-            var network = new BasicNetwork();
-            CreateNetwork(network);
-
-
             List<int> firstList = new List<int>();
             List<int> secondList = new List<int>();
             List<int> idealList = new List<int>();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int[] GetLists;
             DateTime Today = DateTime.Now;
-
             using (var db = new ApplicationDbContext())
             {
                 GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).ToArray();
+             
             }
+            List<int> ProductsAmount = new List<int>();
+            for (int i = 0; i < GetLists.Length; i++)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var testorino = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(w => w.ProductId).ToArray();
+                    for (int w = 0; w < testorino.Length; w++)
+                    {
+                        ProductsAmount.Add(testorino[w]);
+                    }
+                }
+
+            }
+            var OutPutAmount = ProductsAmount.Select(x => x).Distinct();
+            var network = new BasicNetwork();
+            CreateNetwork(network, OutPutAmount.Count());
+
+
+
+           
             for (int i = 0; i < GetLists.Length - 2; i++)
             {
                 int IdFirst = GetLists[i];
@@ -162,9 +178,29 @@ namespace Assistant.Controllers
             }
 
 
-        
+            
+            List<int> FirstOfLastsList = new List<int>();
+            List<int> LastList = new List<int>();
+            using (var db = new ApplicationDbContext())
+            {
+                FirstOfLastsList = db.ProductLists.Where(x => x.ListId == GetLists[GetLists.Length - 2]).Select(o => o.ProductId).ToList();
+                LastList = db.ProductLists.Where(x => x.ListId == GetLists[GetLists.Length - 1]).Select(o => o.ProductId).ToList();
 
-                return RedirectToAction("Create_list","Home");
+            }
+            BasicMLData input = new BasicMLData(2);
+            var FinalCheck = LastList.Concat(FirstOfLastsList);
+
+            var FinalIntInput = FinalCheck.Select(x => x).Distinct();
+            double[] FinalInput = new double[FinalIntInput.Count()];
+            for (int i = 0; i < FinalIntInput.Count(); i++)
+            {
+                FinalInput[i] = Convert.ToDouble(FinalIntInput.ElementAt(i));
+            }
+            BasicMLData FinalMLData = new BasicMLData(FinalInput);
+            var test0001=network.Compute(FinalMLData);
+
+
+            return RedirectToAction("Create_list","Home");
         }
 
 
@@ -210,11 +246,10 @@ namespace Assistant.Controllers
             return deNormalizedArray;
         }
 
-        public BasicNetwork CreateNetwork(BasicNetwork Network)
+        public BasicNetwork CreateNetwork(BasicNetwork Network, int OutputNeurons)
         {
             Network.AddLayer(new BasicLayer(null, true, 3));
-            Network.AddLayer(new BasicLayer(new ActivationTANH(), true, 12));
-            Network.AddLayer(new BasicLayer(new ActivationCompetitive(), true, 10));
+            Network.AddLayer(new BasicLayer(new ActivationCompetitive(), true, OutputNeurons));
             Network.Structure.FinalizeStructure();
             Network.Reset();
 
