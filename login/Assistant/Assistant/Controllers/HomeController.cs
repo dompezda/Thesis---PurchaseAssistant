@@ -23,7 +23,7 @@ namespace Assistant.Controllers
         public static ListViewModel listViewModel = new ListViewModel();
         public int IdList = 0;
         public string listName;
-        public bool isPrivateList;
+        public static bool isPrivateList;
         public static int? currentlyEditedListId = 0;
         public static int IdToShare = 0;
 
@@ -426,7 +426,7 @@ namespace Assistant.Controllers
 
             }
 
-            if (checkPrivate != null)
+            if (isPrivateList==true)
             {
                 return RedirectToAction(nameof(Private_list_load));
             }

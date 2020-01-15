@@ -16,7 +16,8 @@ using Encog.Neural.Networks.Training.Lma;
 using Encog.Util;
 using Encog.Util.Arrayutil;
 using Encog.ML.Data.Versatile;
-
+using Encog.Neural.Networks.Training.Propagation.Back;
+using Encog.Neural.Networks.Training.Propagation.Manhattan;
 
 namespace Assistant.Controllers
 {
@@ -157,7 +158,7 @@ namespace Assistant.Controllers
 
                 //train 
 
-                var train = new ResilientPropagation(network, dataSet, 0.001, 0.001);
+                var train = new ManhattanPropagation(network, dataSet,0.00001);
                 int epoch = 1;
                 double trainError = 0.005;
                 do
@@ -187,7 +188,7 @@ namespace Assistant.Controllers
                 LastList = db.ProductLists.Where(x => x.ListId == GetLists[GetLists.Length - 1]).Select(o => o.ProductId).ToList();
 
             }
-            BasicMLData input = new BasicMLData(2);
+            
             var FinalCheck = LastList.Concat(FirstOfLastsList);
 
             var FinalIntInput = FinalCheck.Select(x => x).Distinct();
@@ -198,8 +199,36 @@ namespace Assistant.Controllers
             }
             BasicMLData FinalMLData = new BasicMLData(FinalInput);
             var test0001=network.Compute(FinalMLData);
+            double[,] GetOutPutIdsPhaseOne = new double[2, test0001.Count];
+            for (int i = 0; i < test0001.Count; i++)
+            {
 
+                GetOutPutIdsPhaseOne[0, i] = OutPutAmount.ElementAt(i);
+                GetOutPutIdsPhaseOne[1, i] = test0001[i];
 
+            }
+            double RequiredWeight = 0.43;
+            List<int> OutPutProd = new List<int>();
+            for (int i = 0; i < OutPutAmount.Count(); i++)
+            {
+                if (GetOutPutIdsPhaseOne[1, i] >= RequiredWeight)
+                {
+                    OutPutProd.Add((int)GetOutPutIdsPhaseOne[0, i]);
+                }
+            }
+            var test00NN = OutPutProd;
+            List<string> GeneratedList = new List<string>();
+            using (var db = new ApplicationDbContext())
+            {
+
+                for (int i = 0; i < test00NN.Count; i++)
+                {
+                    var Prod = db.Products.Where(x => x.Id == test00NN[i]).Select(w => w.Name).FirstOrDefault().ToString();
+                    GeneratedList.Add(Prod);
+                    
+                }
+            }
+           
             return RedirectToAction("Create_list","Home");
         }
 
@@ -248,8 +277,9 @@ namespace Assistant.Controllers
 
         public BasicNetwork CreateNetwork(BasicNetwork Network, int OutputNeurons)
         {
-            Network.AddLayer(new BasicLayer(null, true, 3));
-            Network.AddLayer(new BasicLayer(new ActivationCompetitive(), true, OutputNeurons));
+            Network.AddLayer(new BasicLayer(null, true, 4));
+            Network.AddLayer(new BasicLayer(new ActivationSoftMax(), true, OutputNeurons));
+            Network.AddLayer(new BasicLayer(new ActivationTANH(), false, OutputNeurons));
             Network.Structure.FinalizeStructure();
             Network.Reset();
 
