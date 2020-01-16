@@ -56,11 +56,11 @@ namespace Assistant.Controllers
         }
 
 
-        //, string alghoritm
+        
         [HttpPost]
         public IActionResult NeuralNetwork(int Days, int alghoritm)
         {
-            //[wiersze][kolumny]
+            
 
 
             List<int> firstList = new List<int>();
@@ -174,10 +174,7 @@ namespace Assistant.Controllers
 
                 //train 
                 var train = new Backpropagation(network, trainingSet);
-                //var train = new ManhattanPropagation(network, dataSet, 0.0001);
 
-
-                //
 
                 int epoch = 1;
                 double trainError = 0.005;
@@ -266,24 +263,6 @@ namespace Assistant.Controllers
 
             return Network;
         }
-        //train methods
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public List<double> GetAllProducts(List<int> input1,List<int> input2, List<int> output)
         {
@@ -325,23 +304,6 @@ namespace Assistant.Controllers
             }
             return deNormalizedArray;
         }
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
 
         public IActionResult Neural_Network_Settings()
         {
@@ -398,8 +360,7 @@ namespace Assistant.Controllers
                     var dateToCheck = EndDate.AddDays(interval);
                     if (dateToCheck >= TodayMinus && dateToCheck <= TodayPlus)
                     {
-                        //var prodId = db.Products.Where(x => x.Name == itemToAdd.Name).Select(t=>t.Id).FirstOrDefault();
-                        //var prodName= db.Products.Where(x => x.Name == itemToAdd.Name).Select(w => w.Name).FirstOrDefault();
+                        
                         currentlyEditedList = db.Lists.Single(x => x.Id == currentlyEditedListId);
                         if (User.FindFirstValue(ClaimTypes.NameIdentifier) != null)
                         {
