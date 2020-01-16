@@ -18,12 +18,16 @@ using Encog.Util.Arrayutil;
 using Encog.ML.Data.Versatile;
 using Encog.Neural.Networks.Training.Propagation.Back;
 using Encog.Neural.Networks.Training.Propagation.Manhattan;
+using Encog.Neural.Networks.Training.Propagation.Quick;
+using Encog.Neural.Networks.Training.Propagation.SCG;
 
 namespace Assistant.Controllers
 {
     public class GenerateController : Controller
     {
-       
+
+
+
         public static int? currentlyEditedListId = null;
         public IActionResult Index()
         {
@@ -50,17 +54,14 @@ namespace Assistant.Controllers
 
             return View();
         }
-        public IActionResult NeuralNetworkTest()
-        {
-            NeuralNetwork();
-            return View();
-        }
+
 
         //, string alghoritm
         [HttpPost]
-        public IActionResult NeuralNetwork(int Days = 60)
+        public IActionResult NeuralNetwork(int Days, int alghoritm)
         {
             //[wiersze][kolumny]
+
 
             List<int> firstList = new List<int>();
             List<int> secondList = new List<int>();
@@ -86,16 +87,16 @@ namespace Assistant.Controllers
                 }
 
             }
-            var OutPutAmount = ProductsAmount.Select(x => x).Distinct();
+            var OutPutIDs = ProductsAmount.Select(x => x).Distinct().ToList();
             var network = new BasicNetwork();
-            CreateNetwork(network, OutPutAmount.Count());
+            CreateNetwork(network, OutPutIDs);
 
 
 
            
             for (int i = 0; i < GetLists.Length - 2; i++)
             {
-                int IdFirst = GetLists[i];
+               //GetData from DB
                 using (var db = new ApplicationDbContext())
                 {
                     firstList = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(o => o.ProductId).ToList();
@@ -104,61 +105,80 @@ namespace Assistant.Controllers
                 }
 
                 List<int> GetAllIds = new List<int>();
+                List<int> InputIDs = new List<int>();
+                List<int> IdealIDs = new List<int>();
+                IdealIDs = idealList.ToList();
+                InputIDs = firstList.Concat(secondList).Select(x=>x).Distinct().ToList();
+                
 
-                GetAllIds = firstList.Concat(secondList).Concat(idealList).ToList();
+                //Products for iteration
+                //OutPutIDs
+                double[][] InputArray = new double[2][];
+                double[][] OutputArray = new double[2][];
 
-                int[] AllProductsIds = GetAllIds.Select(x => x).Distinct().ToArray();
-                double[,] InputArray = new double[AllProductsIds.Count(), 2];
-                double[] CheckArray = new double[AllProductsIds.Count()];
-
-                double[,] OutputArray = new double[AllProductsIds.Count(), 2];
-                for (int p = 0; p < AllProductsIds.Count(); p++)
+                for (int k = 0; k < InputArray.Length; k++)
                 {
-                    var test = AllProductsIds[p];
-                    var test2 = Convert.ToDouble(test);
-                    CheckArray[p] = test2;
-                    InputArray[p, 0] = test2;
-                    OutputArray[p, 0] = test2;
+                    InputArray[k] = new double[OutPutIDs.Count()];
+                    OutputArray[k] = new double[OutPutIDs.Count()];
+
                 }
 
-                for (int o = 0; o < AllProductsIds.Count(); o++)
+                for (int j = 0; j < OutPutIDs.Count; j++)
                 {
-                    if (firstList.Contains((int)InputArray[o, 0]) || secondList.Contains((int)InputArray[o, 0])) {
-                        InputArray[o, 1] = 1;
-                    }
-                    else
-                    {
-                        InputArray[o, 1] = 0;
-                    }
+                    InputArray[0][j] = OutPutIDs[j];
+                    OutputArray[0][j] = OutPutIDs[j];
                 }
-                for (int w = 0; w < AllProductsIds.Count(); w++)
+                for (int l = 0; l < OutPutIDs.Count; l++)
                 {
-                    if (idealList.Contains((int)InputArray[w, 0]))
+                    InputArray[1][l] = 0;
+                    OutputArray[1][l] = 0;
+                }
+                for (int k = 0; k < OutPutIDs.Count; k++)
+                {
+                   var jeden= InputArray[0][k];
+                    for (int l = 0; l < InputIDs.Count; l++)
                     {
-                        OutputArray[w, 1] = 1;
-
+                        if (InputIDs[l] == InputArray[0][k])
+                        {
+                            var dwa = InputIDs[l];
+                            InputArray[1][k] = 1;
+                        }
                     }
-                    else
-                    {
-                        OutputArray[w, 1] = 0;
-                    }
+                   
                 }
 
 
-                BasicMLDataSet dataSet = new BasicMLDataSet();
+                for (int k = 0; k < OutPutIDs.Count; k++)
+                {
+                    var jeden = OutputArray[0][k];
+                    for (int l = 0; l < IdealIDs.Count; l++)
+                    {
+                        if (IdealIDs[l] == OutputArray[0][k])
+                        {
+                            var dwa = InputIDs[l];
+                            OutputArray[1][k] = 1;
+                        }
+                    }
+
+                }
 
 
-                //BasicMLData inputFirst = new BasicMLData(inputFirstList);
-                //BasicMLData inputSecond = new BasicMLData(inputSecondList);
-                //BasicMLData outputIdeal = new BasicMLData(inputIdealList);
+
+                var testowowoow = InputArray;
+                var wowoowwtest = OutputArray;
 
 
 
+                var trainingSet = new BasicMLDataSet(InputArray,OutputArray);
 
 
                 //train 
+                var train = new Backpropagation(network, trainingSet);
+                //var train = new ManhattanPropagation(network, dataSet, 0.0001);
 
-                var train = new ManhattanPropagation(network, dataSet,0.00001);
+
+                //
+
                 int epoch = 1;
                 double trainError = 0.005;
                 do
@@ -179,7 +199,7 @@ namespace Assistant.Controllers
             }
 
 
-            
+            //Generate new List
             List<int> FirstOfLastsList = new List<int>();
             List<int> LastList = new List<int>();
             using (var db = new ApplicationDbContext())
@@ -197,19 +217,22 @@ namespace Assistant.Controllers
             {
                 FinalInput[i] = Convert.ToDouble(FinalIntInput.ElementAt(i));
             }
+
+
             BasicMLData FinalMLData = new BasicMLData(FinalInput);
             var test0001=network.Compute(FinalMLData);
+
             double[,] GetOutPutIdsPhaseOne = new double[2, test0001.Count];
             for (int i = 0; i < test0001.Count; i++)
             {
 
-                GetOutPutIdsPhaseOne[0, i] = OutPutAmount.ElementAt(i);
+                GetOutPutIdsPhaseOne[0, i] = OutPutIDs.ElementAt(i);
                 GetOutPutIdsPhaseOne[1, i] = test0001[i];
 
             }
             double RequiredWeight = 0.43;
             List<int> OutPutProd = new List<int>();
-            for (int i = 0; i < OutPutAmount.Count(); i++)
+            for (int i = 0; i < OutPutIDs.Count(); i++)
             {
                 if (GetOutPutIdsPhaseOne[1, i] >= RequiredWeight)
                 {
@@ -231,6 +254,34 @@ namespace Assistant.Controllers
            
             return RedirectToAction("Create_list","Home");
         }
+
+
+        public BasicNetwork CreateNetwork(BasicNetwork Network, List<int> OutputNeurons)
+        {
+            Network.AddLayer(new BasicLayer(null, true, OutputNeurons.Count));
+            Network.AddLayer(new BasicLayer(new ActivationSoftMax(), true, OutputNeurons.Count));
+            Network.AddLayer(new BasicLayer(new ActivationTANH(), false, OutputNeurons.Count));
+            Network.Structure.FinalizeStructure();
+            Network.Reset();
+
+            return Network;
+        }
+        //train methods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -275,16 +326,15 @@ namespace Assistant.Controllers
             return deNormalizedArray;
         }
 
-        public BasicNetwork CreateNetwork(BasicNetwork Network, int OutputNeurons)
-        {
-            Network.AddLayer(new BasicLayer(null, true, 4));
-            Network.AddLayer(new BasicLayer(new ActivationSoftMax(), true, OutputNeurons));
-            Network.AddLayer(new BasicLayer(new ActivationTANH(), false, OutputNeurons));
-            Network.Structure.FinalizeStructure();
-            Network.Reset();
 
-            return Network;
-        }
+
+
+
+
+
+
+
+
 
         
 
@@ -379,3 +429,34 @@ namespace Assistant.Controllers
         }
     }
 }
+
+
+
+
+//BasicMLData inputSecond = new BasicMLData(inputSecondList);
+
+//BasicMLDataSet dataSet = new BasicMLDataSet(InputArray,OutputArray);               //switch (alghoritm)
+// {
+
+//     case 1:
+//         var trainBackPropagation = new Backpropagation(network, dataSet, 0.3, 0.2);
+//         break;
+//     case 2: //XX
+//         var trainManhattan = new ManhattanPropagation(network, dataSet, 0.00001);
+//         break;
+//     case 3:
+//         var trainQuickProp = new QuickPropagation(network, dataSet);
+//         break;
+//     case 4:
+//         var trainResilientProp = new ResilientPropagation(network, dataSet);
+//         break;
+//     case 5:
+//         var trainSCG = new ScaledConjugateGradient(network, dataSet);
+//         break;
+//     case 6:
+//         var trainLavenberg = new LevenbergMarquardtTraining(network, dataSet);
+//         break;
+//     case 7:
+//         var trainCompetetive = new QuickPropagation(network, dataSet);
+//         break;
+// }
