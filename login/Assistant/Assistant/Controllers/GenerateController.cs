@@ -79,17 +79,18 @@ namespace Assistant.Controllers
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    var testorino = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(w => w.ProductId).ToArray();
-                    for (int w = 0; w < testorino.Length; w++)
+                    var Products = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(w => w.ProductId).ToArray();
+                    for (int w = 0; w < Products.Length; w++)
                     {
-                        ProductsAmount.Add(testorino[w]);
+                        ProductsAmount.Add(Products[w]);
                     }
                 }
 
             }
+            int average = ProductsAmount.Count / GetLists.Length;
             var OutPutIDs = ProductsAmount.Select(x => x).Distinct().ToList();
             var network = new BasicNetwork();
-            CreateNetwork(network, OutPutIDs);
+            CreateNetwork(network, OutPutIDs,average);
 
 
 
@@ -150,46 +151,41 @@ namespace Assistant.Controllers
 
                 for (int k = 0; k < OutPutIDs.Count; k++)
                 {
-                    var jeden = OutputArray[0][k];
+                    
                     for (int l = 0; l < IdealIDs.Count; l++)
                     {
                         if (IdealIDs[l] == OutputArray[0][k])
                         {
-                            var dwa = InputIDs[l];
+                           
                             OutputArray[1][k] = 1;
                         }
                     }
 
                 }
 
-
-
-                var testowowoow = InputArray;
-                var wowoowwtest = OutputArray;
-
-
-
                 var trainingSet = new BasicMLDataSet(InputArray,OutputArray);
 
 
                 //train 
-                var train = new Backpropagation(network, trainingSet);
+                var train = new ManhattanPropagation(network, trainingSet,0.00001);
 
-
+                
                 int epoch = 1;
+                System.Diagnostics.Debug.WriteLine("test rozpoczety "+epoch);
                 double trainError = 0.005;
                 do
                 {
                     train.Iteration();
                     if (epoch % 1000 == 0)
                     {
-                        Console.WriteLine($"Epoch #{epoch} Error: {train.Error}");
+                        System.Diagnostics.Debug.WriteLine($"Epoch #{epoch} Error: {train.Error}");
+                        trainError++;
                     }
                     epoch++;
                 }
                 while (train.Error > trainError);
 
-                Console.WriteLine($"Epoch #{epoch}");
+                System.Diagnostics.Debug.WriteLine($"Epoch #{epoch}");
                 train.FinishTraining();
 
 
@@ -214,10 +210,23 @@ namespace Assistant.Controllers
             {
                 FinalInput[i] = Convert.ToDouble(FinalIntInput.ElementAt(i));
             }
+            double[] FinalInputTest = new double[OutPutIDs.Count];
+            for (int i = 0; i < OutPutIDs.Count; i++)
+            {
+                for (int q = 0; q < FinalInput.Length; q++)
+                {
+                    if (OutPutIDs[i] == FinalInput[q])
+                    {
+                        FinalInputTest[i] = 1;
+                    }
+                }
+            }
 
 
-            BasicMLData FinalMLData = new BasicMLData(FinalInput);
-            var test0001=network.Compute(FinalMLData);
+            BasicMLData FinalMLData = new BasicMLData(FinalInputTest);
+            IMLData test0001=network.Compute(FinalMLData);
+            var test0001111 = test0001[0];
+            
 
             double[,] GetOutPutIdsPhaseOne = new double[2, test0001.Count];
             for (int i = 0; i < test0001.Count; i++)
@@ -227,15 +236,44 @@ namespace Assistant.Controllers
                 GetOutPutIdsPhaseOne[1, i] = test0001[i];
 
             }
-            double RequiredWeight = 0.43;
+            //double RequiredWeight = 0.43;
             List<int> OutPutProd = new List<int>();
             for (int i = 0; i < OutPutIDs.Count(); i++)
             {
-                if (GetOutPutIdsPhaseOne[1, i] >= RequiredWeight)
+                if (GetOutPutIdsPhaseOne[1, i] !=1)
                 {
                     OutPutProd.Add((int)GetOutPutIdsPhaseOne[0, i]);
                 }
             }
+            double[] FinalTest = new double[test0001.Count];
+            for (int i = 0; i < test0001.Count; i++)
+            {
+                FinalTest[i] = test0001[i];
+            }
+
+
+
+            var Inputt=FinalTest.OrderBy(x => x).Take(10).ToArray(); ;
+            List<string> testo = new List<string>();
+            
+            for (int i = 0; i < OutPutIDs.Count; i++)
+            {
+                for (int k = 0; k < Inputt.Length; k++)
+                {
+
+                    if (GetOutPutIdsPhaseOne[1, i] == Inputt[k])
+                    {
+                        using (var db = new ApplicationDbContext())
+                        {
+                            var Prod = db.Products.Where(x => x.Id == GetOutPutIdsPhaseOne[0, i]).Select(w => w.Name).FirstOrDefault().ToString();
+                            testo.Add(Prod);
+                            
+                        }
+                    }
+                }
+               
+            }
+
             var test00NN = OutPutProd;
             List<string> GeneratedList = new List<string>();
             using (var db = new ApplicationDbContext())
@@ -253,11 +291,12 @@ namespace Assistant.Controllers
         }
 
 
-        public BasicNetwork CreateNetwork(BasicNetwork Network, List<int> OutputNeurons)
+        public BasicNetwork CreateNetwork(BasicNetwork Network, List<int> OutputNeurons,int average)
         {
             Network.AddLayer(new BasicLayer(null, true, OutputNeurons.Count));
             Network.AddLayer(new BasicLayer(new ActivationSoftMax(), true, OutputNeurons.Count));
-            Network.AddLayer(new BasicLayer(new ActivationTANH(), false, OutputNeurons.Count));
+            Network.AddLayer(new BasicLayer(new ActivationTANH(), true, OutputNeurons.Count));
+            Network.AddLayer(new BasicLayer(new ActivationLOG(), false, OutputNeurons.Count));
             Network.Structure.FinalizeStructure();
             Network.Reset();
 
