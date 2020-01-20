@@ -27,8 +27,8 @@ namespace Assistant.Controllers
     {
 
 
-
-        public static int? currentlyEditedListId = null;
+       
+        public static int? currentlyEditedListId;
         public IActionResult Index()
         {
             return View();
@@ -60,9 +60,9 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult NeuralNetwork(int Days, int alghoritm)
         {
-            
 
 
+            List NewGeneratedList = new List();
             List<int> firstList = new List<int>();
             List<int> secondList = new List<int>();
             List<int> idealList = new List<int>();
@@ -94,10 +94,10 @@ namespace Assistant.Controllers
 
 
 
-           
+
             for (int i = 0; i < GetLists.Length - 2; i++)
             {
-               //GetData from DB
+                //GetData from DB
                 using (var db = new ApplicationDbContext())
                 {
                     firstList = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(o => o.ProductId).ToList();
@@ -109,8 +109,8 @@ namespace Assistant.Controllers
                 List<int> InputIDs = new List<int>();
                 List<int> IdealIDs = new List<int>();
                 IdealIDs = idealList.ToList();
-                InputIDs = firstList.Concat(secondList).Select(x=>x).Distinct().ToList();
-                
+                InputIDs = firstList.Concat(secondList).Select(x => x).Distinct().ToList();
+
 
                 //Products for iteration
                 //OutPutIDs
@@ -136,7 +136,7 @@ namespace Assistant.Controllers
                 }
                 for (int k = 0; k < OutPutIDs.Count; k++)
                 {
-                   var jeden= InputArray[0][k];
+                    var jeden = InputArray[0][k];
                     for (int l = 0; l < InputIDs.Count; l++)
                     {
                         if (InputIDs[l] == InputArray[0][k])
@@ -145,33 +145,33 @@ namespace Assistant.Controllers
                             InputArray[1][k] = 1;
                         }
                     }
-                   
+
                 }
 
 
                 for (int k = 0; k < OutPutIDs.Count; k++)
                 {
-                    
+
                     for (int l = 0; l < IdealIDs.Count; l++)
                     {
                         if (IdealIDs[l] == OutputArray[0][k])
                         {
-                           
+
                             OutputArray[1][k] = 1;
                         }
                     }
 
                 }
 
-                var trainingSet = new BasicMLDataSet(InputArray,OutputArray);
+                var trainingSet = new BasicMLDataSet(InputArray, OutputArray);
 
 
                 //train 
-                var train = new ManhattanPropagation(network, trainingSet,0.00001);
+                var train = new ManhattanPropagation(network, trainingSet, 0.00001);
 
-                
+
                 int epoch = 1;
-                System.Diagnostics.Debug.WriteLine("test rozpoczety "+epoch);
+                System.Diagnostics.Debug.WriteLine("test rozpoczety " + epoch);
                 double trainError = 0.005;
                 do
                 {
@@ -201,7 +201,7 @@ namespace Assistant.Controllers
                 LastList = db.ProductLists.Where(x => x.ListId == GetLists[GetLists.Length - 1]).Select(o => o.ProductId).ToList();
 
             }
-            
+
             var FinalCheck = LastList.Concat(FirstOfLastsList);
 
             var FinalIntInput = FinalCheck.Select(x => x).Distinct();
@@ -224,9 +224,9 @@ namespace Assistant.Controllers
 
 
             BasicMLData FinalMLData = new BasicMLData(FinalInputTest);
-            IMLData test0001=network.Compute(FinalMLData);
+            IMLData test0001 = network.Compute(FinalMLData);
             var test0001111 = test0001[0];
-            
+
 
             double[,] GetOutPutIdsPhaseOne = new double[2, test0001.Count];
             for (int i = 0; i < test0001.Count; i++)
@@ -240,7 +240,7 @@ namespace Assistant.Controllers
             List<int> OutPutProd = new List<int>();
             for (int i = 0; i < OutPutIDs.Count(); i++)
             {
-                if (GetOutPutIdsPhaseOne[1, i] !=1)
+                if (GetOutPutIdsPhaseOne[1, i] != 1)
                 {
                     OutPutProd.Add((int)GetOutPutIdsPhaseOne[0, i]);
                 }
@@ -253,9 +253,9 @@ namespace Assistant.Controllers
 
 
 
-            var Inputt=FinalTest.OrderBy(x => x).Take(10).ToArray(); ;
+            var Inputt = FinalTest.OrderBy(x => x).Take(average).ToArray();
             List<string> testo = new List<string>();
-            
+
             for (int i = 0; i < OutPutIDs.Count; i++)
             {
                 for (int k = 0; k < Inputt.Length; k++)
@@ -267,27 +267,42 @@ namespace Assistant.Controllers
                         {
                             var Prod = db.Products.Where(x => x.Id == GetOutPutIdsPhaseOne[0, i]).Select(w => w.Name).FirstOrDefault().ToString();
                             testo.Add(Prod);
-                            
+
                         }
                     }
                 }
-               
+
             }
 
-            var test00NN = OutPutProd;
-            List<string> GeneratedList = new List<string>();
+            string alghoritmName = "";
             using (var db = new ApplicationDbContext())
             {
-
-                for (int i = 0; i < test00NN.Count; i++)
+                
+                NewGeneratedList.UserId= User.FindFirstValue(ClaimTypes.NameIdentifier);
+                NewGeneratedList.Name = "Lista wygenerowana przez algorytm " + alghoritmName;
+                db.Lists.Add(NewGeneratedList);
+                db.SaveChanges();
+                ProductList ProdListToAdd = new ProductList();
+                for (int i = 0; i < testo.Count; i++)
                 {
-                    var Prod = db.Products.Where(x => x.Id == test00NN[i]).Select(w => w.Name).FirstOrDefault().ToString();
-                    GeneratedList.Add(Prod);
-                    
-                }
+                    var Prod = db.Products.Where(x => x.Name == testo[i]).Select(w => w.Id).FirstOrDefault();
+
+
+                ProdListToAdd.ListId = NewGeneratedList.Id;
+                ProdListToAdd.ProductId = Prod;
+                db.ProductLists.Add(ProdListToAdd);
+                db.SaveChanges();
+
+
+
             }
-           
-            return RedirectToAction("Create_list","Home");
+        }
+
+
+
+
+          
+                return RedirectToAction("Create_list","Home",new { id = NewGeneratedList.Id });
         }
 
 

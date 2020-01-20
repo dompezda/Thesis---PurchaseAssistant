@@ -24,7 +24,7 @@ namespace Assistant.Controllers
         public int IdList = 0;
         public string listName;
         public static bool isPrivateList;
-        public static int? currentlyEditedListId = 0;
+        public static int? currentlyEditedListId;
         public static int IdToShare = 0;
 
         protected ApplicationDbContext ApplicationDbContext { get; set; }

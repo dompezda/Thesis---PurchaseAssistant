@@ -16,6 +16,7 @@ namespace Assistant.Models
         public List()
         {
             CreateDate = DateTime.Now;
+
         }
 
     }
