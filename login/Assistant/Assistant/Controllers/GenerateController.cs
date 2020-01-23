@@ -10,6 +10,8 @@ using Encog.Neural.Networks.Layers;
 using Encog.Engine.Network.Activation;
 using Encog.ML.Data;
 using Encog.ML.Data.Basic;
+using System.Threading;
+using System.Diagnostics;
 using Encog.ML.Train;
 using Encog.Neural.Networks.Training.Propagation.Resilient;
 using Encog.Neural.Networks.Training.Lma;
@@ -66,12 +68,14 @@ namespace Assistant.Controllers
             List<int> firstList = new List<int>();
             List<int> secondList = new List<int>();
             List<int> idealList = new List<int>();
+            string alghoritmName = "";
+            Stopwatch sw = new Stopwatch();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int[] GetLists;
             DateTime Today = DateTime.Now;
             using (var db = new ApplicationDbContext())
             {
-                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).ToArray();
+                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).Take(20).ToArray();
              
             }
             List<int> ProductsAmount = new List<int>();
@@ -166,10 +170,44 @@ namespace Assistant.Controllers
                 var trainingSet = new BasicMLDataSet(InputArray, OutputArray);
 
 
+
                 //train 
-                var train = new ManhattanPropagation(network, trainingSet, 0.00001);
+                dynamic train= new Backpropagation(network, trainingSet, 0.3, 0.2); ;
+
+             
+                switch (alghoritm)
+                {
+
+                    case 1: //XX
+                        train = new Backpropagation(network, trainingSet, 0.3, 0.2);
+                        alghoritmName = "Propagację wsteczną";
+                        break;
+                    case 2: //XX
+                        train = new ManhattanPropagation(network, trainingSet, 0.00001);
+                        alghoritmName = "Propagację Manhattan";
+                        break;
+                    case 3:
+                        train = new QuickPropagation(network, trainingSet);
+                        alghoritmName = "Szybką propagację";
+                        break;
+                    case 4:
+                        train = new ResilientPropagation(network, trainingSet);
+                        alghoritmName = "Propagację sprężystą";
+                        break;
+                    case 5:
+                        train = new ScaledConjugateGradient(network, trainingSet);
+                        alghoritmName = "Metodę gradientu sprężonego";
+                        break;
+                    case 6:
+                        train = new LevenbergMarquardtTraining(network, trainingSet);
+                        break;
+                }
 
 
+
+
+                
+                sw.Start();
                 int epoch = 1;
                 System.Diagnostics.Debug.WriteLine("test rozpoczety " + epoch);
                 double trainError = 0.005;
@@ -274,24 +312,30 @@ namespace Assistant.Controllers
 
             }
 
-            string alghoritmName = "";
+          
             using (var db = new ApplicationDbContext())
             {
                 
                 NewGeneratedList.UserId= User.FindFirstValue(ClaimTypes.NameIdentifier);
                 NewGeneratedList.Name = "Lista wygenerowana przez algorytm " + alghoritmName;
+                
                 db.Lists.Add(NewGeneratedList);
                 db.SaveChanges();
                 ProductList ProdListToAdd = new ProductList();
+                var Prods = new List<int>();
                 for (int i = 0; i < testo.Count; i++)
                 {
                     var Prod = db.Products.Where(x => x.Name == testo[i]).Select(w => w.Id).FirstOrDefault();
-
-
+                    
+                    
+                    if (!Prods.Contains(Prod)) 
+                    { 
                 ProdListToAdd.ListId = NewGeneratedList.Id;
                 ProdListToAdd.ProductId = Prod;
                 db.ProductLists.Add(ProdListToAdd);
-                db.SaveChanges();
+                    }
+                    Prods.Add(Prod);
+                    db.SaveChanges();
 
 
 
@@ -301,8 +345,10 @@ namespace Assistant.Controllers
 
 
 
-          
-                return RedirectToAction("Create_list","Home",new { id = NewGeneratedList.Id });
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"czas: {sw.Elapsed}");
+
+            return RedirectToAction("Create_list","Home",new { id = NewGeneratedList.Id });
         }
 
 
@@ -450,28 +496,4 @@ namespace Assistant.Controllers
 
 //BasicMLData inputSecond = new BasicMLData(inputSecondList);
 
-//BasicMLDataSet dataSet = new BasicMLDataSet(InputArray,OutputArray);               //switch (alghoritm)
-// {
-
-//     case 1:
-//         var trainBackPropagation = new Backpropagation(network, dataSet, 0.3, 0.2);
-//         break;
-//     case 2: //XX
-//         var trainManhattan = new ManhattanPropagation(network, dataSet, 0.00001);
-//         break;
-//     case 3:
-//         var trainQuickProp = new QuickPropagation(network, dataSet);
-//         break;
-//     case 4:
-//         var trainResilientProp = new ResilientPropagation(network, dataSet);
-//         break;
-//     case 5:
-//         var trainSCG = new ScaledConjugateGradient(network, dataSet);
-//         break;
-//     case 6:
-//         var trainLavenberg = new LevenbergMarquardtTraining(network, dataSet);
-//         break;
-//     case 7:
-//         var trainCompetetive = new QuickPropagation(network, dataSet);
-//         break;
-// }
+//BasicMLDataSet dataSet = new BasicMLDataSet(InputArray,OutputArray);             

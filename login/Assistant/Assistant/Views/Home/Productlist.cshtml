@@ -2,38 +2,40 @@
 @{
     ViewData["Title"] = "ProductList";
 }
-<h2>Lista produktow</h2>
 
-<table class="table">
-    <thead>
-       
-          
-                @Html.DisplayNameFor(model => model)
-         
-     
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @*<form action="DeleteProduct" method="post">
+    <div class="col-12">
+        <h2>Lista produktow</h2>
+    </div>
+@foreach (var item in Model)
+{
 
-                        <input type="hidden" name="product.Id" value="@item.Id" />
-                        @item.Name
+    @*<form action="DeleteProduct" method="post">
 
-                        <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
-                    </form>*@
+            <input type="hidden" name="product.Id" value="@item.Id" />
+            @item.Name
 
-                    <form asp-controller="Home" asp-action="DeleteProduct" method="post">
-                        <input type="hidden" name="IdToRemove" value="@item.Id" />
-                        @item.Name
+            <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
+        </form>*@
 
-                        <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
-                    </form>
-                  
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <form asp-controller="Home" asp-action="DeleteProduct" method="post">
+        <div class="container">
+
+            <div class="row">
+                <div class=" col-10" >
+
+                    <input type="hidden" name="IdToRemove" value="@item.Id" />
+                    @item.Name
+                </div>
+                <div class="col-2" >
+                    <button type="submit" style=""><img src="~/cross.png" width="15" height="15" /></button>
+                    
+                </div>
+              
+            </div>
+        </div>
+    </form>
+
+
+}
+
+

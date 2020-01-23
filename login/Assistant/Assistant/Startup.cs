@@ -51,6 +51,7 @@ namespace Assistant
                 RegisterWebmanifest = false,
                 Strategy = ServiceWorkerStrategy.NetworkFirst,                
                 OfflineRoute = "/SavedOfflineList.html",
+                RoutesToPreCache="/Home/Main_Menu.html"
 
                 
 
