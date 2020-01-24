@@ -37,9 +37,6 @@
     }
     else
     {
-        @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Zaloguj</a>
-        <input type="button" class="btn-primary" asp-area="Identity" asp-page="/Account/Login" value="Zapisz listę do trybu offline" style=" margin-bottom:3px; width:215px" />
-        <div class="row mt-3"></div>*@
         <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Edytuj liste zakupów" style="margin-bottom:3px; width:215px" />
     }
 
