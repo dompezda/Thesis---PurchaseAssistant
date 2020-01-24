@@ -2,9 +2,8 @@
   "name": "Assistant",
   "short_name": "PA",
   "description": "DP",
-  "start_url": ".",
-  "scope": "./",
-  "display": "standalone",
+  "start_url": "https://192.168.0.184:45456/",
+  "display": "fullscreen",
   "orientation": "any",
   "lang": "Polish",
   "icons": [

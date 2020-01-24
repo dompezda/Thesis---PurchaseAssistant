@@ -49,13 +49,12 @@ namespace Assistant
             {
                 RegisterServiceWorker = true,
                 RegisterWebmanifest = false,
-                Strategy = ServiceWorkerStrategy.NetworkFirst,                
-                OfflineRoute = "/SavedOfflineList.html",
-                RoutesToPreCache="/Home/Main_Menu.html"
+                Strategy = ServiceWorkerStrategy.NetworkFirst,
+                OfflineRoute = "/SavedOfflineList.html"
 
-                
 
-            }); ;
+
+            }) ; ;
 
 
 
