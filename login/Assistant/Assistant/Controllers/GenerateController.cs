@@ -75,7 +75,7 @@ namespace Assistant.Controllers
             DateTime Today = DateTime.Now;
             using (var db = new ApplicationDbContext())
             {
-                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).Take(25).ToArray();
+                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).Take(5).ToArray();
              
             }
             List<int> ProductsAmount = new List<int>();
