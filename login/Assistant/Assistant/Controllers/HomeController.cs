@@ -434,7 +434,7 @@ namespace Assistant.Controllers
             {
                 return RedirectToAction(nameof(Public_list_load));
             }
-            //return RedirectToAction(nameof(Load_List));
+            
         }
 
 
@@ -507,7 +507,7 @@ namespace Assistant.Controllers
                     newList.UserId = NewUserId;
 
                     newList.Name = "Lista udostepniona przez " + friendMail;
-                    //newList.Name = "list shared by " + friendMail;
+                    
                     db.Lists.Add(newList);
                     db.SaveChanges();
                     var getProd = db.ProductLists.Where(x => x.ListId == IdToShare).Select(w => w.ProductId);
@@ -620,7 +620,7 @@ namespace Assistant.Controllers
         [HttpGet("{id}")]
 
         [Route("[controller]/[action]/{id?}")]
-        //[Route("{id}")]
+       
         public JsonResult ListToShop(int id)
         {
 

@@ -178,11 +178,11 @@ namespace Assistant.Controllers
                 switch (alghoritm)
                 {
 
-                    case 1: //XX
+                    case 1: 
                         train = new Backpropagation(network, trainingSet, 0.3, 0.2);
                         alghoritmName = "Propagację wsteczną";
                         break;
-                    case 2: //XX
+                    case 2: 
                         train = new ManhattanPropagation(network, trainingSet, 0.00001);
                         alghoritmName = "Propagację Manhattan";
                         break;
@@ -274,7 +274,7 @@ namespace Assistant.Controllers
                 GetOutPutIdsPhaseOne[1, i] = test0001[i];
 
             }
-            //double RequiredWeight = 0.43;
+            
             List<int> OutPutProd = new List<int>();
             for (int i = 0; i < OutPutIDs.Count(); i++)
             {
@@ -480,12 +480,12 @@ namespace Assistant.Controllers
 
             if (currentlyEditedList.UserId == null)
             {
-                return RedirectToAction("Public_list_load", "Home");//productList }
+                return RedirectToAction("Public_list_load", "Home");
 
             }
             else
             {
-                return RedirectToAction("Private_list_load", "Home");//productList }
+                return RedirectToAction("Private_list_load", "Home");
             }
         }
     }
@@ -493,7 +493,4 @@ namespace Assistant.Controllers
 
 
 
-
-//BasicMLData inputSecond = new BasicMLData(inputSecondList);
-
-//BasicMLDataSet dataSet = new BasicMLDataSet(InputArray,OutputArray);             
+        

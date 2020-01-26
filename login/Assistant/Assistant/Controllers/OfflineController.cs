@@ -45,7 +45,7 @@ namespace Assistant.Controllers
         }
 
         [HttpGet("{id}")]
-        //[Route("{id}")]
+        
         public JsonResult GetList(int id)
         {
             SavedList = id;

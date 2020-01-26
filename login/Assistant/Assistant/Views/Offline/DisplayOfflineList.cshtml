@@ -9,18 +9,20 @@
         <h2>List vue:</h2>
         <ol>
             <li v-for="item in items">
-                <label>
-                    <input type="checkbox"
-                           v-on:change="toggle(item)"
-                           v-bind:checked="item.Done">
+                
+                    <label>
+                        <input type="checkbox"
+                               v-on:change="toggle(item)"
+                               v-bind:checked="item.Done">
 
-                    <del v-if="item.Done">
-                        {{ item.Name}}
-                    </del>
-                    <span v-else>
-                        {{ item.Name }}
-                    </span>
-                </label>
+                        <del v-if="item.Done">
+                            {{ item.Name}}
+                        </del>
+                        <span v-else>
+                            {{ item.Name }}
+                        </span>
+                    </label>
+                    
             </li>
         </ol>
     </div>

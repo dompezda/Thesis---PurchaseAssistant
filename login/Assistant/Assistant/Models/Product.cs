@@ -12,14 +12,12 @@ namespace Assistant.Models
         public string Name { get; set; }
         //public double Price { get; set; }
 
-        // public ICollection<Relation> Relations{ get; set; }
 
         public List<ProductList> ProductList { get; set; }
 
         public Product()
         {
-            // ProductID = Guid.NewGuid();
-            // Relations = new HashSet<Relation>();
+            
         }
     }
 }
