@@ -2,11 +2,11 @@
 @{
     ViewData["Title"] = "List_name";
 }
-    <div class="row">
-        <h4>Podaj Nazwe Listy</h4>
+<div class="row">
+    <h4>Podaj Nazwe Listy</h4>
 
-        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:37%;" />
-    </div>
+    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:37%;" />
+</div>
 <div class="row">
     <div class="col-md-4">
         <form asp-controller="Home" asp-action="Send_Name" method="post">
@@ -16,17 +16,24 @@
 
                 <input asp-for="Name" class="form-control" id="Name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-
+                <br />
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <div class="row">
-                        Lista prywatna
-                        <input id="IsPrivate" type="checkbox" asp-for="UserId" name="IsPrivate" />
+                    <span class="checkboxtext">
+                        <div class="row">
+                            <div class=" col-10">
 
-                    </div>
-                 }
-                </div>
-               
+                                Lista prywatna
+                            </div>
+                            <div class="col-2">
+                                <input id="IsPrivate" type="checkbox" asp-for="UserId" name="IsPrivate" />
+
+                            </div>
+                        </div>
+                    </span>
+                }
+            </div>
+
 
             <div class="form-group">
 
@@ -37,3 +44,21 @@
 
     </div>
 </div>
+<style>
+    input[type=checkbox] {
+        /* Double-sized Checkboxes */
+        -ms-transform: scale(2); /* IE */
+        -moz-transform: scale(2); /* FF */
+        -webkit-transform: scale(2); /* Safari and Chrome */
+        -o-transform: scale(2); /* Opera */
+        transform: scale(2);
+        padding: 10px;
+    }
+
+    /* Might want to wrap a span around your checkbox text */
+    .checkboxtext {
+        /* Checkbox text */
+        font-size: 110%;
+        display: inline;
+    }
+</style>

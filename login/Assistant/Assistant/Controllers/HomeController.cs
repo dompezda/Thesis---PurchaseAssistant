@@ -318,6 +318,7 @@ namespace Assistant.Controllers
         public IActionResult Edit_List(List list)
         {
             List listToEdit = new List();
+            
             using (var db = new ApplicationDbContext())
             {
                 listToEdit = db.Lists.Include(x => x.ProductList)
@@ -405,7 +406,8 @@ namespace Assistant.Controllers
         public IActionResult FinishList(int? id)
         {
             List ToCheck = new List();
-
+            string check = null;
+            string userId = null;
             string checkPrivate = null;
             using (var db = new ApplicationDbContext())
             {
@@ -413,9 +415,7 @@ namespace Assistant.Controllers
                 {
                     id = currentlyEditedListId;
                 }
-                var count = db.ProductLists.Where(x => x.ListId == currentlyEditedListId)
-                .Select(x => x.Product).Count();
-
+                
 
                 if (currentlyEditedListId != null && isPrivateList == true)
                 {
@@ -423,10 +423,19 @@ namespace Assistant.Controllers
                     checkPrivate = db.Lists.Where(x => x.Id == currentlyEditedListId).Select(w => w.UserId).ToString();
 
                 }
-
+                
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                //if(db.Lists.Where(x => x.Id == id).Select(w => w.UserId).FirstOrDefault().ToString()!=null)
+                //{ 
+                //check = db.Lists.Where(x => x.Id == id).Select(w => w.UserId).FirstOrDefault().ToString();
+                //}
+                //else
+                //{
+                //    check = null;
+                //}
             }
 
-            if (isPrivateList==true)
+            if (ToCheck.UserId != null)
             {
                 return RedirectToAction(nameof(Private_list_load));
             }
@@ -533,7 +542,7 @@ namespace Assistant.Controllers
             else
             {
 
-                ViewData["ErrorMessage"] = "mail niepoprawny lub nie isnieje w bazie";
+                ViewData["ErrorMessage"] = "Adres E-mail niepoprawny lub nie isnieje w bazie";
             }
             using (var db = new ApplicationDbContext())
             {
@@ -560,7 +569,7 @@ namespace Assistant.Controllers
                 else
                 {
                     var newListId = db.Lists.Last();
-                    var ToRemove = db.ProductLists.Where(n => n.ListId == newListId.Id).Where(p => p.ProductId == ProductToCheck.Id).FirstOrDefault();
+                    var ToRemove = db.ProductLists.Where(n => n.ListId == currentlyEditedListId).Where(p => p.ProductId == ProductToCheck.Id).FirstOrDefault();
                     db.Remove(ToRemove);
                     db.SaveChanges();
                 }

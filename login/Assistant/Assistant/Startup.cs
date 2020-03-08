@@ -51,10 +51,7 @@ namespace Assistant
                 RegisterWebmanifest = false,
                 Strategy = ServiceWorkerStrategy.NetworkFirst,
                 OfflineRoute = "/SavedOfflineList.html"
-
-
-
-            }) ; ;
+            });
 
 
 

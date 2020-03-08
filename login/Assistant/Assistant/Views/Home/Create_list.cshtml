@@ -41,7 +41,7 @@
                 <form asp-controller="Home" asp-action="ChangeType" method="post">
                     <input id="ListId" asp-for="@Model.productList.List.Id" name="ListId" hidden />
                     <input id="UserId" asp-for="@Model.productList.List.UserId" name="UserId" hidden />
-                    <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na prywatna</button>
+                    <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczną</button>
                 </form>
             }
             @if (User.Identity.IsAuthenticated && Model.productList.List.UserId != null)

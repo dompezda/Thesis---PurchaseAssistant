@@ -75,7 +75,7 @@ namespace Assistant.Controllers
             DateTime Today = DateTime.Now;
             using (var db = new ApplicationDbContext())
             {
-                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).Take(5).ToArray();
+                GetLists = db.Lists.Where(x => x.CreateDate >= Today.AddDays(-Days)).Where(o => o.UserId == userId).OrderBy(w => w.CreateDate).Select(p => p.Id).ToArray();
              
             }
             List<int> ProductsAmount = new List<int>();
@@ -180,23 +180,23 @@ namespace Assistant.Controllers
 
                     case 1: 
                         train = new Backpropagation(network, trainingSet, 0.3, 0.2);
-                        alghoritmName = "Propagację wsteczną";
+                        alghoritmName = "Propagacj wstecznej";
                         break;
                     case 2: 
                         train = new ManhattanPropagation(network, trainingSet, 0.00001);
-                        alghoritmName = "Propagację Manhattan";
+                        alghoritmName = "Propagacji Manhattan";
                         break;
                     case 3:
                         train = new QuickPropagation(network, trainingSet);
-                        alghoritmName = "Szybką propagację";
+                        alghoritmName = "Szybkiej propagacji";
                         break;
                     case 4:
                         train = new ResilientPropagation(network, trainingSet);
-                        alghoritmName = "Propagację sprężystą";
+                        alghoritmName = "Propagacji sprężystej";
                         break;
                     case 5:
                         train = new ScaledConjugateGradient(network, trainingSet);
-                        alghoritmName = "Metodę gradientu sprężonego";
+                        alghoritmName = "Metody gradientu sprężonego";
                         break;
                     case 6:
                         train = new LevenbergMarquardtTraining(network, trainingSet);
@@ -487,6 +487,78 @@ namespace Assistant.Controllers
             {
                 return RedirectToAction("Private_list_load", "Home");
             }
+        }
+
+        public IActionResult Ranking()
+        {
+            List NewGeneratedList = new List();
+            NewGeneratedList.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            NewGeneratedList.Name = "Lista wygenerowana przez Ranking";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<int> GetLists = new List<int>();
+            List<int> ProdsIDs = new List<int>();
+            List<int> ProdsAmount = new List<int>();
+            
+            using (var db = new ApplicationDbContext())
+            {
+                GetLists = db.Lists.Where(x => x.UserId == userId).Select(w => w.Id).ToList();
+                
+                for (int i = 0; i < GetLists.Count; i++)
+                {
+                    var Prod = db.ProductLists.Where(x => x.ListId == GetLists[i]).Select(w => w.ProductId).ToList();
+                    for (int w = 0; w < Prod.Count; w++)
+                    {
+                        if (!ProdsIDs.Contains(Prod[w]))
+                        {
+                            ProdsIDs.Add(Prod[w]);
+                        }
+                    }
+                    
+                }
+                int[,] GetRank = new int[2, ProdsIDs.Count];
+
+                for (int i = 0; i < ProdsIDs.Count; i++)
+                {
+                    GetRank[0, i] = ProdsIDs[i];
+                }
+
+                for (int i = 0; i < ProdsIDs.Count; i++)
+                {
+                    GetRank[1,i]=db.ProductLists.Where(x=>x.ProductId==ProdsIDs[i]).Count();
+                }
+                double sum = 0;
+                for (int i = 0; i < ProdsIDs.Count; i++)
+                {
+                    sum += GetRank[1, i];
+                }
+                double necessaryAmount = sum*2 / ProdsIDs.Count();
+                List<int> IDsToList = new List<int>();
+
+                for (int i = 0; i < ProdsIDs.Count; i++)
+                {
+                    if (GetRank[1, i] >= necessaryAmount)
+                    {
+                        IDsToList.Add(GetRank[0, i]);
+                    }
+                }
+                
+
+                db.Lists.Add(NewGeneratedList);
+                db.SaveChanges();
+                ProductList ProdListToAdd = new ProductList();
+                ProdListToAdd.ListId = NewGeneratedList.Id;
+                for (int i = 0; i < IDsToList.Count; i++)
+                {
+                    ProdListToAdd.ProductId = IDsToList[i];
+                    db.ProductLists.Add(ProdListToAdd);
+                    db.SaveChanges();
+                }
+
+                }
+
+
+
+                return RedirectToAction("Create_list", "Home", new { id = NewGeneratedList.Id });
         }
     }
 }
