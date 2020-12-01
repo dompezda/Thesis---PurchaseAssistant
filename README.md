@@ -1,0 +1,2 @@
+# Thesis---PurchaseAssistant
+praca
