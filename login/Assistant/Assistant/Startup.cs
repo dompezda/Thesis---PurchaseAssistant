@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebEssentials.AspNetCore.Pwa;
 using Microsoft.AspNetCore.Routing;
+using Assistant.Models;
 
 namespace Assistant
 {
@@ -38,7 +39,7 @@ namespace Assistant
             });
 
             services.AddEntityFrameworkSqlite().AddDbContext<ApplicationDbContext>();
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
            

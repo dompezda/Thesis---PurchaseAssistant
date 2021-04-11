@@ -84,10 +84,10 @@ namespace Assistant.Areas.Identity.Pages.Account.Manage
                 Email = email,
                 PhoneNumber = phoneNumber,
 
-                //ADDED
-                Home=user.Home,
-                Gender=user.Gender,
-                Salary=user.Salary
+                ////ADDED
+                //Home=user.Home,
+                //Gender=user.Gender,
+                //Salary=user.Salary
 
                 
             };
@@ -131,20 +131,20 @@ namespace Assistant.Areas.Identity.Pages.Account.Manage
                     throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
                 }
             }
-            //ADDED
-            if (Input.Home != user.Home)
-            {
-                user.Home = Input.Home;
-            }
+            ////ADDED
+            //if (Input.Home != user.Home)
+            //{
+            //    user.Home = Input.Home;
+            //}
 
-            if (Input.Gender != user.Gender)
-            {
-                user.Gender = Input.Gender;
-            }
-            if (Input.Salary != user.Salary)
-            {
-                user.Salary = Input.Salary;
-            }
+            //if (Input.Gender != user.Gender)
+            //{
+            //    user.Gender = Input.Gender;
+            //}
+            //if (Input.Salary != user.Salary)
+            //{
+            //    user.Salary = Input.Salary;
+            //}
 
 
             await _userManager.UpdateAsync(user);

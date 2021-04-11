@@ -9,7 +9,7 @@ using Assistant.Models;
 
 namespace Assistant.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
             : base()
