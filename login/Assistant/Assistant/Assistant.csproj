@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>aspnet-Assistant-D825C723-2099-4F5F-9150-FB60C6D8EDE5</UserSecretsId>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+   
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +17,10 @@
     <Compile Remove="Migrations\20190902135459_test.Designer.cs" />
     <Compile Remove="Migrations\20191112131700_db.cs" />
     <Compile Remove="Migrations\20191112131700_db.Designer.cs" />
+    <Compile Remove="Migrations\20210401092116_AddingFields.cs" />
+    <Compile Remove="Migrations\20210401092116_AddingFields.Designer.cs" />
+    <Compile Remove="Migrations\20210410091051_Mig1.cs" />
+    <Compile Remove="Migrations\20210410091051_Mig1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

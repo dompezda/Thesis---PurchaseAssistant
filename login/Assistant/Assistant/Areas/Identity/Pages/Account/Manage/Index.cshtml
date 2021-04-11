@@ -5,6 +5,83 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "dolnośląskie",
+        Value = "dolnoslaskie",
+        Selected = true
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "kujawsko-pomorskie",
+        Value = "kujawsko-pomorskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "lubelskie",
+        Value = "lubelskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "lubuskie",
+        Value = "lubuskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "łódzkie",
+        Value = "lodzkie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "małopolskie",
+        Value = "malopolskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "mazowieckie",
+        Value = "mazowieckie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "opolskie",
+        Value = "opolskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "podkarpackie",
+        Value = "podkarpackie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "podlaskie",
+        Value = "podlaskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "pomorskie",
+        Value = "pomorskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "śląskie",
+        Value = "slaskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "świętokrzyskie",
+        Value = "swetokrzyskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "warmińsko-mazurskie",
+        Value = "warminsko-mazurskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "wielkopolskie",
+        Value = "wielkopolskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "zachodniopomorskie",
+        Value = "zachodniopomorskie"
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "poza granicami Polski",
+        Value = "abroad"
+    });
+
+}
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
@@ -35,6 +112,30 @@
                 <label asp-for="Input.PhoneNumber"></label>
                 <input asp-for="Input.PhoneNumber" class="form-control" />
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Gender"> Płeć </label><br />
+
+                <label><input asp-for="Input.Gender" value="Male" type="radio" />Male</label><br />
+                <label><input asp-for="Input.Gender" value="Female" type="radio" />Female</label><br />
+
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Salary"> Zarobki </label><br />
+
+                <label><input asp-for="Input.Salary" value="Poniżej 3000zł" type="radio" />Poniżej 3000zł</label><br />
+                <label><input asp-for="Input.Salary" value="3000-5000zł" type="radio" />3000-5000zł</label><br />
+                <label><input asp-for="Input.Salary" value="Powyżej 5000zł" type="radio" />Powyżej 5000zł</label><br />
+
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Home"> Miejsce Zamieszkania </label><br />
+
+                @Html.DropDownListFor(model => model.Input.Home, listItems, "Miejsce zamieszkania")
+
+
             </div>
             <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </form>

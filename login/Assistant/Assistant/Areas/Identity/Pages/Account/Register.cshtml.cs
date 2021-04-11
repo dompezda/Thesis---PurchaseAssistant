@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Assistant.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -54,8 +55,21 @@ namespace Assistant.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-        }
 
+            [Required]
+            [Display(Name = "Płeć")]
+            public string Gender { get; set; }
+
+            [Required]
+            [Display(Name = "Zarobek")]
+            public string Salary { get; set; }
+
+            [Required]
+            [Display(Name = "Miejsce Zamieszkania")]
+            public string Home { get; set; }
+
+        }
+        
         public void OnGet(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -66,7 +80,13 @@ namespace Assistant.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { 
+                    UserName = Input.Email, 
+                    Email = Input.Email, 
+                    Gender=Input.Gender, 
+                    Salary=Input.Salary, 
+                    Home=Input.Home 
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -91,7 +111,7 @@ namespace Assistant.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+        
             return Page();
         }
     }

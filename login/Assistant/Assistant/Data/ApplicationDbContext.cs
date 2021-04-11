@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Assistant.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Assistant.Models;
 
 namespace Assistant.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext()
             : base()
@@ -19,7 +20,7 @@ namespace Assistant.Data
 
         public Microsoft.EntityFrameworkCore.DbSet<ProductList> ProductLists { get; set; }
 
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -46,6 +47,8 @@ namespace Assistant.Data
                 .WithMany(l => l.ProductList)
                 .HasForeignKey(pl => pl.ListId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+                
         }
     }
 }

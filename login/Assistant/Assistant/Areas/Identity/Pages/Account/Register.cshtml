@@ -1,34 +1,136 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Rejestracja";
+    ViewData["Title"] = "Register";
 }
-    <div class="row">
-        <h2>@ViewData["Title"]</h2>
-        <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:37%; height:35px" />
-    </div>
+
+<h1>@ViewData["Title"]</h1>
+
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "dolnośląskie",
+        Value = "dolnoslaskie",
+        Selected=true
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "kujawsko-pomorskie",
+        Value = "kujawsko-pomorskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "lubelskie",
+        Value = "lubelskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "lubuskie",
+        Value = "lubuskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "łódzkie",
+        Value = "lodzkie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "małopolskie",
+        Value = "malopolskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "mazowieckie",
+        Value = "mazowieckie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "opolskie",
+        Value = "opolskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "podkarpackie",
+        Value = "podkarpackie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "podlaskie",
+        Value = "podlaskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "pomorskie",
+        Value = "pomorskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "śląskie",
+        Value = "slaskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "świętokrzyskie",
+        Value = "swetokrzyskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "warmińsko-mazurskie",
+        Value = "warminsko-mazurskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "wielkopolskie",
+        Value = "wielkopolskie"
+    }); listItems.Add(new SelectListItem
+    {
+        Text = "zachodniopomorskie",
+        Value = "zachodniopomorskie"
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "poza granicami Polski",
+        Value = "abroad"
+    });
+
+}
+
 <div class="row">
     <div class="col-md-4">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Tworzenie konta</h4>
+            <h4>Create a new account.</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label>Adres Email</label>
+                <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Haslo</label>
+                <label asp-for="Input.Password"></label>
                 <input asp-for="Input.Password" class="form-control" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Potwierdz haslo</label>
+                <label asp-for="Input.ConfirmPassword"></label>
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Zarejestruj</button>
+            <div class="form-group">
+                <label asp-for="Input.Gender"> Płeć </label><br />
+
+                <label><input asp-for="Input.Gender" value="Male" type="radio" />Male</label><br />
+                <label><input asp-for="Input.Gender" value="Female" type="radio" />Female</label><br />
+
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Salary"> Zarobki </label><br />
+
+                <label><input asp-for="Input.Salary" value="Poniżej 3000zł" type="radio" />Poniżej 3000zł</label><br />
+                <label><input asp-for="Input.Salary" value="3000-5000zł" type="radio" />3000-5000zł</label><br />
+                <label><input asp-for="Input.Salary" value="Powyżej 5000zł" type="radio" />Powyżej 5000zł</label><br />
+
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Home"> Miejsce Zamieszkania </label><br />
+
+                @Html.DropDownListFor(model => model.Input.Home, listItems, "Miejsce zamieszkania")
+
+
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
 </div>
