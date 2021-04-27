@@ -29,6 +29,8 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="1.1.1" />
+    <PackageReference Include="AspNetCore.IdentityProvider.Mongo" Version="2.2.0" />
     <PackageReference Include="encog-dotnet-core" Version="3.4.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.1.0-beta01" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -38,6 +40,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="1.1.6" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="mongocsharpdriver" Version="2.12.2" />
+    <PackageReference Include="MongoDB.Bson" Version="2.12.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.2" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.12.2" />
+    <PackageReference Include="MongoDB.Libmongocrypt" Version="1.2.1" />
     <PackageReference Include="RequireJS" Version="2.3.6" />
     <PackageReference Include="vue" Version="2.6.11" />
     <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.59" />
@@ -46,6 +53,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

@@ -18,6 +18,7 @@ namespace Assistant.Areas.Identity.Pages.Account
         public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
+            
         }
 
         public async Task<IActionResult> OnGetAsync(string userId, string code)

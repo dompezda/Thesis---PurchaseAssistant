@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,15 +8,16 @@ namespace Assistant.Models
 {
     public class List
     {
-        public int Id { get; set; }
+        public ObjectId Id { get; set; }
         public string Name { get; set; }
         public List<ProductList> ProductList { get; set; }
         public DateTime CreateDate { get; set; }
-        public string UserId { get; set; }
+        public ObjectId UserId { get; set; }
 
         public List()
         {
             CreateDate = DateTime.Now;
+            Id = new ObjectId();
 
         }
 
