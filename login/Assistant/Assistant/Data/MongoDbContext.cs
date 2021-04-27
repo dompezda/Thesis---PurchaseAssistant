@@ -8,7 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace Assistant.Data
 {

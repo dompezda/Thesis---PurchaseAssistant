@@ -16,12 +16,9 @@ using Microsoft.Extensions.DependencyInjection;
 using WebEssentials.AspNetCore.Pwa;
 using Microsoft.AspNetCore.Routing;
 using Assistant.Models;
-using AspNetCore.Identity.MongoDbCore;
-using AspNetCore.Identity.MongoDbCore.Extensions;
-using AspNetCore.Identity.MongoDbCore.Models;
-using AspNetCore.IdentityProvider.Mongo;
-using AspNetCore.IdentityProvider.Mongo.Model;
 using Assistant.Areas.Identity.Pages.Account.Manage;
+using AspNetCore.Identity.Mongo;
+using AspNetCore.Identity.Mongo.Model;
 
 namespace Assistant
 {
@@ -37,6 +34,14 @@ namespace Assistant
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddSingleton<MongoDbContext>();
+
+            services.AddIdentityMongoDbProvider<ApplicationUser>();
+
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -44,16 +49,6 @@ namespace Assistant
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //services.AddEntityFrameworkSqlite().AddDbContext<ApplicationDbContext>();
-            //services.AddDefaultIdentity<ApplicationUser>()
-            //    .AddDefaultUI(UIFramework.Bootstrap4);
-            // .AddMongoDbStores<MongoDbContext>();
-            //AddEntityFrameworkStores<ApplicationDbContext>();
-            //services.AddIdentity<ApplicationUser, MongoIdentityRole>().AddDefaultTokenProviders();
-            services.AddSingleton<MongoDbContext>();
-            //services.AddIdentityWithMongoStores()
-            //services.AddIdentityMongoDbProvider<ApplicationUser>();
-            services.AddIdentityCore<ApplcationUser>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddMemoryCache();

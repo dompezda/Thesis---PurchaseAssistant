@@ -465,7 +465,6 @@ C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bi
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\snappy32.dll
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\snappy64.dll
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\libzstd.dll
-C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\mongocrypt.dll
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\Assistant.deps.json
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\Assistant.runtimeconfig.json
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\Assistant.runtimeconfig.dev.json
@@ -474,7 +473,6 @@ C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bi
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\Assistant.Views.dll
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\Assistant.Views.pdb
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.csprojAssemblyReference.cache
-C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.csproj.CoreCompileInputs.cache
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.RazorAssemblyInfo.cache
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.RazorAssemblyInfo.cs
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.AssemblyInfoInputs.cache
