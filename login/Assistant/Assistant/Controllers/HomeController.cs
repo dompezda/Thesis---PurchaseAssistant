@@ -31,12 +31,9 @@ namespace Assistant.Controllers
         public static ObjectId IdToShare = ObjectId.Empty;
 
         //protected ApplicationDbContext ApplicationDbContext { get; set; }
-        protected MongoDbContext db { get; set; }
+        public MongoDbContext db = new MongoDbContext();
         //public MongoDbContext MongoDbContext = new MongoDbContext();
-        public HomeController(MongoDbContext GetMongoDbContext)
-        {
-            db = GetMongoDbContext;
-        }
+
 
         [HttpGet]
         public IActionResult Connection_Error()
@@ -63,12 +60,12 @@ namespace Assistant.Controllers
             
             List<Product> frequentList = new List<Product>();
 
-            var Prod = new Product()
-            {
-                Id = ObjectId.GenerateNewId(),
-                Name = "Mleko drugie"
-            };
-            db.Products.InsertOne(Prod);
+            //var Prod = new Product()
+            //{
+            //    Id = ObjectId.GenerateNewId(),
+            //    Name = "Mleko drugie"
+            //};
+            //db.Products.InsertOne(Prod);
             var prodIds = db.Products.AsQueryable().ToList();
             int amount = prodIds.Count();
             if (amount / 2 > 5)
@@ -168,6 +165,7 @@ namespace Assistant.Controllers
                 }
                 if (currentList != null)
                     listViewModel.productList.List.Id = currentList.Id;
+           
             
             return View("~/Views/Home/Create_list.cshtml", listViewModel);
         }

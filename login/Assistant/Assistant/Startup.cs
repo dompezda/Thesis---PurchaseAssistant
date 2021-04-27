@@ -17,8 +17,7 @@ using WebEssentials.AspNetCore.Pwa;
 using Microsoft.AspNetCore.Routing;
 using Assistant.Models;
 using Assistant.Areas.Identity.Pages.Account.Manage;
-using AspNetCore.Identity.Mongo;
-using AspNetCore.Identity.Mongo.Model;
+using AspNetCore.Identity.MongoDB;
 
 namespace Assistant
 {
@@ -36,11 +35,17 @@ namespace Assistant
         {
 
 
-            services.AddSingleton<MongoDbContext>();
+            //services.AddSingleton<MongoDbContext>();
 
-            services.AddIdentityMongoDbProvider<ApplicationUser>();
+            //services.AddIdentityMongoDbProvider<ApplicationUser>();
 
-
+            services.AddIdentity<ApplicationUser, MongoIdentityRole>()
+                .AddDefaultTokenProviders();
+            services
+                .Configure<MongoDBOption>(Configuration.GetSection("MongoDBOption"))
+                .AddMongoDatabase()
+                .AddMongoDbContext<ApplicationUser, MongoIdentityRole>()
+                .AddMongoStore<ApplicationUser, MongoIdentityRole>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

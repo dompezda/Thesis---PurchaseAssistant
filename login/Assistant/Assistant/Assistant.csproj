@@ -29,8 +29,8 @@
 
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.Identity.Mongo" Version="5.3.0" />
     <PackageReference Include="encog-dotnet-core" Version="3.4.0" />
+    <PackageReference Include="FB.AspNetCore.Identity.MongoDB" Version="2.0.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.1.0-beta01" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -41,7 +41,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="mongocsharpdriver" Version="2.12.2" />
     <PackageReference Include="MongoDB.Bson" Version="2.12.2" />
-    <PackageReference Include="MongoDB.Driver" Version="2.12.2" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.12.2" />
     <PackageReference Include="RequireJS" Version="2.3.6" />
     <PackageReference Include="vue" Version="2.6.11" />

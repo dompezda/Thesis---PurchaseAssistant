@@ -6,7 +6,6 @@ using Assistant.Data;
 using Assistant.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 

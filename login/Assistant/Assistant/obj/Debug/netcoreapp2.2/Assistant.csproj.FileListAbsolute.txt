@@ -546,3 +546,4 @@ C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\ob
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.pdb
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.genruntimeconfig.cache
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.csproj.CopyComplete
+C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\obj\Debug\netcoreapp2.2\Assistant.csproj.CoreCompileInputs.cache

@@ -1,5 +1,6 @@
 ﻿
-using AspNetCore.Identity.Mongo.Model;
+
+using AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Assistant.Models
 {
-    public class ApplicationUser : MongoUser
+    public class ApplicationUser : MongoIdentityUser
     {
 
 
