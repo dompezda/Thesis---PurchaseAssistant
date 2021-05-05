@@ -26,7 +26,7 @@ namespace Assistant.Controllers
         public static ListViewModel listViewModel = new ListViewModel();
         public int IdList = 0;
         public string listName;
-        public static bool isPrivateList;
+        public static string isPrivateList;
         public static ObjectId currentlyEditedListId;
         public static ObjectId IdToShare = ObjectId.Empty;
 
@@ -78,12 +78,14 @@ namespace Assistant.Controllers
             //                   .OrderByDescending(gp => gp.Count())
             //                   .Take(amount / 2)
             //                   .Select(g => g.Key).ToList();
-
+            Product prod = new Product();
             var groupedProd = db.ProductList.AsQueryable().GroupBy(x => x.ProductId).OrderByDescending(gp => gp.Count()).Take(amount).Select(g => g.Key).ToList();
             List<Product> sendListToFrequentList = new List<Product>();
             foreach (var item in groupedProd)
             {
-                sendListToFrequentList.Add(db.Products.Find(x => x.Id == item).FirstOrDefault());
+               
+                prod = db.Products.Find(x => x.Id == item).FirstOrDefault();
+                sendListToFrequentList.Add(prod);
             }
             frequentList = sendListToFrequentList;
            
@@ -170,7 +172,7 @@ namespace Assistant.Controllers
             return View("~/Views/Home/Create_list.cshtml", listViewModel);
         }
         [HttpPost]
-        public IActionResult Send_Name(string Name, bool IsPrivate)
+        public IActionResult Send_Name(string Name, string IsPrivate)
         {
             listName = Name;
             isPrivateList = IsPrivate;
@@ -179,7 +181,7 @@ namespace Assistant.Controllers
 
                 currentlyEditedList = new List { Name = listName };
                 db.List.InsertOne(currentlyEditedList);
-                if (IsPrivate == true)
+                if (IsPrivate == "on")
                 {
                     var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                     currentlyEditedList.UserId = userId;
@@ -355,36 +357,40 @@ namespace Assistant.Controllers
 
 
         [HttpPost]
-        public IActionResult AddProduct(ListViewModel recvListViewModel)
+        public IActionResult AddProduct(Product product)
         {
 
             var productList = new ProductList();
-            if (recvListViewModel.product.Name != null)
+            Product NewProd = new Product();
+            if (product.Name != null)
             {
 
                 
                     var ProdList = db.Products.AsQueryable().Select(p => p.Name).ToList();
-                    if (!ProdList.Contains(recvListViewModel.product.Name))
+                    if (!ProdList.Contains(product.Name))
                     {
-                    Product NewProd = new Product();
-                    NewProd.Name = recvListViewModel.product.Name;
-                        db.Products.InsertOne(NewProd);
+                    NewProd.Id = product.Id;
+                    NewProd.Name = product.Name;
+                    db.Products.InsertOne(NewProd);
                     }
                     else
                     {
-                        recvListViewModel.product = db.Products.AsQueryable().Where(p => p.Name == recvListViewModel.product.Name).FirstOrDefault();
+                    NewProd = db.Products.AsQueryable().Where(p => p.Name == product.Name).FirstOrDefault();
                     }
 
                     var currentlyEditedList = db.List.AsQueryable().Single(x => x.Id == currentlyEditedListId);
-
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     productList.List = currentlyEditedList;
-                    productList.Product = recvListViewModel.product;
+                    productList.ListId = currentlyEditedList.Id;
+                    productList.Product = NewProd;
+                    productList.ProductId = NewProd.Id;
+                    currentlyEditedList.UserId = ObjectId.Parse(userId);
                     db.ProductList.InsertOne(productList);
                     
                 
 
             }
-            return RedirectToAction(nameof(Create_list));
+            return RedirectToAction(nameof(Create_list),currentlyEditedListId);
         }
 
         [HttpPost]
@@ -400,7 +406,7 @@ namespace Assistant.Controllers
                 }
                 
 
-                if (currentlyEditedListId != null && isPrivateList == true)
+                if (currentlyEditedListId != null && isPrivateList == "on")
                 {
                     ToCheck = db.List.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
                     checkPrivate = db.List.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(w => w.UserId).ToString();
