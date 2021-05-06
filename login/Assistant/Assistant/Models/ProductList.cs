@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +9,17 @@ namespace Assistant.Models
 {
     public class ProductList
     {
+        [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId _id { get; set; }
         public ObjectId ProductId { get; set; }
-        public Product Product { get; set; }
+
         public ObjectId ListId { get; set; }
-        public List List { get; set; }
+
 
 
         public ProductList()
         {
-
+           
         }
 
     }

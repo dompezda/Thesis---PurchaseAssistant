@@ -13,13 +13,14 @@ namespace Assistant.Models
 
 
         [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
         public string Name { get; set; }
 
         
         public Product()
         {
-            Id = ObjectId.GenerateNewId();
+            
         }
     }
 }

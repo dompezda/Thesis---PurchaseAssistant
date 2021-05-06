@@ -19,8 +19,8 @@ namespace Assistant.Models
 
         public List()
         {
-            Id = ObjectId.GenerateNewId();
-            CreateDate = DateTime.Now;
+      
+          
             
 
         }

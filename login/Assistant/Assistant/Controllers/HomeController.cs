@@ -124,13 +124,13 @@ namespace Assistant.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create_list(ObjectId? id)
+        public IActionResult Create_list()
         {
 
-            if (id != null)
+            if (currentlyEditedListId != null)
             {
 
-                var getIds=db.ProductList.AsQueryable().Where(x => x.ListId == id).Select(y => y.ProductId).ToList();
+                var getIds=db.ProductList.AsQueryable().Where(x => x.ListId == currentlyEditedListId).Select(y => y.ProductId).ToList();
                 var getListFromDB = new List<Product>();
                 foreach (var item in getIds)
                 {
@@ -150,23 +150,17 @@ namespace Assistant.Controllers
 
             }
             listViewModel.productList = new ProductList();
-            listViewModel.productList.List = new List();
+ 
             var currentList = new List();
-                if (id != null)
-                {
-                    currentList = db.List.AsQueryable().Where(x => x.Id == id).FirstOrDefault();
-                }
-                else
+                if (currentlyEditedListId != null)
                 {
                     currentList = db.List.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
                 }
+                //else
+                //{
+                //    currentList = db.List.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                //}
 
-                if (User.FindFirstValue(ClaimTypes.NameIdentifier) != null && currentList != null)
-                {
-                    listViewModel.productList.List.UserId = currentList.UserId;
-                }
-                if (currentList != null)
-                    listViewModel.productList.List.Id = currentList.Id;
            
             
             return View("~/Views/Home/Create_list.cshtml", listViewModel);
@@ -179,23 +173,31 @@ namespace Assistant.Controllers
 
                 List currentlyEditedList;
 
-                currentlyEditedList = new List { Name = listName };
-                db.List.InsertOne(currentlyEditedList);
+            currentlyEditedList = new List {
+                Name = listName,
+                CreateDate = DateTime.Now,
+                Id= ObjectId.GenerateNewId(),
+                };
+                
                 if (IsPrivate == "on")
                 {
                     var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                     currentlyEditedList.UserId = userId;
+                    listViewModel.IsPrivate = true;
 
+                }
+                else
+                {
+                    listViewModel.IsPrivate = false;
                 }
                 currentlyEditedList.ProductList = new List<ProductList>();
                 listViewModel.productsToPartial = new List<Product>();
                 listViewModel.productList = new ProductList();
-                listViewModel.productList.List = new List();
-                listViewModel.productList.List.Id = currentlyEditedList.Id;
+
                 currentlyEditedListId = currentlyEditedList.Id;
+            db.List.InsertOne(currentlyEditedList);
 
 
-            
             return View("~/Views/Home/Create_list.cshtml", listViewModel);
         }
 
@@ -216,10 +218,16 @@ namespace Assistant.Controllers
                 listViewModel.productLists = db.ProductList.AsQueryable().ToList();
             
 
-                ViewBag.Lists = db.List.AsQueryable().Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+                var Ids = db.List.AsQueryable().Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+            List<List> GetLists = new List<List>();
+            foreach (var item in Ids)
+            {
+                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+                GetLists.Add(items);
+            }
 
-            
 
+            ViewBag.Lists = GetLists;
 
             return View();
         }
@@ -245,9 +253,18 @@ namespace Assistant.Controllers
             
 
                 listViewModel.productLists = db.ProductList.AsQueryable().ToList();
-            
 
-                ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+            var Ids = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+            List<List> GetLists = new List<List>();
+            foreach (var item in Ids)
+            {
+                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+                GetLists.Add(items);
+            }
+
+
+            ViewBag.Lists = GetLists;
+            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             
 
             return View("~/Views/ListDisplay/Private_list_load.cshtml", listViewModel.productLists);
@@ -269,9 +286,18 @@ namespace Assistant.Controllers
             
 
                 listViewModel.productLists = db.ProductList.AsQueryable().ToList();
-            
 
-                ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+            var Ids = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+            List<List> GetLists = new List<List>();
+            foreach (var item in Ids)
+            {
+                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+                GetLists.Add(items);
+            }
+
+
+            ViewBag.Lists = GetLists;
+            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             
 
             return View("~/Views/ListDisplay/Public_list_load.cshtml", listViewModel.productLists);
@@ -298,9 +324,18 @@ namespace Assistant.Controllers
             
             
                 listViewModel.productLists = db.ProductList.AsQueryable().ToList();
-            
-            
-                ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+
+            var Ids = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+            List<List> GetLists = new List<List>();
+            foreach (var item in Ids)
+            {
+                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+                GetLists.Add(items);
+            }
+
+
+            ViewBag.Lists = GetLists;
+            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             
 
             return View("~/Views/ListDisplay/Load_list.cshtml", listViewModel.productLists);
@@ -318,7 +353,6 @@ namespace Assistant.Controllers
                 foreach (var item in listToEdit.ProductList)
                 {
                     var tempItem = db.Products.AsQueryable().Where(x => x.Id == item.ProductId);
-                    item.Product = tempItem.FirstOrDefault();
                 }
             
             currentlyEditedListId = listToEdit.Id;
@@ -359,7 +393,7 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult AddProduct(Product product)
         {
-
+            product.Id = ObjectId.GenerateNewId();
             var productList = new ProductList();
             Product NewProd = new Product();
             if (product.Name != null)
@@ -380,9 +414,9 @@ namespace Assistant.Controllers
 
                     var currentlyEditedList = db.List.AsQueryable().Single(x => x.Id == currentlyEditedListId);
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    productList.List = currentlyEditedList;
+
                     productList.ListId = currentlyEditedList.Id;
-                    productList.Product = NewProd;
+
                     productList.ProductId = NewProd.Id;
                     currentlyEditedList.UserId = ObjectId.Parse(userId);
                     db.ProductList.InsertOne(productList);
@@ -390,7 +424,7 @@ namespace Assistant.Controllers
                 
 
             }
-            return RedirectToAction(nameof(Create_list),currentlyEditedListId);
+            return RedirectToAction(nameof(Create_list));
         }
 
         [HttpPost]
@@ -455,9 +489,18 @@ namespace Assistant.Controllers
             
           
                 listViewModel.productLists = db.ProductList.AsQueryable().ToList();
-            
-            
-                ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+
+            var Ids = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+            List<List> GetLists = new List<List>();
+            foreach (var item in Ids)
+            {
+                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+                GetLists.Add(items);
+            }
+
+
+            ViewBag.Lists = GetLists;
+            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             
 
             return View("~/Views/Utility/Share_list.cshtml", listViewModel.productLists);
@@ -607,12 +650,12 @@ namespace Assistant.Controllers
         {
 
             List<string> Products = new List<string>();
-            List<string> currentList = new List<string>();
+            List<ObjectId> currentList = new List<ObjectId>();
 
-                currentList = db.ProductList.AsQueryable().Where(w => w.ListId == id).Select(p => p.Product.Name).ToList();
+                currentList = db.ProductList.AsQueryable().Where(w => w.ListId == id).Select(p => p.ProductId).ToList();
                 foreach (var item in currentList)
                 {
-                    Products.Add(item);
+                Products.Add(db.Products.AsQueryable().Where(x => x.Id == item).Select(w => w.Name).FirstOrDefault());
                 }
             
             List<OfflineProduct> ListToCache = new List<OfflineProduct>();
@@ -621,7 +664,7 @@ namespace Assistant.Controllers
             {
                 var Prod = new OfflineProduct();
                 Prod.ID = i;
-                Prod.Name = currentList[i];
+                Prod.Name = Products[i];
                 Prod.Done = false;
                 ListToCache.Add(Prod);
             }
