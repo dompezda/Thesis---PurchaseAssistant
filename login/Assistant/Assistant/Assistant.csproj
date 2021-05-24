@@ -29,6 +29,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="encog-dotnet-core" Version="3.4.0" />
     <PackageReference Include="FB.AspNetCore.Identity.MongoDB" Version="2.0.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.1.0-beta01" />

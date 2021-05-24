@@ -46,14 +46,14 @@ namespace Assistant.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Minimalna długość to {2}, natowmiast maksymalna to {1}", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Hasła nie są takie same")]
             public string ConfirmPassword { get; set; }
 
             [Required]
@@ -67,6 +67,16 @@ namespace Assistant.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Miejsce Zamieszkania")]
             public string Home { get; set; }
+
+            [Required]
+            [Display(Name = "Wiek")]
+            public string Age { get; set; }
+            //[Required]
+            //[Display(Name = "Wzrost")]
+            //public string Height { get; set; }
+            [Required]
+            [Display(Name = "Wyksztalcenie")]
+            public string Education { get; set; }
 
         }
         
@@ -85,7 +95,10 @@ namespace Assistant.Areas.Identity.Pages.Account
                     Email = Input.Email, 
                     Gender=Input.Gender, 
                     Salary=Input.Salary, 
-                    Home=Input.Home 
+                    Home=Input.Home,
+                    Age=Input.Age,
+                    Education=Input.Education
+                    
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

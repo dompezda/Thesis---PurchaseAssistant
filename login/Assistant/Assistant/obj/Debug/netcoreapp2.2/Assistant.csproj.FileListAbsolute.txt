@@ -461,7 +461,6 @@ C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bi
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\appsettings.json
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\libman.json
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\OfflineList.json
-C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\Properties\launchSettings.json
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\snappy32.dll
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\snappy64.dll
 C:\Users\Dominik\Desktop\Thesis---PurchaseAssistant\login\Assistant\Assistant\bin\Debug\netcoreapp2.2\libzstd.dll

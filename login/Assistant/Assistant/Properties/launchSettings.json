@@ -2,13 +2,9 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/Assistant",
-      "sslPort": 0
-    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:61824",
-      "sslPort": 44327
+      "applicationUrl": "http://localhost:63725/",
+      "sslPort": 44374
     }
   },
   "profiles": {
@@ -26,10 +22,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
-    },
-    "Azure Dev Spaces": {
-      "commandName": "AzureDevSpaces",
-      "launchBrowser": true
     }
   }
 }

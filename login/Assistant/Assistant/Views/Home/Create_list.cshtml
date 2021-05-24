@@ -1,4 +1,4 @@
-﻿@model Assistant.ViewModels.ListViewModel
+﻿@model Assistant.Models.MongoDBProdList
 @{
     ViewData["Title"] = "Stworz Liste";
 }
@@ -18,8 +18,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
 
-                <input asp-for="product.Name" class="form-control" id="Name" />
-                <span asp-validation-for="product.Name" class="text-danger"></span>
+                <input asp-for="Name" class="form-control" id="Name" value=""/>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="row mt-3"></div>
             <div class="form-group">
@@ -35,7 +35,7 @@
         <button class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
     </form>
 
-            @if (User.Identity.IsAuthenticated && Model.IsPrivate == false)
+            @*@if (User.Identity.IsAuthenticated && Model.IsPrivate == false)
             {
                 <div class="row mt-3"></div>
                 <form asp-controller="Home" asp-action="ChangeType" method="post">
@@ -50,15 +50,15 @@
 
                     <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczna</button>
                 </form>
-            }
+            }*@
     </div>
 </div>
 
 
 
-@if (Model.productsToPartial.Count() > 0)
+@if (Model.ProductList.Count() > 0)
 {
-    await Html.RenderPartialAsync("ProductList", Model.productsToPartial);
+    await Html.RenderPartialAsync("ProductList", Model.ProductList);
 }
 else
 {

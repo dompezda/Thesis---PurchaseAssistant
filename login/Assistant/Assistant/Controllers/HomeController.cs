@@ -15,14 +15,26 @@ using Newtonsoft.Json;
 using System.Security.Cryptography.X509Certificates;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using MongoDB.Driver.Builders;
 
 namespace Assistant.Controllers
 {
+
     
     public class HomeController : Controller
     {
 
-
+        public HomeController(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
+        //private readonly UserManager<ApplicationUser> _userManager;
+        //private readonly SignInManager<ApplicationUser> _signInManager;
+        public string[] names = { "Kaileb", "Kairn", "Kaisonn", "Kaydn", "Kaydyn", "Kobi", "Koby", "Lawrie", "Majid", "Makensie", "Makenzie", "Makin", "Maksim", "Marius", "Mark", "Marko", "Markus", "Marley", "Marlin", "Marlon", "Maros", "Marshall", "Martin", "Marty", "Martyn", "Marvellous", "Marvin", "Marwan", "Maryk", "Marzuq", "Mashhood", "Mason", "Mason-Jay", "Masood", "Masson", "Matas", "Matej", "Mateusz", "Mathew", "Mathias", "Mathu", "Maximilian", "Maximillian", "Maximus", "Maxwell", "Maxx", "Mayeul", "Mayson", "Mazin", "Mcbride", "McCaulley", "McKade", "McKauley", "Meshach", "Meyzhward", "Micah", "Michael", "Michael-Alexander", "Michael-James", "Michal", "Michat", "Micheal", "Michee", "Mickey", "Miguel", "Mika", "Mikael", "Mikee", "Mikey", "Montague", "Montgomery", "Monty", "Moore", "Moosa", "Moray", "Morgan", "Munachi", "Muneeb", "Mungo", "Munir", "Murry", "Musa", "Musse", "Mustafa", "Mustapha", "Muzammil", "Muzzammil", "Nihaal", "Nihal", "Nikash", "Nikhil", "Niki", "Nikita", "Nikodem", "Nikolai", "Nikos", "Nilav", "Niraj", "Niro", "Niven", "Noah", "Noel", "Nolan", "Noor", "Norman", "Norrie", "Nuada", "Raithin", "Raja", "Rajab-Ali", "Ramone", "Ramsay", "Rayan", "Rayane" };
+        public string[] surnames = { "Aaberg", "Aaby", "Aadland", "Aagaard", "Aakre", "Aaland", "Aalbers", "Aalderink", "Aalund", "Aamodt", "Aamot", "Aanderud", "Aanenson", "Aanerud", "Aarant", "Aardema", "Aarestad", "Aarhus", "Aaron", "Aarons", "Aaronson", "Aarsvold", "Aas", "Aasby", "Aase", "Aasen", "Aavang", "Abad", "Abadi", "Abadie", "Abair", "Abaja", "Abajian", "Abalos", "Abaloz", "Abar", "Abarca", "Abare", "Abascal", "Abasta", "Abate", "Abati", "Abatiell", "Abato", "Abatti", "Abaunza", "Abaya", "Abbadessa", "Abbamonte", "Abbas", "Abbasi", "Abbassi", "Abbate", "Abbatiello", "Abbay", "Abbe", "Haines", "Hainesworth", "Hainey", "Hainley", "Hainline", "Hains", "Hainsey", "Hainsworth", "Hair", "Haire", "Hairell", "Hairfield", "Hairgrove", "Hairr", "Hairster", "Hairston", "Haislett", "Haisley", "Haislip", "Haist", "Haisten", "Hait", "Haith", "Haithcock", "Haitz", "Hajdas", "Hajduk", "Hajdukiewicz", "Hajek", "Hakala", "Hakanson", "Hake", "Hakeem", "Hakel", "Haken", "Haker", "Hakes", "Hakey", "Hakim", "Hakimi", "Hakimian", "Hakkila", "Hal", "Halaas", "Halaby", "Halajian", "Halaliky", "Halama", "Halas", "Halasz", "Halat", "Mace", "Maceachern", "Maceda", "Macedo", "Macedonio", "Macek", "Macentee", "Macer", "Macera", "Macewen", "Macey", "Maceyak", "Macfarland", "Macfarlane", "Macgillivray", "Macgowan", "Macgregor", "Macguire", "Mach", "Macha", "Machacek", "Machado", "Machain", "Oxton", "Oya", "Oyabu", "Oyama", "Oyellette", "Oyen", "Oyer", "Oyervides", "Oyler", "Oyola", "Oyster", "Oyston", "Oyuela", "Oz", "Oza", "Ozaeta", "Ozaine", "Ozaki", "Ozane", "Ozawa", "Ozbun", "Ozburn", "Ozenne", "Ozer", "Ozga", "Ozier", "Ozimek", "Ozley", "Ozment" };
+        
         public static ListViewModel listViewModel = new ListViewModel();
         public int IdList = 0;
         public string listName;
@@ -32,8 +44,10 @@ namespace Assistant.Controllers
 
         //protected ApplicationDbContext ApplicationDbContext { get; set; }
         public MongoDbContext db = new MongoDbContext();
-        //public MongoDbContext MongoDbContext = new MongoDbContext();
+        private UserManager<ApplicationUser> _userManager;
 
+        //public MongoDbContext MongoDbContext = new MongoDbContext();
+   
 
         [HttpGet]
         public IActionResult Connection_Error()
@@ -57,39 +71,40 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Main_menu()
         {
-            
-            List<Product> frequentList = new List<Product>();
+            List<Product> ProdList = new List<Product>();
+            ProdList = db.Products.AsQueryable().ToList();
+            //Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
+            ////GetUsersData();
+            //int amount = db.Products.AsQueryable().Count();
+            //if (amount >= 5)
+            //    amount = 5;
 
-            //var Prod = new Product()
+            //foreach (var item in ProdList)
             //{
-            //    Id = ObjectId.GenerateNewId(),
-            //    Name = "Mleko drugie"
-            //};
-            //db.Products.InsertOne(Prod);
-            var prodIds = db.Products.AsQueryable().ToList();
-            int amount = prodIds.Count();
-            if (amount / 2 > 5)
-            {
-                amount = 5;
-            }
-
-            //var groupedProd = db.ProductList
-            //                   .GroupBy(q => q.ProductId)
-            //                   .OrderByDescending(gp => gp.Count())
-            //                   .Take(amount / 2)
-            //                   .Select(g => g.Key).ToList();
-            Product prod = new Product();
-            var groupedProd = db.ProductList.AsQueryable().GroupBy(x => x.ProductId).OrderByDescending(gp => gp.Count()).Take(amount).Select(g => g.Key).ToList();
-            List<Product> sendListToFrequentList = new List<Product>();
-            foreach (var item in groupedProd)
-            {
-               
-                prod = db.Products.Find(x => x.Id == item).FirstOrDefault();
-                sendListToFrequentList.Add(prod);
-            }
-            frequentList = sendListToFrequentList;
+            //    GetCount.Add(item.Id,0);
+            //}
+            //var ProdCheck = db.MongoLists.AsQueryable().Select(x=>x.ProductList).ToList();
+            
+            //foreach (var currentList in ProdCheck)
+            //{
+            //    foreach (var item in currentList)
+            //    {
+            //        GetCount[item.Id]+=1;
+            //    }
+            //}
+            
+            //var prodIds = db.Products.AsQueryable().ToList();
+            //var itemsToCheck=GetCount.OrderByDescending(x => x.Value).ToList().Take(5).ToList();
+            
+           List<Product> sendListToFrequentList = new List<Product>();
+            //foreach (var item in itemsToCheck)
+            //{
+            //    Product prod = db.Products.AsQueryable().Where(x => x.Id == item.Key).FirstOrDefault();
+            //    sendListToFrequentList.Add(prod);
+            //}
            
-            return View("~/Views/Utility/Main_menu.cshtml", frequentList);
+
+            return View("~/Views/Utility/Main_menu.cshtml", sendListToFrequentList);
         }
         public static bool CheckForInternetConnection()
         {
@@ -110,96 +125,44 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            bool Check = CheckForInternetConnection();
+            //bool Check = CheckForInternetConnection();
 
-            if (Check == true)
-            {
-                return RedirectToAction(nameof(Main_menu));
-            }
-            else
-            {
-                return View("~/View/Utility/Connection_Error.cshtml");
-            }
+            //if (Check == true)
+            //{
+            //    return RedirectToAction(nameof(Main_menu));
+            //}
+            //else
+            //{
+            //    return View("~/View/Utility/Connection_Error.cshtml");
+            //}
+            return RedirectToAction(nameof(Main_menu));
+        }
 
+        [HttpPost]
+        public IActionResult Send_Name(string Name)
+        {
+            MongoDBProdList currentlyEditedList = new MongoDBProdList();
+            currentlyEditedList.UserId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            currentlyEditedList.Name = Name;
+            //listViewModel.productsToPartial = currentlyEditedList.ProductList;
+
+            currentlyEditedListId = currentlyEditedList.Id;
+            db.MongoLists.InsertOne(currentlyEditedList);
+
+
+            return View("~/Views/Home/Create_list.cshtml", currentlyEditedList);
         }
 
         [HttpGet]
         public IActionResult Create_list()
         {
 
-            if (currentlyEditedListId != null)
-            {
-
-                var getIds=db.ProductList.AsQueryable().Where(x => x.ListId == currentlyEditedListId).Select(y => y.ProductId).ToList();
-                var getListFromDB = new List<Product>();
-                foreach (var item in getIds)
-                {
-                    getListFromDB.Add(db.Products.Find(x => x.Id == item).FirstOrDefault());
-                }
-
-            }
-            else
-            {
-                
-                var GetIds = db.ProductList.AsQueryable().Where(x => x.ListId == currentlyEditedListId).Select(x => x.ProductId).ToList();
-                foreach (var item in GetIds)
-                {
-                    var ProdToAdd = db.Products.AsQueryable().Where(x => x.Id == item).FirstOrDefault();
-                    listViewModel.productsToPartial.Add(ProdToAdd);
-                }
-
-            }
-            listViewModel.productList = new ProductList();
- 
-            var currentList = new List();
-                if (currentlyEditedListId != null)
-                {
-                    currentList = db.List.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
-                }
-                //else
-                //{
-                //    currentList = db.List.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
-                //}
-
-           
-            
-            return View("~/Views/Home/Create_list.cshtml", listViewModel);
+            var getListFromDB = db.MongoLists.Find(x => x.Id == currentlyEditedListId).FirstOrDefault();
+            var Prods = getListFromDB.ProductList;
+            //listViewModel.productList = new ProductList();
+            return View("~/Views/Home/Create_list.cshtml", getListFromDB);
         }
-        [HttpPost]
-        public IActionResult Send_Name(string Name, string IsPrivate)
-        {
-            listName = Name;
-            isPrivateList = IsPrivate;
-
-                List currentlyEditedList;
-
-            currentlyEditedList = new List {
-                Name = listName,
-                CreateDate = DateTime.Now,
-                Id= ObjectId.GenerateNewId(),
-                };
-                
-                if (IsPrivate == "on")
-                {
-                    var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    currentlyEditedList.UserId = userId;
-                    listViewModel.IsPrivate = true;
-
-                }
-                else
-                {
-                    listViewModel.IsPrivate = false;
-                }
-                currentlyEditedList.ProductList = new List<ProductList>();
-                listViewModel.productsToPartial = new List<Product>();
-                listViewModel.productList = new ProductList();
-
-                currentlyEditedListId = currentlyEditedList.Id;
-            db.List.InsertOne(currentlyEditedList);
-
-
-            return View("~/Views/Home/Create_list.cshtml", listViewModel);
-        }
+       
 
         [HttpGet]
         public IActionResult List_name()
@@ -209,28 +172,7 @@ namespace Assistant.Controllers
             return View("~/Views/Utility/List_name.cshtml");
         }
 
-        [HttpGet]
-        public IActionResult SelectList()
-        {
 
-            listViewModel.productLists = new List<ProductList>();
-
-                listViewModel.productLists = db.ProductList.AsQueryable().ToList();
-            
-
-                var Ids = db.List.AsQueryable().Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
-            List<List> GetLists = new List<List>();
-            foreach (var item in Ids)
-            {
-                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
-                GetLists.Add(items);
-            }
-
-
-            ViewBag.Lists = GetLists;
-
-            return View();
-        }
 
 
 
@@ -240,123 +182,116 @@ namespace Assistant.Controllers
         {
             var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                foreach (var item in db.List.AsQueryable())
+                foreach (var item in db.MongoLists.AsQueryable().ToList())
                 {
-                    var listToCheck = db.ProductList.AsQueryable().Where(n => n.ListId == item.Id).Count();
-
-                    if (listToCheck == 0)
+                    if (item.ProductList.Count() == 0)
                     {
-                        var ListToRemove = db.List.AsQueryable().Where(n => n.Id == item.Id).FirstOrDefault();
-                        db.List.DeleteOne(x => x.Id == ListToRemove.Id);
-                    }
+
+                    var ListToRemove=db.MongoLists.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+                    db.MongoLists.DeleteOne(a => a.Id == ListToRemove.Id);
                 }
+                }
+ 
+
+            //var Ids = db.List.AsQueryable().Where(x => x.UserId == userId).Select(x=>x.Id).ToList();
+            List<MongoDBProdList> Lists = db.MongoLists.AsQueryable().Where(x => x.UserId == userId).ToList();
+
+
+            //ViewBag.Lists = db.MongoLists.AsQueryable().Where(x => x.UserId == userId).ToList().FirstOrDefault();
             
 
-                listViewModel.productLists = db.ProductList.AsQueryable().ToList();
-
-            var Ids = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
-            List<List> GetLists = new List<List>();
-            foreach (var item in Ids)
-            {
-                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
-                GetLists.Add(items);
-            }
-
-
-            ViewBag.Lists = GetLists;
-            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
-            
-
-            return View("~/Views/ListDisplay/Private_list_load.cshtml", listViewModel.productLists);
+            return View("~/Views/ListDisplay/Private_list_load.cshtml", Lists);
         }
-        [HttpGet]
-        public IActionResult Public_list_load()
-        {
+        //[HttpGet]
+        //public IActionResult Public_list_load()
+        //{
       
-                foreach (var item in db.List.AsQueryable())
-                {
-                    var listToCheck = db.ProductList.AsQueryable().Where(n => n.ListId == item.Id).Count();
+        //        foreach (var item in db.List.AsQueryable())
+        //        {
+        //            var listToCheck = db.ProductList.AsQueryable().Where(n => n.ListId == item.Id).Count();
 
-                    if (listToCheck == 0)
-                    {
-                        var ListToRemove = db.List.AsQueryable().Where(n => n.Id == item.Id).FirstOrDefault();
-                        db.List.DeleteOne(x => x.Id == ListToRemove.Id);  
-                    }
-                }
+        //            if (listToCheck == 0)
+        //            {
+        //                var ListToRemove = db.List.AsQueryable().Where(n => n.Id == item.Id).FirstOrDefault();
+        //                db.List.DeleteOne(x => x.Id == ListToRemove.Id);  
+        //            }
+        //        }
             
 
-                listViewModel.productLists = db.ProductList.AsQueryable().ToList();
+        //        listViewModel.productLists = db.ProductList.AsQueryable().ToList();
 
-            var Ids = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
-            List<List> GetLists = new List<List>();
-            foreach (var item in Ids)
-            {
-                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
-                GetLists.Add(items);
-            }
+        //    var Ids = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+        //    List<ListOfProducts> GetLists = new List<ListOfProducts>();
+        //    foreach (var item in Ids)
+        //    {
+        //        var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+        //        GetLists.Add(items);
+        //    }
 
 
-            ViewBag.Lists = GetLists;
-            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+        //    ViewBag.Lists = GetLists;
+        //    //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             
 
-            return View("~/Views/ListDisplay/Public_list_load.cshtml", listViewModel.productLists);
-        }
+        //    return View("~/Views/ListDisplay/Public_list_load.cshtml", listViewModel.productLists);
+        //}
 
 
 
 
-        [HttpGet]
-        public IActionResult Load_List()
-        {
+        //[HttpGet]
+        //public IActionResult Load_List()
+        //{
             
-                foreach (var item in db.List.AsQueryable())
-                {
-                    var listToCheck = db.ProductList.AsQueryable().Where(n => n.ListId == item.Id).Count();
+        //        foreach (var item in db.List.AsQueryable())
+        //        {
+        //            var listToCheck = db.ProductList.AsQueryable().Where(n => n.ListId == item.Id).Count();
 
-                    if (listToCheck == 0)
-                    {
-                        var ListToRemove = db.List.AsQueryable().Where(n => n.Id == item.Id).FirstOrDefault();
-                    db.List.DeleteOne(x => x.Id == ListToRemove.Id);
+        //            if (listToCheck == 0)
+        //            {
+        //                var ListToRemove = db.List.AsQueryable().Where(n => n.Id == item.Id).FirstOrDefault();
+        //            db.List.DeleteOne(x => x.Id == ListToRemove.Id);
 
-                }
-                }
+        //        }
+        //        }
             
             
-                listViewModel.productLists = db.ProductList.AsQueryable().ToList();
+        //        listViewModel.productLists = db.ProductList.AsQueryable().ToList();
 
-            var Ids = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
-            List<List> GetLists = new List<List>();
-            foreach (var item in Ids)
-            {
-                var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
-                GetLists.Add(items);
-            }
+        //    var Ids = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
+        //    List<ListOfProducts> GetLists = new List<ListOfProducts>();
+        //    foreach (var item in Ids)
+        //    {
+        //        var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+        //        GetLists.Add(items);
+        //    }
 
 
-            ViewBag.Lists = GetLists;
-            //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
+        //    ViewBag.Lists = GetLists;
+        //    //ViewBag.Lists = db.List.AsQueryable().Where(x => x.UserId == null).Include(x => x.ProductList).ThenInclude(x => x.Product).ToList();
             
 
-            return View("~/Views/ListDisplay/Load_list.cshtml", listViewModel.productLists);
-        }
+        //    return View("~/Views/ListDisplay/Load_list.cshtml", listViewModel.productLists);
+        //}
 
         [HttpPost]
-        public IActionResult Edit_List(List list)
+        public IActionResult Edit_List(string Id)
         {
-            List listToEdit = new List();
+            MongoDBProdList listToEdit = new MongoDBProdList();
+            listToEdit = db.MongoLists.Find(x => x.Id == ObjectId.Parse(Id)).FirstOrDefault();
+            currentlyEditedListId = listToEdit.Id;
+            //listToEdit.ProductList = new List<ProductList>();
             
-            
-                listToEdit = db.List.AsQueryable().Include(x => x.ProductList).Where(n => n.Id == list.Id).FirstOrDefault();
+            //    listToEdit = db.List.AsQueryable().Include(x => x.ProductList).Where(n => n.Id == list.Id).FirstOrDefault();
             
            
-                foreach (var item in listToEdit.ProductList)
-                {
-                    var tempItem = db.Products.AsQueryable().Where(x => x.Id == item.ProductId);
-                }
+            //    foreach (var item in listToEdit.ProductList)
+            //    {
+            //        var tempItem = db.Products.AsQueryable().Where(x => x.Id == item.ProductId);
+            //    }
             
-            currentlyEditedListId = listToEdit.Id;
-            var amount = listToEdit.ProductList.Count();
+            //currentlyEditedListId = listToEdit.Id;
+            //var amount = listToEdit.ProductList.Count();          
             return RedirectToAction(nameof(Create_list), listToEdit);
 
         }
@@ -367,21 +302,11 @@ namespace Assistant.Controllers
         {
             
                 var listToChange = db.List.AsQueryable().Where(x => x.UserId == UserId).Where(p => p.Id == ListId).FirstOrDefault();
-                if (listToChange.UserId == null)
-                {
-                    listToChange.UserId = UserId;
-                    return RedirectToAction(nameof(Public_list_load));
-                }
-                if (listToChange.UserId != null)
-                {
+
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     listToChange.UserId = ObjectId.Empty;
                     return RedirectToAction(nameof(Private_list_load));
-                }
-            
 
-
-            return RedirectToAction(nameof(Create_list));
         }
 
 
@@ -393,35 +318,27 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult AddProduct(Product product)
         {
-            product.Id = ObjectId.GenerateNewId();
-            var productList = new ProductList();
-            Product NewProd = new Product();
+            //product.Id = ObjectId.GenerateNewId();
+
             if (product.Name != null)
             {
 
-                
-                    var ProdList = db.Products.AsQueryable().Select(p => p.Name).ToList();
+                var getList = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+                var ProdList = db.Products.AsQueryable().Select(p => p.Name).ToList();
                     if (!ProdList.Contains(product.Name))
                     {
-                    NewProd.Id = product.Id;
-                    NewProd.Name = product.Name;
-                    db.Products.InsertOne(NewProd);
+                    db.Products.InsertOne(product);
+                    getList.ProductList.Add(product);
                     }
                     else
                     {
-                    NewProd = db.Products.AsQueryable().Where(p => p.Name == product.Name).FirstOrDefault();
+                    getList.ProductList.Add(product);
                     }
 
-                    var currentlyEditedList = db.List.AsQueryable().Single(x => x.Id == currentlyEditedListId);
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                    productList.ListId = currentlyEditedList.Id;
-
-                    productList.ProductId = NewProd.Id;
-                    currentlyEditedList.UserId = ObjectId.Parse(userId);
-                    db.ProductList.InsertOne(productList);
-                    
-                
+                var CurrentList = db.MongoLists.Find(x=>x.Id==currentlyEditedListId).FirstOrDefault();
+                CurrentList.ProductList.Add(product);
+                FilterDefinition<MongoDBProdList> filter = new BsonDocument("_id", currentlyEditedListId);
+                db.MongoLists.ReplaceOne(filter, CurrentList);
 
             }
             return RedirectToAction(nameof(Create_list));
@@ -430,7 +347,7 @@ namespace Assistant.Controllers
         [HttpPost]
         public IActionResult FinishList(ObjectId? id)
         {
-            List ToCheck = new List();
+            ListOfProducts ToCheck = new ListOfProducts();
             string userId = null;
             string checkPrivate = null;
             
@@ -491,7 +408,7 @@ namespace Assistant.Controllers
                 listViewModel.productLists = db.ProductList.AsQueryable().ToList();
 
             var Ids = db.List.AsQueryable().Where(x => x.UserId == userId).Include(x => x.ProductList).ThenInclude(x => x.ProductId).ToList();
-            List<List> GetLists = new List<List>();
+            List<ListOfProducts> GetLists = new List<ListOfProducts>();
             foreach (var item in Ids)
             {
                 var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
@@ -598,9 +515,9 @@ namespace Assistant.Controllers
 
 
         [HttpPost]
-        public IActionResult DeleteList(List list)
+        public IActionResult DeleteList(ListOfProducts list)
         {
-            List ToRemove = new List();
+            ListOfProducts ToRemove = new ListOfProducts();
 
 
             ToRemove = db.List.AsQueryable().Include(x => x.ProductList).Where(n => n.Id == list.Id).FirstOrDefault();
@@ -681,5 +598,156 @@ namespace Assistant.Controllers
 
             return View(JsonData);
         }
+
+        //[HttpGet]
+        //public IActionResult SelectList()
+        //{
+
+        //    listViewModel.productLists = new List<ProductList>();
+
+        //    listViewModel.productLists = db.ProductList.AsQueryable().ToList();
+
+
+        //    var Ids = db.List.AsQueryable().ThenInclude(x => x.ProductId).ToList();
+        //    List<List> GetLists = new List<List>();
+        //    foreach (var item in Ids)
+        //    {
+        //        var items = db.List.AsQueryable().Where(x => x.Id == item.Id).FirstOrDefault();
+        //        GetLists.Add(items);
+        //    }
+
+
+        //    ViewBag.Lists = GetLists;
+
+        //    return View();
+        //}
+        
+        public async void GetUsersData()
+        {
+            db.Users.DeleteMany("{}");
+            db.MongoLists.DeleteMany("{}");
+            List<ApplicationUser> UsersToAdd = new List<ApplicationUser>();
+
+            for (int i = 0; i < 79; i++)
+            {
+                var User = CreateNewUserToMongoDBAsync();
+                UsersToAdd.Add(User.Result);
+            }
+            await db.Users.InsertManyAsync(UsersToAdd);
+
+        }
+        public async Task<ApplicationUser> CreateNewUserToMongoDBAsync()
+        {
+            
+            //IPasswordHasher<ApplicationUser> MyInterface=null;
+            
+            Random GetName = new Random();
+            Random GetSurename = new Random();
+            int Name = GetName.Next(0, names.Length - 1);
+            int Surname = GetSurename.Next(0, surnames.Length - 1);
+            var email = String.Concat(names[Name], surnames[Surname], "@gmail.com");
+            ApplicationUser UserToReturn = new ApplicationUser();
+
+            UserToReturn.Id = ObjectId.GenerateNewId().ToString();
+            UserToReturn.Email = email;
+            UserToReturn.UserName = email;
+            UserToReturn.NormalizedEmail = email.ToUpper();
+            UserToReturn.NormalizedName = email.ToUpper();
+            UserToReturn.Age = GenerateAge();
+            UserToReturn.Education = GenerateEducation();
+            UserToReturn.Gender = GenerateGender();
+            UserToReturn.Salary = GenerateSalary();
+            UserToReturn.Home = GenerateHome();
+            UserToReturn.PasswordHash = _userManager.PasswordHasher.HashPassword(UserToReturn, "Dominik123!");
+            await _userManager.CreateAsync(UserToReturn, "Dominik123!");
+            
+            return UserToReturn;
+        }
+
+
+
+
+        string GenerateHome()
+        {
+            string[] HomeArray =
+            {
+                "kujawsko-pomorskie",
+                "lubelskie",
+                "lubuskie",
+                "łódzkie",
+                "małopolskie",
+                "mazowieckie",
+                "opolskie",
+                "podkarpackie",
+                "podlaskie",
+                "pomorskie",
+                "śląskie",
+                "świętokrzyskie",
+                "warmińsko-mazurskie",
+                "wielkopolskie",
+                "zachodniopomorskie",
+                "abroad"
+
+            };
+
+            Random rndHome = new Random();
+            int Index = rndHome.Next(0, HomeArray.Length);
+            return HomeArray[Index];
+        }
+        string GenerateGender()
+        {
+            string[] GenderArray =
+            {
+                "Female",
+                "Male"
+            };
+
+            Random rndHome = new Random();
+            int Index = rndHome.Next(0, GenderArray.Length);
+            return GenderArray[Index];
+        }
+        string GenerateEducation()
+        {
+            string[] EducationArray =
+            {
+                "podstawowe",
+                "gimnazjalne",
+                "zasadnicze zawodowe",
+                "zasadnicze branzowe",
+                "srednie",
+                "wyzsze"
+            };
+
+            Random rndHome = new Random();
+            int Index = rndHome.Next(0, EducationArray.Length);
+            return EducationArray[Index];
+        }
+        string GenerateAge()
+        {
+            string[] AgeArray =
+            {
+                "ponizej 18 roku zycia",
+                "powyzej 18 roku zycia"
+            };
+
+            Random rndHome = new Random();
+            int Index = rndHome.Next(0, AgeArray.Length);
+            return AgeArray[Index];
+        }
+        string GenerateSalary()
+        {
+            string[] SalaryArray =
+            {
+            "Ponizej 3000zl",
+            "3000-5000zl",
+            "Powyzej 5000zł"
+            };
+
+            Random rndHome = new Random();
+            int Index = rndHome.Next(0, SalaryArray.Length);
+            return SalaryArray[Index];
+        }
     }
+
+
 }

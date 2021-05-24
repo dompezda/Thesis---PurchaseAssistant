@@ -1,4 +1,4 @@
-﻿@model Assistant.Models.List
+﻿@model Assistant.Models.ListOfProducts
 @{
     ViewData["Title"] = "List_name";
 }
@@ -17,21 +17,7 @@
                 <input asp-for="Name" class="form-control" id="Name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
                 <br />
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <span class="checkboxtext">
-                        <div class="row">
-                            <div class=" col-10">
-
-                                Lista prywatna
-                            </div>
-                            <div class="col-2">
-                                <input id="IsPrivate" type="checkbox"  name="IsPrivate" checked />
-
-                            </div>
-                        </div>
-                    </span>
-                }
+                
             </div>
 
 

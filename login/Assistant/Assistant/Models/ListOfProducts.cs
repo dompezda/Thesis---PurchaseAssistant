@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Server.Kestrel.Core.Features;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -8,19 +7,23 @@ using System.Threading.Tasks;
 
 namespace Assistant.Models
 {
-    public class Product
+    public class ListOfProducts
     {
-
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
         public string Name { get; set; }
+        public List<ProductList> ProductList { get; set; }
+        public DateTime CreateDate { get; set; }
+        public ObjectId UserId { get; set; }
 
-        
-        public Product()
+        public ListOfProducts()
         {
-            Id = ObjectId.GenerateNewId();
+
+
+            
+
         }
+
     }
 }

@@ -63,6 +63,20 @@ namespace Assistant.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Salary")]
             public string Salary { get; set; }
 
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Age")]
+            public string Age { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Height")]
+            public string Height { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Education")]
+            public string Education { get; set; }
+
+
         }
 
         public async Task<IActionResult> OnGetAsync() //ADDED
