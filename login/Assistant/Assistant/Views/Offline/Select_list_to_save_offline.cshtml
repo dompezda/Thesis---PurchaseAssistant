@@ -1,4 +1,4 @@
-﻿@model List<ListOfProducts>
+﻿@model List<Assistant.Models.MongoDBProdList>
 @{
     ViewData["Title"] = "Wczytaj Liste";
 }
@@ -29,19 +29,19 @@
         </div>
         <div class="row">
             <form asp-controller="Offline" asp-action="DisplayOfflineList" method="post">
-                <input type="hidden" name="id" value="@list.Id" />
-                <button class="btn-primary" onclick="GetListId(@list.Id)" style="margin-bottom:3px; width:100px;height:30px; margin-left:15px">Zapisz listę</button>
+                <input type="hidden" name="Id" value="@list.Id.ToString()" />
+                <button class="btn-primary" onclick="GetListId(72)" style="margin-bottom:3px; width:100px;height:30px; margin-left:15px">Zapisz listę</button>
             </form>
         </div>
 
 
         <div class="card">
-            @foreach (var productList in list.ProductList)
+            @foreach (var item in list.ProductList)
             {
                 <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
                     <div class="card-body">
 
-                       @*@productList.Product.Name*@
+                        @item.Name
 
                     </div>
                 </div>
@@ -52,7 +52,7 @@
 </div>
 <script>
     function GetListId(Id) {
-        localStorage.setItem("IdSavedList", Id);
-        sessionStorage.setItem("IdSavedList", Id);
+        localStorage.setItem("IdSelectedList", Id);
+        sessionStorage.setItem("IdSelectedList", Id);
     }
 </script>

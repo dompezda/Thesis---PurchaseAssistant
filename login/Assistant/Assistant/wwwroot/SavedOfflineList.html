@@ -2,35 +2,27 @@
     <title>Zapisana lista</title>
 </head>
 <body>
-    <h1>Tryb Offline</h1>
-    <h1>Brak internetu</h1>
-    <h1>Lista zakupów</h1>
-    <div id="app" style="font-size:32px; font-family:'Times New Roman'">
-
+    <h4>Ostatnio zapisana lista:</h4>
+    <div id="app">
 
         <ol>
-
             <li v-for="item in items">
 
-
                 <label>
-
                     <input type="checkbox"
                            v-on:change="toggle(item)"
                            v-bind:checked="item.Done">
-                    <span class="checkboxtext">
-                        <del v-if="item.Done">
-                            {{ item.Name}}
-                        </del>
-                        <span v-else>
-                            {{ item.Name }}
-                        </span>
+
+                    <del v-if="item.Done">
+                        {{ item.Name}}
+                    </del>
+                    <span v-else>
+                        {{ item.Name }}
                     </span>
                 </label>
 
             </li>
         </ol>
-
     </div>
 </body>
 
@@ -99,17 +91,19 @@
     del {
         color: rgba(0, 0, 0, 0.3);
     }
-    input[type=checkbox]{
-        -ms-transform:scale(2);
-        -moz-transform:scale(2);
-        -webkit-transform:scale(2);
-        -o-transform:scale(2);
-        transform:scale(2);
+
+    input[type=checkbox] {
+        -ms-transform: scale(2);
+        -moz-transform: scale(2);
+        -webkit-transform: scale(2);
+        -o-transform: scale(2);
+        transform: scale(2);
         padding: 10px;
     }
-    .checkboxtext{
-        font-size:110%;
-        display:inline;
+
+    .checkboxtext {
+        font-size: 110%;
+        display: inline;
     }
 </style>
 

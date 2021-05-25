@@ -28,13 +28,13 @@
                     </form>
 
                     <form asp-controller="Home" asp-action="DeleteList" method="post">
-                        <input type="hidden" name="list.Id" value="@list" />
+                        <input type="hidden" name="Id" value="@list.Id.ToString()" />
                         <button class="btn-primary" style="margin-bottom:3px; width:100px; height:30px; margin-left:20px">Usuń</button>
                     </form>
 
                     <form asp-controller="Home" asp-action="ShoppingView" method="post">
-                        <input type="hidden" name="id" value="@list" />
-                        <button class="btn-primary" onclick="GetListId(@list.Id)" style="margin-bottom:3px; width:100px;height:30px; margin-left:20px">Wybierz</button>
+                        <input type="hidden" name="Id" value="@list.Id.ToString()" />
+                        <button class="btn-primary" onclick="GetListId(72)" style="margin-bottom:3px; width:100px;height:30px; margin-left:20px">Wybierz</button>
                     </form>
                 </div>
                                 <div class="card">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     }
-                                </div>k++;
+                    </div>k++;
     }
 </div>
 
