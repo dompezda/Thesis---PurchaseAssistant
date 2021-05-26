@@ -1,7 +1,5 @@
 ﻿@model Assistant.Models.MongoDBProdList
-@{
-    ViewData["Title"] = "Stworz Liste";
-}
+@{ ViewData["Title"] = "Stworz Liste"; }
 <div class="row" style="margin-left:0%">
     <h4> Tworzenie Listy</h4>
     <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:37%;" />
@@ -18,12 +16,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
 
-                <input asp-for="Name" class="form-control" id="Name" value=""/>
+                <input asp-for="Name" class="form-control" id="Name" value="" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="row mt-3"></div>
             <div class="form-group">
-                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj produkt</button>
+                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;" id="Add_Prod">Dodaj produkt</button>
             </div>
         </form>
 
@@ -31,30 +29,43 @@
         @*<form action="FinishList" method="post">
             <button class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
         </form>*@
-    <form asp-controller="Home" asp-action="FinishList" method="post">
-        <button class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
-    </form>
+        <form asp-controller="Home" asp-action="FinishList" method="post">
+            <button class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
+        </form>
 
-            @*@if (User.Identity.IsAuthenticated && Model.IsPrivate == false)
-            {
-                <div class="row mt-3"></div>
-                <form asp-controller="Home" asp-action="ChangeType" method="post">
-                   
-                    <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczną</button>
-                </form>
-            }
-            @if (User.Identity.IsAuthenticated && Model.IsPrivate != false)
-            {
-                <div class="row mt-3"></div>
-                <form asp-controller="Home" asp-action="ChangeType" method="post">
+        <button class="btn-primary" type="button" value="Pokaż propozycje"  id="GetPropositions" >
+            <div id="PropositionText">
+                Pokaż propozycje
+            </div>
+        </button>
 
-                    <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczna</button>
-                </form>
-            }*@
+
+        @*@if (User.Identity.IsAuthenticated && Model.IsPrivate == false)
+        {
+            <div class="row mt-3"></div>
+            <form asp-controller="Home" asp-action="ChangeType" method="post">
+
+                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczną</button>
+            </form>
+        }
+        @if (User.Identity.IsAuthenticated && Model.IsPrivate != false)
+        {
+            <div class="row mt-3"></div>
+            <form asp-controller="Home" asp-action="ChangeType" method="post">
+
+                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczna</button>
+            </form>
+        }*@
+        <div id="div1">
+
+        </div>
+
     </div>
 </div>
 
-
+@*<div id="divPartial">
+    @await Html.PartialAsync("PropositionOfProducts")
+</div>*@
 
 @if (Model.ProductList.Count() > 0)
 {
@@ -62,6 +73,39 @@
 }
 else
 {
-    <h1> List is empty</h1>
-}
+<h1> List is empty</h1>}
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    var newText = "Odśwież propozycje"
+    $("#GetPropositions").click(function() {
+        $(this).text(newText);
+    });
+
+    $(document).ready(function () {
+
+        $("#GetPropositions").click(function () {
+            
+            $("#div1").load("/Home/PropositionOfProducts");
+        });
+
+    });
+
+</script>
+
+@*<script type="text/javascript">
+    $("#Add_Prod").click(function (e) {
+        console.log("clicked");
+        $('#form').submit();
+        $('#divPartial').load('/Home/PropositionOfProducts');
+    });
+</script>*@ 
+    @*<script>
+ $(document).ready(function () {
+$("#GetPropositions").click(function () {
+$("#div1").load("/Home/PropositionOfProducts");
+});
+    });
+    </script>*@

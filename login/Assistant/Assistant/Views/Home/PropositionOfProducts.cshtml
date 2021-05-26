@@ -1,0 +1,21 @@
+﻿
+<div class="col-12">
+    <h2>Lista propozycji</h2>
+</div>
+
+@*@foreach (var item in ViewBag.Propositon)
+    {
+        <div class="row">
+            <div class=" col-10">
+                @item.Name
+            </div>
+        </div>
+    }*@
+
+@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
+@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
+@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
+@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
+@ViewData.Where(x => x.Key == "Random").Select(x => x.Value).FirstOrDefault()
+
+

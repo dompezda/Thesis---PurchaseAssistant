@@ -8,16 +8,13 @@ using Assistant.Models;
 using System.Net;
 using Assistant.Data;
 using Assistant.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using System.Security.Cryptography.X509Certificates;
 using MongoDB.Driver;
 using MongoDB.Bson;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-using MongoDB.Driver.Builders;
+
+
 
 namespace Assistant.Controllers
 {
@@ -126,17 +123,16 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            //bool Check = CheckForInternetConnection();
+            bool Check = CheckForInternetConnection();
 
-            //if (Check == true)
-            //{
-            //    return RedirectToAction(nameof(Main_menu));
-            //}
-            //else
-            //{
-            //    return View("~/View/Utility/Connection_Error.cshtml");
-            //}
-            return RedirectToAction(nameof(Main_menu));
+            if (Check == true)
+            {
+                return RedirectToAction(nameof(Main_menu));
+            }
+            else
+            {
+                return View("~/View/Utility/Connection_Error.cshtml");
+            }
         }
 
         [HttpPost]
@@ -146,7 +142,6 @@ namespace Assistant.Controllers
             currentlyEditedList.UserId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             currentlyEditedList.Name = Name;
             currentlyEditedList.Id = ObjectId.GenerateNewId();
-            //listViewModel.productsToPartial = currentlyEditedList.ProductList;
 
             currentlyEditedListId = currentlyEditedList.Id;
             db.MongoLists.InsertOne(currentlyEditedList);
@@ -161,7 +156,6 @@ namespace Assistant.Controllers
 
             var getListFromDB = db.MongoLists.Find(x => x.Id == currentlyEditedListId).FirstOrDefault();
             var Prods = getListFromDB.ProductList;
-            //listViewModel.productList = new ProductList();
             return View("~/Views/Home/Create_list.cshtml", getListFromDB);
         }
        
@@ -169,8 +163,6 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult List_name()
         {
-
-
             return View("~/Views/Utility/List_name.cshtml");
         }
 
@@ -194,13 +186,8 @@ namespace Assistant.Controllers
                 }
                 }
  
-
-            //var Ids = db.List.AsQueryable().Where(x => x.UserId == userId).Select(x=>x.Id).ToList();
             List<MongoDBProdList> Lists = db.MongoLists.AsQueryable().Where(x => x.UserId == userId).ToList();
 
-
-            //ViewBag.Lists = db.MongoLists.AsQueryable().Where(x => x.UserId == userId).ToList().FirstOrDefault();
-            
 
             return View("~/Views/ListDisplay/Private_list_load.cshtml", Lists);
         }
@@ -282,18 +269,7 @@ namespace Assistant.Controllers
             MongoDBProdList listToEdit = new MongoDBProdList();
             listToEdit = db.MongoLists.Find(x => x.Id == ObjectId.Parse(Id)).FirstOrDefault();
             currentlyEditedListId = listToEdit.Id;
-            //listToEdit.ProductList = new List<ProductList>();
-            
-            //    listToEdit = db.List.AsQueryable().Include(x => x.ProductList).Where(n => n.Id == list.Id).FirstOrDefault();
-            
-           
-            //    foreach (var item in listToEdit.ProductList)
-            //    {
-            //        var tempItem = db.Products.AsQueryable().Where(x => x.Id == item.ProductId);
-            //    }
-            
-            //currentlyEditedListId = listToEdit.Id;
-            //var amount = listToEdit.ProductList.Count();          
+         
             return RedirectToAction(nameof(Create_list), listToEdit);
 
         }
@@ -478,10 +454,30 @@ namespace Assistant.Controllers
 
 
         [HttpGet]
-        public IActionResult ProductList(List<Product> list)
+        public IActionResult ProductList(MongoDBProdList list)
         {
 
-            return PartialView(list);
+            return PartialView(list.ProductList);
+        }
+
+        [HttpGet]
+        public IActionResult PropositionOfProducts()
+        {
+            Random rnd = new Random();
+            MongoDBProdList MyList = new MongoDBProdList();
+
+            var test = new Product
+            {
+                Id = ObjectId.GenerateNewId(),
+                Name = "test"
+
+            };
+            ViewData["Jaccard"] = test.Name;
+            ViewData["Euclidean"] = test.Name;
+            ViewData["AssociationRule"] = test.Name;
+            ViewData["Caran"] = test.Name;
+            ViewData["Random"] = rnd.Next(1, 100);
+            return PartialView("PropositionOfProducts");
         }
 
 
@@ -574,9 +570,7 @@ namespace Assistant.Controllers
         }
         public async Task<ApplicationUser> CreateNewUserToMongoDBAsync()
         {
-            
-            //IPasswordHasher<ApplicationUser> MyInterface=null;
-            
+
             Random GetName = new Random();
             Random GetSurename = new Random();
             int Name = GetName.Next(0, names.Length - 1);
