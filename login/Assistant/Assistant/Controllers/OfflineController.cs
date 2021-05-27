@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assistant.Data;
 using Assistant.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -16,6 +17,7 @@ using Newtonsoft.Json;
 
 namespace Assistant.Controllers
 {
+
     [Route("[controller]/[action]")]
     public class OfflineController : Controller
     {

@@ -1,5 +1,5 @@
 ﻿
-<div class="col-12">
+<div class="col-12" style="margin-left: auto; margin-right: auto; text-align: center;">
     <h2>Lista propozycji</h2>
 </div>
 
@@ -12,10 +12,63 @@
         </div>
     }*@
 
-@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
-@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
-@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
-@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
-@ViewData.Where(x => x.Key == "Random").Select(x => x.Value).FirstOrDefault()
 
 
+
+
+<form asp-controller="Home" asp-action="AddProduct" method="post">
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            @ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
+        </div>
+        <div class="col">
+            <button type="submit" class="btn-primary">Dodaj produkt</button>
+        </div>
+    </div>
+</form>
+<div class="row mt-3"></div>
+<form asp-controller="Home" asp-action="AddProduct" method="post">
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            @ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
+        </div>
+        <div class="col">
+            <button type="submit" class="btn-primary">Dodaj produkt</button>
+        </div>
+    </div>
+</form>
+<div class="row mt-3"></div>
+<form asp-controller="Home" asp-action="AddProduct" method="post">
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
+        </div>
+        <div class="col">
+            <button type="submit" class="btn-primary">Dodaj produkt</button>
+        </div>
+    </div>
+</form>
+<div class="row mt-3"></div>
+<form asp-controller="Home" asp-action="AddProduct" method="post">
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
+        </div>
+        <div class="col">
+            <button type="submit" class="btn-primary">Dodaj produkt</button>
+        </div>
+    </div>
+</form>
+<div class="row mt-3"></div>

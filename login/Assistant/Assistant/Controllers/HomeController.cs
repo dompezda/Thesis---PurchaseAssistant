@@ -43,9 +43,9 @@ namespace Assistant.Controllers
         //protected ApplicationDbContext ApplicationDbContext { get; set; }
         public MongoDbContext db = new MongoDbContext();
         private UserManager<ApplicationUser> _userManager;
-
+        AlgorithmsController ctrl = new AlgorithmsController();
         //public MongoDbContext MongoDbContext = new MongoDbContext();
-   
+
 
         [HttpGet]
         public IActionResult Connection_Error()
@@ -69,32 +69,32 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Main_menu()
         {
-            List<Product> ProdList = new List<Product>();
-            ProdList = db.Products.AsQueryable().ToList();
-            //Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
-            ////GetUsersData();
+            //GetUsersData();
+            //List<Product> ProdList = new List<Product>();
+            //ProdList = db.Products.AsQueryable().ToList();
+            
+
             //int amount = db.Products.AsQueryable().Count();
             //if (amount >= 5)
             //    amount = 5;
-
+            //Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             //foreach (var item in ProdList)
             //{
-            //    GetCount.Add(item.Id,0);
+            //    GetCount.Add(item.Id, 0);
             //}
-            //var ProdCheck = db.MongoLists.AsQueryable().Select(x=>x.ProductList).ToList();
-            
+            //var ProdCheck = db.MongoLists.AsQueryable().Select(x => x.ProductList).ToList();
+
             //foreach (var currentList in ProdCheck)
             //{
             //    foreach (var item in currentList)
             //    {
-            //        GetCount[item.Id]+=1;
+            //        GetCount[item.Id] += 1;
             //    }
             //}
-            
             //var prodIds = db.Products.AsQueryable().ToList();
-            //var itemsToCheck=GetCount.OrderByDescending(x => x.Value).ToList().Take(5).ToList();
-            
-           List<Product> sendListToFrequentList = new List<Product>();
+            //var itemsToCheck = GetCount.OrderByDescending(x => x.Value).ToList().Take(5).ToList();
+
+            List<Product> sendListToFrequentList = new List<Product>();
             //foreach (var item in itemsToCheck)
             //{
             //    Product prod = db.Products.AsQueryable().Where(x => x.Id == item.Key).FirstOrDefault();
@@ -463,19 +463,14 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult PropositionOfProducts()
         {
+            var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var JaccardProd=ctrl.Jaccard(currentlyEditedListId, userId);
             Random rnd = new Random();
-            MongoDBProdList MyList = new MongoDBProdList();
-
-            var test = new Product
-            {
-                Id = ObjectId.GenerateNewId(),
-                Name = "test"
-
-            };
-            ViewData["Jaccard"] = test.Name;
-            ViewData["Euclidean"] = test.Name;
-            ViewData["AssociationRule"] = test.Name;
-            ViewData["Caran"] = test.Name;
+            ViewData["Jaccard"] = JaccardProd.Name;
+            ViewData["JaccardId"] = JaccardProd.Id;
+            ViewData["Euclidean"]= "Eucliedan";
+            ViewData["AssociationRule"] = "AssociationRule";
+            ViewData["Caran"] = "Caran";
             ViewData["Random"] = rnd.Next(1, 100);
             return PartialView("PropositionOfProducts");
         }
@@ -560,7 +555,7 @@ namespace Assistant.Controllers
             db.MongoLists.DeleteMany("{}");
             List<ApplicationUser> UsersToAdd = new List<ApplicationUser>();
 
-            for (int i = 0; i < 79; i++)
+            for (int i = 0; i < 80; i++)
             {
                 var User = CreateNewUserToMongoDBAsync();
                 UsersToAdd.Add(User.Result);
@@ -570,7 +565,7 @@ namespace Assistant.Controllers
         }
         public async Task<ApplicationUser> CreateNewUserToMongoDBAsync()
         {
-
+            
             Random GetName = new Random();
             Random GetSurename = new Random();
             int Name = GetName.Next(0, names.Length - 1);
@@ -654,15 +649,10 @@ namespace Assistant.Controllers
         }
         string GenerateAge()
         {
-            string[] AgeArray =
-            {
-                "ponizej 18 roku zycia",
-                "powyzej 18 roku zycia"
-            };
 
             Random rndHome = new Random();
-            int Index = rndHome.Next(0, AgeArray.Length);
-            return AgeArray[Index];
+            int Index = rndHome.Next(18,65);
+            return Index.ToString();
         }
         string GenerateSalary()
         {

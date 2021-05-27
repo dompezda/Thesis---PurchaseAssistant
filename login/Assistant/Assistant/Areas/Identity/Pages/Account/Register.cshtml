@@ -174,26 +174,23 @@
 
             </div>
             <div class="form-group">
-               <label asp-for="Input.Age"> Zarobki </label><br />
+                <label asp-for="Input.Age" typeof="number"></label>
+                <input asp-for="Input.Age" class="form-control" />
+            </div>   
+            @*<div class="form-group">
+            <label asp-for="Input.Height"> Wzrost </label><br />
 
-               <label><input asp-for="Input.Age" value="Poniżej 18 roku życia" type="radio" />Poniżej 18 roku życia</label><br />
-               <label><input asp-for="Input.Age" value="Powyżej 18 roku życia" type="radio" />Powyżej 18 roku życia</label><br />
-
-
-            </div>            @*<div class="form-group">
-                <label asp-for="Input.Height"> Wzrost </label><br />
-
-                <label><input asp-for="Input.Height" value="Poniżej 165cm" type="radio" />Poniżej 3000zł</label><br />
-                <label><input asp-for="Input.Height" value="Powyżej 165cm" type="radio" />3000-5000zł</label><br />
+            <label><input asp-for="Input.Height" value="Poniżej 165cm" type="radio" />Poniżej 3000zł</label><br />
+            <label><input asp-for="Input.Height" value="Powyżej 165cm" type="radio" />3000-5000zł</label><br />
 
 
-            </div>*@            <div class="form-group">
-    <label asp-for="Input.Education"> Wykształcenie </label><br />
+        </div>*@            <div class="form-group">
+                <label asp-for="Input.Education"> Wykształcenie </label><br />
 
-    @Html.DropDownListFor(model => model.Input.Education, Education, "Miejsce zamieszkania")
+                @Html.DropDownListFor(model => model.Input.Education, Education, "Miejsce zamieszkania")
 
 
-</div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
