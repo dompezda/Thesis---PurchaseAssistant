@@ -12,18 +12,17 @@
 <div class="row">
     <div class="col-md-4">
 
-        <form asp-controller="Home" asp-action="AddProduct" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+        @*<form asp-controller="Home" asp-action="AddProduct" method="post" id="AddProductName">*@
+                @*<input asp-for="Name" class="form-control" id="ProdName" value="" />
+                <span asp-validation-for="Name" class="text-danger"></span>*@
+                <input type="text" name="ProdName" id="ProdName" value="test"/>
+      
 
-                <input asp-for="Name" class="form-control" id="Name" value="" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
             <div class="row mt-3"></div>
             <div class="form-group">
-                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;" id="Add_Prod">Dodaj produkt</button>
+                <button type="submit" id="AddProduct" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj produkt</button>
             </div>
-        </form>
+        @*</form>*@
 
         <div class="row mt-3"></div>
         @*<form action="FinishList" method="post">
@@ -83,14 +82,30 @@ else
     $("#GetPropositions").click(function() {
         $(this).text(newText);
     });
-
     $(document).ready(function () {
 
         $("#GetPropositions").click(function () {
-            
+
             $("#div1").load("/Home/PropositionOfProducts");
         });
+    });
 
+
+    $(document).ready(function () {
+        $("#AddProduct").click(function () {
+            var prodName = $("#ProdName").val();
+            console.log(prodName);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddProduct", "Home")',
+                contentType: "application/json; charset=utf-8",
+                data: prodName,
+                error: function (err) {
+                    console.log(err)
+             }
+            });
+        });
     });
 
 </script>

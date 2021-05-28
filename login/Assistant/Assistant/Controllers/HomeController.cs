@@ -304,17 +304,17 @@ namespace Assistant.Controllers
                 var getList = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
                 getList.ProductList = new List<Product>();
                 var ProdList = db.Products.AsQueryable().Select(p => p.Name).ToList();
-                    if (!ProdList.Contains(product.Name))
-                    {
+                if (!ProdList.Contains(product.Name))
+                {
                     db.Products.InsertOne(product);
                     getList.ProductList.Add(product);
-                    }
-                    else
-                    {
+                }
+                else
+                {
                     getList.ProductList.Add(product);
-                    }
+                }
 
-                var CurrentList = db.MongoLists.Find(x=>x.Id==currentlyEditedListId).FirstOrDefault();
+                var CurrentList = db.MongoLists.Find(x => x.Id == currentlyEditedListId).FirstOrDefault();
                 CurrentList.ProductList.Add(product);
                 FilterDefinition<MongoDBProdList> filter = new BsonDocument("_id", currentlyEditedListId);
                 db.MongoLists.ReplaceOne(filter, CurrentList);
@@ -465,10 +465,12 @@ namespace Assistant.Controllers
         {
             var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var JaccardProd=ctrl.Jaccard(currentlyEditedListId, userId);
+            var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
             Random rnd = new Random();
             ViewData["Jaccard"] = JaccardProd.Name;
             ViewData["JaccardId"] = JaccardProd.Id;
-            ViewData["Euclidean"]= "Eucliedan";
+            ViewData["Euclidean"] = EuclideanProd.Name;
+            ViewData["EuclideanId"] = EuclideanProd.Id;
             ViewData["AssociationRule"] = "AssociationRule";
             ViewData["Caran"] = "Caran";
             ViewData["Random"] = rnd.Next(1, 100);
@@ -599,16 +601,16 @@ namespace Assistant.Controllers
                 "kujawsko-pomorskie",
                 "lubelskie",
                 "lubuskie",
-                "łódzkie",
-                "małopolskie",
+                "lodzkie",
+                "malopolskie",
                 "mazowieckie",
                 "opolskie",
                 "podkarpackie",
                 "podlaskie",
                 "pomorskie",
-                "śląskie",
-                "świętokrzyskie",
-                "warmińsko-mazurskie",
+                "slaskie",
+                "swietokrzyskie",
+                "warminsko-mazurskie",
                 "wielkopolskie",
                 "zachodniopomorskie",
                 "abroad"

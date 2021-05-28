@@ -1,5 +1,5 @@
 ﻿
-<div class="col-12" style="margin-left: auto; margin-right: auto; text-align: center;">
+<div class="lead">
     <h2>Lista propozycji</h2>
 </div>
 
@@ -11,9 +11,6 @@
             </div>
         </div>
     }*@
-
-
-
 
 
 <form asp-controller="Home" asp-action="AddProduct" method="post">
@@ -35,7 +32,7 @@
         <div class="col">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()" />
             @ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
         </div>
         <div class="col">
@@ -49,7 +46,7 @@
         <div class="col">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()" />
             @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
         </div>
         <div class="col">
@@ -63,7 +60,7 @@
         <div class="col">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()" />
             @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
         </div>
         <div class="col">
@@ -72,3 +69,17 @@
     </div>
 </form>
 <div class="row mt-3"></div>
+
+<script>
+    var newText = "Odśwież propozycje"
+    $("#GetPropositions").click(function() {
+        $(this).text(newText);
+    });
+    $(document).ready(function () {
+
+        $("#GetPropositions").click(function () {
+
+            $("#div1").load("/Home/PropositionOfProducts");
+        });
+    });
+</script>
