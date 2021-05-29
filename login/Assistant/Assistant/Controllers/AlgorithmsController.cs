@@ -113,6 +113,57 @@ namespace Assistant.Controllers
         }
 
 
+        public Product AssociationRule(ObjectId listId, ObjectId userId)
+        {
+            
+            Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
+            var Prods = db.Products.AsQueryable().ToList();
+            var GetList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            int counter = Prods.Count;
+            List<ObjectId> GetListIds = new List<ObjectId>();
+            GetListIds = GetList.ProductList.Select(x => x.Id).ToList();
+            for (int i = 0; i < counter; i++)
+            {
+                if (!GetListIds.Contains(Prods[i].Id))
+                {
+                    GetCount.Add(Prods[i].Id, 0);
+                }
+            }
+           
+            
+            if (GetList.ProductList.Count > 0)
+            {
+                for (int i = 0; i < GetList.ProductList.Count; i++)
+                {
+                    var ListToCheck = db.MongoLists.AsQueryable().Where(x => x.ProductList.Contains(GetList.ProductList[i])).ToList();
+                    for (int y = 0; y < ListToCheck.Count; y++)
+                    {
+                        var CurrentlyCheckingList = ListToCheck[y];
+                        for (int j = 0; j < CurrentlyCheckingList.ProductList.Count; j++)
+                        {
+                            if (GetCount.Keys.Contains(CurrentlyCheckingList.ProductList[j].Id))
+                            {
+                                var GetId = CurrentlyCheckingList.ProductList[j].Id;
+                                var Value = GetCount.Where(x => x.Key == GetId).Select(x => x.Value);
+                                GetCount[GetId] += 1;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            Product ProdProposition = new Product();
+            var ObjId=GetCount.OrderBy(x => x.Value).Select(x=>x.Key).Take(1).FirstOrDefault();
+            ProdProposition = db.Products.AsQueryable().Where(x => x.Id == ObjId).FirstOrDefault();
+
+
+
+
+            return ProdProposition;
+        }
+
+
 
 
         public double GetNecessaryData(ObjectId userId,int algh)

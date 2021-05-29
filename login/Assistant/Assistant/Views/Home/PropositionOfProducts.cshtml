@@ -46,20 +46,6 @@
         <div class="col">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()" />
-            @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
-        </div>
-        <div class="col">
-            <button type="submit" class="btn-primary">Dodaj produkt</button>
-        </div>
-    </div>
-</form>
-<div class="row mt-3"></div>
-<form asp-controller="Home" asp-action="AddProduct" method="post">
-    <div class="row">
-        <div class="col">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
             <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()" />
             @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
         </div>
@@ -68,11 +54,31 @@
         </div>
     </div>
 </form>
+@{if (ViewData["AssociationRule"] != null)
+    {
+        <div class="row mt-3"></div>
+
+        <form asp-controller="Home" asp-action="AddProduct" method="post">
+            <div class="row">
+                <div class="col">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()" />
+                    @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn-primary">Dodaj produkt</button>
+                </div>
+            </div>
+        </form>
+    }
+}
+
 <div class="row mt-3"></div>
 
 <script>
     var newText = "Odśwież propozycje"
-    $("#GetPropositions").click(function() {
+    $("#GetPropositions").click(function () {
         $(this).text(newText);
     });
     $(document).ready(function () {

@@ -311,6 +311,7 @@ namespace Assistant.Controllers
                 }
                 else
                 {
+                    product = db.Products.AsQueryable().Where(x => x.Name == product.Name).FirstOrDefault();
                     getList.ProductList.Add(product);
                 }
 
@@ -463,15 +464,22 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult PropositionOfProducts()
         {
+            var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
             var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var JaccardProd=ctrl.Jaccard(currentlyEditedListId, userId);
-            var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
+            //var JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
+            //var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
+            if (ListCheck.Count>0)
+            {
+                var AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
+                ViewData["AssociationRule"] = AssociationProd;
+                ViewData["AssociationRuleId"] = AssociationProd.Id;
+            }
+
             Random rnd = new Random();
-            ViewData["Jaccard"] = JaccardProd.Name;
-            ViewData["JaccardId"] = JaccardProd.Id;
-            ViewData["Euclidean"] = EuclideanProd.Name;
-            ViewData["EuclideanId"] = EuclideanProd.Id;
-            ViewData["AssociationRule"] = "AssociationRule";
+            //ViewData["Jaccard"] = JaccardProd.Name;
+            //ViewData["JaccardId"] = JaccardProd.Id;
+            //ViewData["Euclidean"] = EuclideanProd.Name;
+            //ViewData["EuclideanId"] = EuclideanProd.Id;
             ViewData["Caran"] = "Caran";
             ViewData["Random"] = rnd.Next(1, 100);
             return PartialView("PropositionOfProducts");
