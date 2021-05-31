@@ -2,6 +2,7 @@
 using Assistant.Data;
 using Assistant.Models;
 using Assistant.Models.similarity;
+using Encog.App.Quant.Loader.Yahoo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -21,6 +22,8 @@ namespace Assistant.Controllers
         public MongoDbContext db = new MongoDbContext();
         public ApplicationUser CurrentUser;
         //public static ObjectId userId;
+
+
         public Product Jaccard(ObjectId listId,ObjectId userId)
         {
             List<SimilarityListObject> JaccardSimilarityList = new List<SimilarityListObject>();
@@ -152,14 +155,122 @@ namespace Assistant.Controllers
                     }
                 }
             }
-
             Product ProdProposition = new Product();
             var ObjId=GetCount.OrderBy(x => x.Value).Select(x=>x.Key).Take(1).FirstOrDefault();
             ProdProposition = db.Products.AsQueryable().Where(x => x.Id == ObjId).FirstOrDefault();
+            return ProdProposition;
+        }
 
 
+        public Product CaranAlgh(ObjectId listId, ObjectId userId)
+        {
+            List<SimilarityListObject> CaranSimilarityList = new List<SimilarityListObject>();
+            CurrentUser = db.Users.AsQueryable().Where(x => x.Id == userId.ToString()).FirstOrDefault();
+            Product ProdProposition = new Product();
+            var UsersList = db.Users.AsQueryable().ToList();
+
+            foreach (var item in UsersList)
+            {
+                if (item.Id != userId.ToString())
+                {
+                    SimilarityListObject jaccard = new SimilarityListObject()
+                    {
+                        userId = ObjectId.Parse(item.Id),
+                        similarityValue = 0
+                    };
+                    CaranSimilarityList.Add(jaccard);
+                }
+            }
+            foreach (var item in CaranSimilarityList)
+            {
+                var GetValue = GetNecessaryData(item.userId, 1);
+                item.similarityValue = GetValue;
+            }
+            var Winner = CaranSimilarityList.OrderBy(x => x.similarityValue).Select(x => x.userId).Take(6).ToList();
+            List<ApplicationUser> ListToEuclidean = new List<ApplicationUser>();
+            for (int i = 0; i < Winner.Count; i++)
+            {
+                ListToEuclidean.Add(UsersList.Where(x => x.Id == Winner.ElementAt(i).ToString()).FirstOrDefault());
+            }
+            List<SimilarityListObject> EulideanSimilarityList = new List<SimilarityListObject>();
+            foreach (var item in ListToEuclidean)
+            {
+                    SimilarityListObject euclidean = new SimilarityListObject()
+                    {
+                        userId = ObjectId.Parse(item.Id),
+                        similarityValue = 0
+                    };
+                    EulideanSimilarityList.Add(euclidean);
+            }
+            foreach (var item in EulideanSimilarityList)
+            {
+                var GetValue = GetNecessaryData(item.userId, 2);
+                item.similarityValue = GetValue;
+            }
+            var ListAfterEuclidean=EulideanSimilarityList.OrderBy(x => x.similarityValue).Select(x=>x.userId).Take(3).ToList();
+
+            List<CaranAlghGetProds> GetUsersProds = new List<CaranAlghGetProds>();
+            Dictionary<ObjectId, int> GetBestProducts = new Dictionary<ObjectId, int>();
+            var currentEditedList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            foreach (var item in ListAfterEuclidean)
+            {
+                var userList = db.MongoLists.AsQueryable().Where(x => x.UserId == item).ToList();
+                foreach (var listItem in userList)
+                {
+                    var currentList = listItem.ProductList;
+                    
+                    foreach (var prodItem in currentList)
+                    {
+                        if (!currentEditedList.ProductList.Contains(prodItem))
+                        { 
+                            if (GetBestProducts.ContainsKey(prodItem.Id))
+                            {
+                                GetBestProducts[prodItem.Id] += 1;
+                            }
+                            else
+                            {
+                                 GetBestProducts.Add(prodItem.Id,1);
+                            }
+                        }
+                    }
+                }
+            }
+            var CurrentProds = GetBestProducts.OrderBy(x => x.Value).Select(x => x.Key).Take(3).ToList();
+            Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
+            var Prods = db.Products.AsQueryable().ToList();
+            int counter = Prods.Count;
+            List<ObjectId> GetListIds = new List<ObjectId>();
+            GetListIds = currentEditedList.ProductList.Select(x => x.Id).ToList();
+            for (int i = 0; i < counter; i++)
+            {
+                if (!GetListIds.Contains(Prods[i].Id))
+                {
+                    GetCount.Add(Prods[i].Id, 0);
+                }
+            }
 
 
+                for (int i = 0; i < CurrentProds.Count; i++)
+                {
+                var prod = db.Products.AsQueryable().Where(x => x.Id == CurrentProds[i]).FirstOrDefault();
+                    var ListToCheck = db.MongoLists.AsQueryable().Where(x => x.ProductList.Contains(prod)).ToList();
+                    for (int y = 0; y < ListToCheck.Count; y++)
+                    {
+                        var CurrentlyCheckingList = ListToCheck[y];
+                        for (int j = 0; j < CurrentlyCheckingList.ProductList.Count; j++)
+                        {
+                            if (GetCount.Keys.Contains(CurrentlyCheckingList.ProductList[j].Id))
+                            {
+                                var GetId = CurrentlyCheckingList.ProductList[j].Id;
+                                var Value = GetCount.Where(x => x.Key == GetId).Select(x => x.Value);
+                                GetCount[GetId] += 1;
+                            }
+                        }
+                    }
+                }
+
+            var ObjectIdOfProdPropositio = GetCount.OrderBy(x => x.Value).Select(x => x.Key).FirstOrDefault();
+            ProdProposition = db.Products.AsQueryable().Where(x => x.Id == ObjectIdOfProdPropositio).FirstOrDefault();
             return ProdProposition;
         }
 

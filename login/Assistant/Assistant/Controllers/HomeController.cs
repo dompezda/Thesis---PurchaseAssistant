@@ -468,19 +468,20 @@ namespace Assistant.Controllers
             var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             //var JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
             //var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
-            if (ListCheck.Count>0)
-            {
-                var AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
-                ViewData["AssociationRule"] = AssociationProd;
-                ViewData["AssociationRuleId"] = AssociationProd.Id;
-            }
-
+            var CaranProd = ctrl.CaranAlgh(currentlyEditedListId, userId);
+            //if (ListCheck.Count>0)
+            //{
+            //    var AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
+            //    ViewData["AssociationRule"] = AssociationProd;
+            //    ViewData["AssociationRuleId"] = AssociationProd.Id;
+            //}
             Random rnd = new Random();
             //ViewData["Jaccard"] = JaccardProd.Name;
             //ViewData["JaccardId"] = JaccardProd.Id;
             //ViewData["Euclidean"] = EuclideanProd.Name;
             //ViewData["EuclideanId"] = EuclideanProd.Id;
-            ViewData["Caran"] = "Caran";
+            ViewData["Caran"] = CaranProd.Name;
+            ViewData["CaranId"] = CaranProd.Id;
             ViewData["Random"] = rnd.Next(1, 100);
             return PartialView("PropositionOfProducts");
         }
