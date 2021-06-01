@@ -153,7 +153,7 @@ namespace Assistant.Controllers
         [HttpGet]
         public IActionResult Create_list()
         {
-
+            ViewData["prodName"] = "GetValue";
             var getListFromDB = db.MongoLists.Find(x => x.Id == currentlyEditedListId).FirstOrDefault();
             var Prods = getListFromDB.ProductList;
             return View("~/Views/Home/Create_list.cshtml", getListFromDB);
@@ -294,13 +294,14 @@ namespace Assistant.Controllers
 
 
         [HttpPost]
-        public IActionResult AddProduct(Product product)
+        public IActionResult AddProduct(string prodName)
         {
             //product.Id = ObjectId.GenerateNewId();
 
-            if (product.Name != null)
+            if (prodName != null)
             {
-
+                Product product = new Product();
+                product.Name = prodName;
                 var getList = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
                 getList.ProductList = new List<Product>();
                 var ProdList = db.Products.AsQueryable().Select(p => p.Name).ToList();
@@ -455,10 +456,11 @@ namespace Assistant.Controllers
 
 
         [HttpGet]
-        public IActionResult ProductList(MongoDBProdList list)
+        public IActionResult ProductList()
         {
-
-            return PartialView(list.ProductList);
+            
+            var CurrentList = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).FirstOrDefault();
+            return PartialView(CurrentList.ProductList);
         }
 
         [HttpGet]
@@ -466,23 +468,24 @@ namespace Assistant.Controllers
         {
             var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
             var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            //var JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
-            //var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
+            var JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
+            var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
             var CaranProd = ctrl.CaranAlgh(currentlyEditedListId, userId);
-            //if (ListCheck.Count>0)
-            //{
-            //    var AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
-            //    ViewData["AssociationRule"] = AssociationProd;
-            //    ViewData["AssociationRuleId"] = AssociationProd.Id;
-            //}
-            Random rnd = new Random();
-            //ViewData["Jaccard"] = JaccardProd.Name;
-            //ViewData["JaccardId"] = JaccardProd.Id;
-            //ViewData["Euclidean"] = EuclideanProd.Name;
-            //ViewData["EuclideanId"] = EuclideanProd.Id;
+            if (ListCheck.Count > 0)
+            {
+                var AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
+                ViewData["AssociationRule"] = AssociationProd;
+                ViewData["AssociationRuleId"] = AssociationProd.Id;
+            }
+            ViewData["Jaccard"] = JaccardProd.Name;
+            ViewData["JaccardId"] = JaccardProd.Id;
+            ViewData["Euclidean"] = EuclideanProd.Name;
+            ViewData["EuclideanId"] = EuclideanProd.Id;
             ViewData["Caran"] = CaranProd.Name;
             ViewData["CaranId"] = CaranProd.Id;
-            ViewData["Random"] = rnd.Next(1, 100);
+
+            Random rnd = new Random();
+            ViewData["DynamicTest"] = rnd.Next(1, 100);
             return PartialView("PropositionOfProducts");
         }
 

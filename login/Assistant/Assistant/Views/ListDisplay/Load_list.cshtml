@@ -6,7 +6,7 @@
     <h4>Listy gotowe do wczytania</h4>
 
 
-    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
 </div>
 
 <div class="accordion" id="accordionExample">
@@ -23,7 +23,7 @@
                         @*<form action="Edit_List" method="post">
             <input type="hidden" name="list.Id" value="@list.Id" />
 
-            <button class="btn-primary" style="margin-bottom:3px; width:100px; margin-left:5%;">Edytuj</button>
+            <button class="btn btn-primary" style="margin-bottom:3px; width:100px; margin-left:5%;">Edytuj</button>
         </form>
             <form action="DeleteList" method="post">
                 <input type="hidden" name="list.Id" value="@list.Id" />
@@ -33,7 +33,7 @@
             </form>*@
                         <form asp-controller="Home" asp-action="Edit_List" method="post">
                             <input type="hidden" name="list.Id" value="@list.Id" />
-                            <button class="btn-primary" style="margin-bottom:3px; width:100px; margin-left:5%;">Edytuj</button>
+                            <button class="btn btn-primary" style="margin-bottom:3px; width:100px; margin-left:5%;">Edytuj</button>
                         </form>
 
                         <form asp-controller="Home" asp-action="DeleteList" method="post">

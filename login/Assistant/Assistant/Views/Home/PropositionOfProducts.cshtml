@@ -22,10 +22,12 @@
             @ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
         </div>
         <div class="col">
-            <button type="submit" class="btn-primary">Dodaj produkt</button>
+            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
         </div>
     </div>
 </form>
+
+
 <div class="row mt-3"></div>
 <form asp-controller="Home" asp-action="AddProduct" method="post">
     <div class="row">
@@ -36,10 +38,12 @@
             @ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
         </div>
         <div class="col">
-            <button type="submit" class="btn-primary">Dodaj produkt</button>
+            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
         </div>
     </div>
 </form>
+
+
 <div class="row mt-3"></div>
 <form asp-controller="Home" asp-action="AddProduct" method="post">
     <div class="row">
@@ -50,10 +54,12 @@
             @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
         </div>
         <div class="col">
-            <button type="submit" class="btn-primary">Dodaj produkt</button>
+            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
         </div>
     </div>
 </form>
+
+
 @{if (ViewData["AssociationRule"] != null)
     {
         <div class="row mt-3"></div>
@@ -67,13 +73,13 @@
                     @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
                 </div>
                 <div class="col">
-                    <button type="submit" class="btn-primary">Dodaj produkt</button>
+                    <button type="submit" class="btn btn-primary">Dodaj produkt</button>
                 </div>
             </div>
         </form>
     }
 }
-
+@ViewData["DynamicTest"]
 <div class="row mt-3"></div>
 
 <script>

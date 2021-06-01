@@ -4,7 +4,7 @@
     <h4>Listy do udostepnienia</h4>
 
 
-    <input type="button" class="btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
 </div>
 
 <div class="accordion" id="accordionExample">
@@ -20,7 +20,7 @@
 
             <form asp-controller="Home" asp-action="Get_share_email" method="post">
                 <input type="hidden" name="Id" value="@list.Id.ToString()" />
-                <button type="submit" class="btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;" value=@list> Udostepnij</button>
+                <button type="submit" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;" value=@list> Udostepnij</button>
             </form>
         </button>
     </div>
