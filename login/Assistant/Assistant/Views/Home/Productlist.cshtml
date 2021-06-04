@@ -1,44 +1,58 @@
 ﻿@model List<Product>
-@{
-    ViewData["Title"] = "ProductList";
-}
-
-    <div class="col-12">
+@{ ViewData["Title"] = "ProductList"; }
+<div class="row">
+    <div class="col-9">
         <h2>Lista produktów</h2>
     </div>
+    <div class="col-2">
+        <div class="spinner-border text-primary" role="status" id="spinnerDeleteProd" style="padding:15px;margin-left:5px">
+            <span class="sr-only">Wczytywanie...</span>
+        </div>
+    </div>
+</div>
 @foreach (var item in Model)
 {
+                    <div class="container">
+                        <div class="row">
+                            <div class=" col-9">
 
-    @*<form action="DeleteProduct" method="post">
-
-            <input type="hidden" name="product.Id" value="@item.Id" />
-            @item.Name
-
-            <button type="submit"><img src="~/cross.png" width="15" height="15" /></button>
-        </form>*@
-
-    <form asp-controller="Home" asp-action="DeleteProduct" method="post">
-        <div class="container">
-
-            <div class="row">
-                <div class=" col-10" >
-
-                    <input type="hidden" name="Id" value="@item.Id.ToString()" />
-                    @item.Name
-                </div>
-                <div class="col-2" >
-                    <button type="submit" style=""><img src="~/cross.png" width="15" height="15" />
-                    
-                    </button>
-                    
-                </div>
-              
-            </div>
-            <br />
-        </div>
-    </form>
-
-
+                                <input type="hidden" name="Id" value="@item.Id.ToString()" />
+                                @item.Name
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-primary DelButton" id="DeleteProduct"   type="submit" style="" value="@item.Name">
+                                    Usuń
+                                </button>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $('#spinnerDeleteProd').hide();
+    $(document).ready(function () {
+        $(".DelButton").click(function () {
+            $('#spinnerDeleteProd').show();
+            var prodName = $(this).attr('value');
+                var id = $(this).closest("container");
+                console.log(id);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteMongoProduct", "Home")',
+                dataType:"text",
+                data: { prodName: prodName },
+                error: function (err) {
+                    console.log(err)
+                },
+                success: function () {
+                    $("#ProdList").load("/Home/ProductList");
+                    $('#spinnerDeleteProd').hide();
+                }
+            })
+        });
+    });
+</script>
 
 

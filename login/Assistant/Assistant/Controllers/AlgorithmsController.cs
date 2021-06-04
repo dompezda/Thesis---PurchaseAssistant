@@ -53,15 +53,29 @@ namespace Assistant.Controllers
             var UserLists = db.MongoLists.AsQueryable().Where(x => x.UserId == Winner).Select(x => x.ProductList).ToList();
             Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             List<Product> ProdList = db.Products.AsQueryable().ToList();
+            var currentList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            for (int k = 0; k < currentList.ProductList.Count; k++)
+            {
+                var item = currentList.ProductList[k].Name;
+                if (ProdList.Select(x => x.Name).Contains(item))
+                {
+                    var itemProd = ProdList.Where(x => x.Name == item).FirstOrDefault();
+                    ProdList.Remove(itemProd);
+                }
+            }
             foreach (var item in ProdList)
             {
                 GetCount.Add(item.Id, 0);
             }
-            foreach (var currentList in UserLists)
+            foreach (var currentUserList in UserLists)
             {
-                foreach (var item in currentList)
+                foreach (var item in currentUserList)
                 {
-                    GetCount[item.Id] += 1;
+                    if (GetCount.Keys.Contains(item.Id))
+                    {
+                        GetCount[item.Id] += 1;
+                    }
+                    
                 }
             }
             var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).FirstOrDefault();
@@ -99,15 +113,28 @@ namespace Assistant.Controllers
             var UserLists = db.MongoLists.AsQueryable().Where(x => x.UserId == Winner).Select(x => x.ProductList).ToList();
             Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             List<Product> ProdList = db.Products.AsQueryable().ToList();
+            var currentList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            for (int k = 0; k < currentList.ProductList.Count; k++)
+            {
+                var item = currentList.ProductList[k].Name;
+                if (ProdList.Select(x => x.Name).Contains(item))
+                {
+                    var itemProd = ProdList.Where(x => x.Name == item).FirstOrDefault();
+                    ProdList.Remove(itemProd);
+                }
+            }
             foreach (var item in ProdList)
             {
                 GetCount.Add(item.Id, 0);
             }
-            foreach (var currentList in UserLists)
+            foreach (var currentUserList in UserLists)
             {
-                foreach (var item in currentList)
+                foreach (var item in currentUserList)
                 {
-                    GetCount[item.Id] += 1;
+                    if (GetCount.Keys.Contains(item.Id))
+                    {
+                        GetCount[item.Id] += 1;
+                    }
                 }
             }
             var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).FirstOrDefault();

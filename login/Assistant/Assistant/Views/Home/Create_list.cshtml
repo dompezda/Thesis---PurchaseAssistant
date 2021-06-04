@@ -9,119 +9,123 @@
 
 
 
-<div class="row">
-    <div class="col-md-4">
 
-        @*<form asp-controller="Home" asp-action="AddProduct" method="post" id="AddProductName">*@
-        @*<input asp-for="Name" class="form-control" id="ProdName" value="" />*@
-        @*<span asp-validation-for="Name" class="text-danger"></span>*@
-        <input type="text" name="ProdName" id="ProdName"  />
+<div class="col-md-4">
+
+    @*<form asp-controller="Home" asp-action="AddProduct" method="post" id="AddProductName">*@
+    @*<input asp-for="Name" class="form-control" id="ProdName" value="" />*@
+    @*<span asp-validation-for="Name" class="text-danger"></span>*@
+    <input type="text" name="ProdName" id="ProdName" class="form-control" />
 
 
-        <div class="row mt-3"></div>
-        <div class="form-group">
+    <div class="row mt-3"></div>
+
+    <div class="form-group">
+        <div class="row">
             <button type="submit" id="AddProduct" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj produkt</button>
-        </div>
-        @*</form>*@
 
-        <div class="row mt-3"></div>
-        @*<form action="FinishList" method="post">
-                <button class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
-            </form>*@
-        <form asp-controller="Home" asp-action="FinishList" method="post">
-            <button class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
-        </form>
-        <div class="row mt-3"></div>
-        <button class="btn btn-primary" type="button" value="Pokaż propozycje" id="GetPropositions" style="margin-bottom:3px; width:200px; margin-left:20%;">
-            <div id="PropositionText">
-                Pokaż propozycje
+            <div class="spinner-border text-primary" role="status" id="spinnerAddProd" style="padding:15px;margin-left:5px">
+                <span class="sr-only">Wczytywanie...</span>
             </div>
-        </button>
+        </div>
+    </div>
+    @*</form>*@
 
-
-        @*@if (User.Identity.IsAuthenticated && Model.IsPrivate == false)
-            {
-                <div class="row mt-3"></div>
-                <form asp-controller="Home" asp-action="ChangeType" method="post">
-
-                    <button type="submit" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczną</button>
-                </form>
-            }
-            @if (User.Identity.IsAuthenticated && Model.IsPrivate != false)
-            {
-                <div class="row mt-3"></div>
-                <form asp-controller="Home" asp-action="ChangeType" method="post">
-
-                    <button type="submit" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;"> Zmien na publiczna</button>
-                </form>
-            }*@
-        <div id="div1">
+    <div class="row mt-3"></div>
+    <form asp-controller="Home" asp-action="FinishList" method="post">
+        <div class="row">
+            <button class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Dodaj liste</button>
+        </div>
+    </form>
+    <div class="row mt-3"></div>
+    <div class="form-group">
+        <div class="row">
+            <button type="submit" id="GetPropositions" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;">Pokaż propozycje</button>
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border text-primary hidden text-center" role="status" id="spinnerShowPropositions" style="padding:15px;margin-left:5px">
+                    <span class="sr-only">Wczytywanie...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="spinnerPropositionsList">
+        <div class="lead">
+            <h2>Lista propozycji</h2>
+        </div>
+        <div class="spinner-border text-primary" role="status" style="padding: 15px;
+        margin-left: 5px;
+        width: 5rem;
+        height: 5rem;
+">
 
         </div>
 
     </div>
-</div>
+    <div id="propositions">
+    </div>
 
-@*<div id="divPartial">
-        @await Html.PartialAsync("PropositionOfProducts")
-    </div>*@
+    <div id="ProdList">
+    </div>
 
-<div id="ProdList">
-    @*@if (Model.ProductList.Count() > 0)
-    {
-        await Html.RenderPartialAsync("ProductList");
-    }
-    else
-    {
-<h1> List is empty</h1>
-    }*@
-</div>
-<div class="spinner-border" role="status" id="spinnerAddProd">
-    <span class="sr-only">Loading...</span>
 </div>
 
 
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script>
-    var newText = "Odśwież propozycje"
-    var AddProdSpinner = document.getElementById("spinnerAddProd")
-    $("#GetPropositions").click(function() {
-        $(this).text(newText);
-    });
+        <script>
+            var newText = "Trwa generownie propozycji"
+            var finalText = "Trwa generowanie widoku"
+            var refreshText = "Odśwież propozycje"
+            var button = $("#GetPropositions");
+            $('#spinnerAddProd').hide();
+            $('#spinnerShowPropositions').hide();
+            $('#spinnerPropositionsList').hide();
+            $(document).ready(function () {
+                $("#GetPropositions").click(function () {
+                    console.log("clicked button: Trwa generownie propozycji")
+                    console.log($(button))
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("PropositionOfProducts", "Home")',
+                        dataType: "text",
+                        error: function (err) {
+                            console.log(err)
+                        },
+                        beforeSend: function () {
+                            $(button).text(newText);
+                            $("#GetPropositions").text("Trwa generownie propozycji");
+                            $('#spinnerShowPropositions').show();
+                        },
+                        success: function (data) {
+                            $('#spinnerShowPropositions').hide();
+                            $(button).text(finalText);
+                            $('#spinnerPropositionsList').show();
+                            $("#propositions").html(data);
+                        },
+                        complete: function () {
+                            $(button).text(refreshText);
+                            $('#spinnerPropositionsList').hide();
+                        },
+                    })
+                    })
+                })
+
+
+
+
+
     $(document).ready(function () {
-        $("#GetPropositions").click(function () {
-            $("#div1").load("/Home/PropositionOfProducts");
-        });
-    });
-    $('#spinnerAddProd').hide();
-    
-    $(document).ready(function () {
-
         $("#AddProduct").click(function () {
-
-            $("#div1").load("/Home/PropositionOfProducts");
-        });
-    });
-
-    $(document).ready(function () {
-        $("#AddProduct").click(function () {
-            $('#spinnerAddProd').show(); 
+            $('#spinnerAddProd').show();
             var prodName = $("#ProdName").val();
-            //object data = {
-            //    Name: $("#ProdName").val(),
-            //    Id: null
-            //};
-
             console.log(prodName);
-
+            $('#ProdName').val('');
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddProduct", "Home")',
                 dataType:"text",
-                /*contentType: "application/json; charset=utf-8",*/
                 data: { prodName: prodName },
                 error: function (err) {
                     console.log(err)
@@ -135,5 +139,5 @@
         });
     });
 
-</script>
+        </script>
 

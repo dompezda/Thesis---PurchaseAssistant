@@ -1,97 +1,326 @@
-﻿
-<div class="lead">
-    <h2>Lista propozycji</h2>
+﻿<div class="row">
+    <div class="col-sm-8">
+        <div class="lead">
+            <h2>Lista propozycji</h2>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="spinner-border text-primary" role="status" id="spinnerAddingProd" style="padding:15px;margin-left:5px">
+            <span class="sr-only">Wczytywanie...</span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    @*JACCARD*@
+    <div class="col-7">
+        <input type="hidden" name="Name" id="ProdNameJaccard" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
+        @ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
+    </div>
+    <div class="col-3">
+        <button type="submit" id="AddProductJaccard" class="btn btn-primary">Dodaj</button>
+    </div>
+    <div class="col-1">
+        <button type="submit" id="RefreshProductJaccard" class="btn btn-primary">
+            <i class="fa fa-refresh"></i>
+        </button>
+    </div>
 </div>
 
-@*@foreach (var item in ViewBag.Propositon)
-    {
-        <div class="row">
-            <div class=" col-10">
-                @item.Name
-            </div>
-        </div>
-    }*@
+<div class="row mt-3"></div>
 
+<div class="row">
+    @*Euclidean*@
+    <div class="col-7">
 
-<form asp-controller="Home" asp-action="AddProduct" method="post">
-    <div class="row">
-        <div class="col">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
-            @ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
-        </div>
+        <input type="hidden" name="Name" id="ProdNameEuclidean" value="@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()" />
+        @ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
     </div>
-</form>
+    <div class="col-3">
+        <button type="submit" id="AddProductEuclidean" class="btn btn-primary">Dodaj</button>
+    </div>
+    <div class="col-1">
+        <button type="submit" id="RefreshProductEuclidean" class="btn btn-primary">
+            <i class="fa fa-refresh"></i>
+        </button>
+    </div>
+</div>
+
 
 
 <div class="row mt-3"></div>
-<form asp-controller="Home" asp-action="AddProduct" method="post">
-    <div class="row">
-        <div class="col">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()" />
-            @ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
-        </div>
+<div class="row">
+    @*Caran*@
+    <div class="col-7">
+
+
+        <input type="hidden" name="Name" id="ProdNameCaran" value="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()" />
+        @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
     </div>
-</form>
-
-
-<div class="row mt-3"></div>
-<form asp-controller="Home" asp-action="AddProduct" method="post">
-    <div class="row">
-        <div class="col">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()" />
-            @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
-        </div>
+    <div class="col-3">
+        <button type="submit" id="AddProductCaran" class="btn btn-primary">Dodaj</button>
     </div>
-</form>
+    <div class="col-1">
+        <button type="submit" id="RefreshProductCaran" class="btn btn-primary">
+            <i class="fa fa-refresh"></i>
+        </button>
+
+    </div>
+ </div>
 
 
-@{if (ViewData["AssociationRule"] != null)
-    {
-        <div class="row mt-3"></div>
 
-        <form asp-controller="Home" asp-action="AddProduct" method="post">
+    @{if (ViewData["AssociationRule"] != null)
+        {
+            <div class="row mt-3"></div>
+
+
             <div class="row">
-                <div class="col">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @*association*@
+                <div class="col-7">
 
-                    <input type="hidden" name="Name" value="@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()" />
+
+                    <input type="hidden" name="Name" id="ProdNameAssociation" value="@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()" />
                     @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
                 </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+                <div class="col-3">
+                    <button type="submit" id="AddProductAssociation" class="btn btn-primary">Dodaj</button>
+                </div>
+                <div class="col-1">
+                    <button type="submit" id="AddProductAssociation" class="btn btn-primary">
+                        <i class="fa fa-refresh"></i>
+                    </button>
                 </div>
             </div>
-        </form>
-    }
-}
-@ViewData["DynamicTest"]
-<div class="row mt-3"></div>
 
-<script>
-    var newText = "Odśwież propozycje"
+        }
+    }
+    @ViewData["DynamicTest"]
+    <div class="row mt-3"></div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script>
+
+    var newText = "Odśwież propozycje";
+    $('#spinnerAddingProd').hide();
     $("#GetPropositions").click(function () {
         $(this).text(newText);
     });
     $(document).ready(function () {
 
         $("#GetPropositions").click(function () {
-
+            $('#spinnerAddingProd').hide();
             $("#div1").load("/Home/PropositionOfProducts");
         });
     });
-</script>
+
+
+
+
+        $(document).ready(function () {
+            $("#AddProductJaccard").click(function () {
+                $('#spinnerAddingProd').show();
+            var prodName = $("#ProdNameJaccard").val();
+           // var test="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()";
+
+        //console.log(test);
+
+        $.ajax({
+        type: "POST",
+        url: '@Url.Action("AddProduct", "Home")',
+        dataType:"text",
+        data: { prodName: prodName },
+        error: function (err) {
+        console.log(err)
+        },
+        success: function () {
+        $("#ProdList").load("/Home/ProductList");
+        $('#spinnerAddingProd').hide();
+        }
+            })
+                                    });
+        });
+
+
+
+
+        $(document).ready(function () {
+        $("#AddProductEuclidean").click(function () {
+        $('#spinnerAddingProd').show();
+        var prodName = $("#ProdNameEuclidean").val();
+        // var test="@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()";
+        console.log(prodName);
+        //console.log(test);
+
+        $.ajax({
+        type: "POST",
+        url: '@Url.Action("AddProduct", "Home")',
+        dataType:"text",
+        data: { prodName: prodName },
+        error: function (err) {
+        console.log(err)
+        },
+        success: function () {
+        $("#ProdList").load("/Home/ProductList");
+        $('#spinnerAddingProd').hide();
+        }
+        })
+
+        });
+        });
+
+
+        $(document).ready(function () {
+        $("#AddProductCaran").click(function () {
+        $('#spinnerAddingProd').show();
+        var prodName = $("#ProdNameCaran").val();
+        // var test="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()";
+        console.log(prodName);
+        //console.log(test);
+
+        $.ajax({
+        type: "POST",
+        url: '@Url.Action("AddProduct", "Home")',
+        dataType:"text",
+        data: { prodName: prodName },
+        error: function (err) {
+        console.log(err)
+        },
+        success: function () {
+        $("#ProdList").load("/Home/ProductList");
+        $('#spinnerAddingProd').hide();
+        }
+        })
+
+        });
+        });
+
+        $(document).ready(function () {
+        $("#AddProductAssociation").click(function () {
+        $('#spinnerAddingProd').show();
+        var prodName = $("#ProdNameAssociation").val();
+        // var test="@ViewData.Where(x => x.Key == "Association").Select(x => x.Value).FirstOrDefault()";
+        console.log(prodName);
+        //console.log(test);
+
+        $.ajax({
+        type: "POST",
+        url: '@Url.Action("AddProduct", "Home")',
+        dataType:"text",
+        data: { prodName: prodName },
+        error: function (err) {
+        console.log(err)
+        },
+        success: function () {
+        $("#ProdList").load("/Home/ProductList");
+        $('#spinnerAddingProd').hide();
+        }
+        })
+        });
+        });
+
+    //JACCARD
+            $(document).ready(function () {
+                $("#RefreshProductJaccard").click(function () {
+
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("PropositionOfProducts", "Home")',
+                        dataType: "text",
+                        error: function (err) {
+                            console.log(err)
+                        },
+                        data: { refreshId: 1},
+                        beforeSend: function () {
+                            $('#spinnerAddingProd').show();
+                        },
+                        success: function (data) {
+                            $("#propositions").html(data);
+                        },
+                        complete: function () {
+                        },
+                    })
+                    })
+            })
+
+    //EUCLIDEAN
+    $(document).ready(function () {
+        $("#RefreshProductEuclidean").click(function () {
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("PropositionOfProducts", "Home")',
+                        dataType: "text",
+                        error: function (err) {
+                            console.log(err)
+                        },
+                        data: { refreshId: 2},
+                        beforeSend: function () {
+                            $('#spinnerAddingProd').show();
+                        },
+                        success: function (data) {
+                            $("#propositions").html(data);
+                        },
+                        complete: function () {
+                        },
+                    })
+                    })
+    })
+
+
+    //CARAN
+    $(document).ready(function () {
+        $("#RefreshProductCaran").click(function () {
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("PropositionOfProducts", "Home")',
+                        dataType: "text",
+                        error: function (err) {
+                            console.log(err)
+                        },
+                        data: { refreshId: 4},
+                        beforeSend: function () {
+                            $('#spinnerAddingProd').show();
+                        },
+                        success: function (data) {
+                            $("#propositions").html(data);
+                        },
+                        complete: function () {
+                        },
+                    })
+                    })
+    })
+
+
+    //ASSOCIATION
+    $(document).ready(function () {
+        $("#RefreshProductAssociation").click(function () {
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("PropositionOfProducts", "Home")',
+                        dataType: "text",
+                        error: function (err) {
+                            console.log(err)
+                        },
+                        data: { refreshId: 3},
+                        beforeSend: function () {
+                            $('#spinnerAddingProd').show();
+                        },
+                        success: function (data) {
+                            $("#propositions").html(data);
+                        },
+                        complete: function () {
+                        },
+                    })
+                    })
+    })
+
+
+
+    </script>
