@@ -81,37 +81,37 @@ namespace Assistant.Controllers
                 db.MongoLists.DeleteOne(filter);
             }
             //GetUsersData();
-            //List<Product> ProdList = new List<Product>();
-            //ProdList = db.Products.AsQueryable().ToList();
-            
+            List<Product> ProdList = new List<Product>();
+            ProdList = db.Products.AsQueryable().ToList();
 
-            //int amount = db.Products.AsQueryable().Count();
-            //if (amount >= 5)
-            //    amount = 5;
-            //Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
-            //foreach (var item in ProdList)
-            //{
-            //    GetCount.Add(item.Id, 0);
-            //}
-            //var ProdCheck = db.MongoLists.AsQueryable().Select(x => x.ProductList).ToList();
 
-            //foreach (var currentList in ProdCheck)
-            //{
-            //    foreach (var item in currentList)
-            //    {
-            //        GetCount[item.Id] += 1;
-            //    }
-            //}
-            //var prodIds = db.Products.AsQueryable().ToList();
-            //var itemsToCheck = GetCount.OrderByDescending(x => x.Value).ToList().Take(5).ToList();
+            int amount = db.Products.AsQueryable().Count();
+            if (amount >= 5)
+                amount = 5;
+            Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
+            foreach (var item in ProdList)
+            {
+                GetCount.Add(item.Id, 0);
+            }
+            var ProdCheck = db.MongoLists.AsQueryable().Select(x => x.ProductList).ToList();
+
+            foreach (var currentList in ProdCheck)
+            {
+                foreach (var item in currentList)
+                {
+                    GetCount[item.Id] += 1;
+                }
+            }
+            var prodIds = db.Products.AsQueryable().ToList();
+            var itemsToCheck = GetCount.OrderByDescending(x => x.Value).ToList().Take(5).ToList();
 
             List<Product> sendListToFrequentList = new List<Product>();
-            //foreach (var item in itemsToCheck)
-            //{
-            //    Product prod = db.Products.AsQueryable().Where(x => x.Id == item.Key).FirstOrDefault();
-            //    sendListToFrequentList.Add(prod);
-            //}
-           
+            foreach (var item in itemsToCheck)
+            {
+                Product prod = db.Products.AsQueryable().Where(x => x.Id == item.Key).FirstOrDefault();
+                sendListToFrequentList.Add(prod);
+            }
+
 
             return View("~/Views/Utility/Main_menu.cshtml", sendListToFrequentList);
         }

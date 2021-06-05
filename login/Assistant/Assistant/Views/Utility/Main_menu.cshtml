@@ -22,11 +22,11 @@
     @if (User.Identity.IsAuthenticated)
     {
 
-        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Select_mode", "Generate")'" value="Wygeneruj listę zakupów" style=" margin-bottom:3px; width:215px" />
-        <div class="row mt-3"></div>
-        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Listy publiczne" style="margin-bottom:3px; width:215px" />
-        <div class="row mt-3"></div>
-        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Private_list_load", "Home")'" value="Listy prywatne" style=" margin-bottom:3px; width:215px" />
+        @*<input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Select_mode", "Generate")'" value="Wygeneruj listę zakupów" style=" margin-bottom:3px; width:215px" />
+        <div class="row mt-3"></div>*@
+        @*<input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Public_list_load", "Home")'" value="Listy publiczne" style="margin-bottom:3px; width:215px" />
+        <div class="row mt-3"></div>*@
+        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Private_list_load", "Home")'" value="Moje Listy" style=" margin-bottom:3px; width:215px" />
         <div class="row mt-3"></div>
         <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Share_list", "Home")'" value="Udostepnij liste" style=" margin-bottom:3px; width:215px" />
         <div class="row mt-3"></div>
