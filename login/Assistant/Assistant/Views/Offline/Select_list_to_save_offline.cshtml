@@ -8,10 +8,12 @@
     <link rel='manifest' href='~/manifest.json'>
 </head>
 <div class="row">
-    <h4>Listy do wczytania</h4>
-
-
-    <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    <div class="col-8">
+        <h4>Listy do wczytania</h4>
+    </div>
+    <div class="col-3">
+        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    </div>
 </div>
 
 <div class="accordion" id="accordionExample">

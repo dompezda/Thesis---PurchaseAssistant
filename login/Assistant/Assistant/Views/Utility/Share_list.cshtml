@@ -1,45 +1,47 @@
 ﻿@model List<Assistant.Models.MongoDBProdList>
 @{ ViewData["Title"] = "Wybierz liste do udostepnienia"; }
 <div class="row">
-    <h4>Listy do udostepnienia</h4>
-
-
-    <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    <div class="col-9">
+        <h4>Listy do udostepnienia</h4>
+    </div>
+    <div class="col-3">
+        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    </div>
 </div>
 
-<div class="accordion" id="accordionExample">
-    @{int k = 0;}
-    @foreach (var list in Model)
-    {
-<div class="card-header" id="headingOne_@k">
-    <h5 class="mb-0"></h5>
-    <div class="row">
-        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne_@k" aria-expanded="true" aria-controls="collapseOne">
-            @list.Name
+        <div class="accordion" id="accordionExample">
+            @{int k = 0;}
+            @foreach (var list in Model)
+            {
+    <div class="card-header" id="headingOne_@k">
+        <h5 class="mb-0"></h5>
+        <div class="row">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne_@k" aria-expanded="true" aria-controls="collapseOne">
+                @list.Name
 
 
-            <form asp-controller="Home" asp-action="Get_share_email" method="post">
-                <input type="hidden" name="Id" value="@list.Id.ToString()" />
-                <button type="submit" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;" value=@list> Udostepnij</button>
-            </form>
-        </button>
+                <form asp-controller="Home" asp-action="Get_share_email" method="post">
+                    <input type="hidden" name="Id" value="@list.Id.ToString()" />
+                    <button type="submit" class="btn btn-primary" style="margin-bottom:3px; width:200px; margin-left:20%;" value=@list> Udostepnij</button>
+                </form>
+            </button>
+        </div>
+
     </div>
 
-</div>
+                    <div class="card">
+                        @foreach (var item in list.ProductList)
+                        {
+        <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
+            <div class="card-body">
 
-                <div class="card">
-                    @foreach (var item in list.ProductList)
-                    {
-    <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
-        <div class="card-body">
+                @item.Name
 
-            @item.Name
-
+            </div>
+        </div>}
+                    </div>k++;
+                }
         </div>
-    </div>}
-                </div>k++;
-                            }
-</div>
 
 
 

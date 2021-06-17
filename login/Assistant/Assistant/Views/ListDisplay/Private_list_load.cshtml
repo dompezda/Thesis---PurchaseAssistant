@@ -2,17 +2,19 @@
 @{ ViewData["Title"] = "Wczytaj Liste"; }
 
 <div class="row">
-    <h4>Listy do wczytania</h4>
-
-
-    <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    <div class="col-8">
+        <h4>Listy do wczytania</h4>
+    </div>
+    <div class="col-3">
+        <input type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Main_menu", "Home")'" value="Wroc" style="margin-bottom:3px; width:60px; margin-left:10%;" />
+    </div> 
 </div>
 
-<div class="accordion" id="accordionExample">
-    @{int k = 0;}
+    <div class="accordion" id="accordionExample">
+        @{int k = 0;}
 
-    @foreach (var list in Model)
-    {
+        @foreach (var list in Model)
+        {
 <div class="card-header" id="headingOne_@k">
 
     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne_@k" aria-expanded="true" aria-controls="collapseOne">
@@ -20,6 +22,7 @@
         @list.Name
 
     </button>
+
 </div>
                 <div class="row">
                     <form asp-controller="Home" asp-action="Edit_List" method="post">
@@ -37,25 +40,26 @@
                         <button class="btn btn-primary" onclick="GetListId(72)" style="margin-bottom:3px; width:100px;height:30px; margin-left:20px">Wybierz</button>
                     </form>
                 </div>
+
+                      <div class="row mt-1"></div>
                                 <div class="card">
-                    @foreach (var item in list.ProductList)
-                    {
+                                    @foreach (var item in list.ProductList)
+                                    {
                     <div id="collapseOne_@k" class="collapse" aria-labelledby="headingOne_@k" data-parent="#accordionExample">
                         <div class="card-body">
 
                             @item.Name
 
                         </div>
-                    </div>
-                    }
-                    </div>k++;
-    }
-</div>
+                    </div>}
+                                </div>k++;
+                            }
+    </div>
 
-<script>
-    function GetListId(Id) {
-        localStorage.setItem("IdSelectedList", Id);
-        sessionStorage.setItem("IdSelectedList", Id);
-    }
-</script>
+    <script>
+        function GetListId(Id) {
+            localStorage.setItem("IdSelectedList", Id);
+            sessionStorage.setItem("IdSelectedList", Id);
+        }
+    </script>
 

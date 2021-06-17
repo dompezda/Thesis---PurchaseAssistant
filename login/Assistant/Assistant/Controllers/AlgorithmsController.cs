@@ -11,6 +11,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,15 +23,34 @@ namespace Assistant.Controllers
         public MongoDbContext db = new MongoDbContext();
         public ApplicationUser CurrentUser;
         //public static ObjectId userId;
+        public Stopwatch JaccardStopwatch = new Stopwatch();
+        public Stopwatch EuclideanStopwatch = new Stopwatch();
+        public Stopwatch CaranStopwatch = new Stopwatch();
+        public Stopwatch AssociationStopwatch = new Stopwatch();
+        public int JaccardCounter;
+        public int EuclideanCounter;
+        public int CaranCounter;
+        public int AssociationCounter;
+        public int JaccardDBOperations;
+        public int EuclideanDBOperations;
+        public int CaranDBOperations;
+        public int AssociationDBOperations;
+        public int JaccardCompare;
+        public int EuclideanCompare;
+        public int CaranCompare;
+        public int AssociationCompare;
 
 
-        public Product Jaccard(ObjectId listId,ObjectId userId)
+
+        public List<Product> Jaccard(ObjectId listId,ObjectId userId)
         {
+            JaccardStopwatch.Start();
             List<SimilarityListObject> JaccardSimilarityList = new List<SimilarityListObject>();
             CurrentUser = db.Users.AsQueryable().Where(x => x.Id == userId.ToString()).FirstOrDefault();
-            Product ProdProposition = new Product();
+            JaccardDBOperations++;
+            List<Product> ProdProposition = new List<Product>();
             var UsersList = db.Users.AsQueryable().ToList();
-
+            JaccardDBOperations++;
             foreach (var item in UsersList)
             {
                 if (item.Id != userId.ToString())
@@ -41,19 +61,26 @@ namespace Assistant.Controllers
                         similarityValue = 0
                     };
                     JaccardSimilarityList.Add(jaccard);
+
                 }
+                JaccardCounter++;
             }
             foreach (var item in JaccardSimilarityList)
             {
                 var GetValue = GetNecessaryData(item.userId,1);
                 item.similarityValue = GetValue;
+                JaccardCounter++;
             }
             var Winner= JaccardSimilarityList.OrderBy(x => x.similarityValue).Select(x => x.userId).FirstOrDefault();
+            JaccardDBOperations++;
             //var UserWhoWins = db.Users.AsQueryable().Where(x => x.Id == Winner.ToString()).FirstOrDefault();
             var UserLists = db.MongoLists.AsQueryable().Where(x => x.UserId == Winner).Select(x => x.ProductList).ToList();
+            JaccardDBOperations++;
             Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             List<Product> ProdList = db.Products.AsQueryable().ToList();
+            JaccardDBOperations++;
             var currentList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            JaccardDBOperations++;
             for (int k = 0; k < currentList.ProductList.Count; k++)
             {
                 var item = currentList.ProductList[k].Name;
@@ -62,10 +89,12 @@ namespace Assistant.Controllers
                     var itemProd = ProdList.Where(x => x.Name == item).FirstOrDefault();
                     ProdList.Remove(itemProd);
                 }
+                JaccardCounter++;
             }
             foreach (var item in ProdList)
             {
                 GetCount.Add(item.Id, 0);
+                JaccardCounter++;
             }
             foreach (var currentUserList in UserLists)
             {
@@ -75,21 +104,33 @@ namespace Assistant.Controllers
                     {
                         GetCount[item.Id] += 1;
                     }
-                    
+                    JaccardCounter++;
                 }
+
             }
-            var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).FirstOrDefault();
-            ProdProposition = ProdList.Where(x => x.Id == GetFinalProd).FirstOrDefault();
+            var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).Take(3).ToList();
+            JaccardDBOperations++;
+            for (int i = 0; i < GetFinalProd.Count; i++)
+            {
+                ProdProposition.Add(db.Products.AsQueryable().Where(x => x.Id == GetFinalProd[i]).FirstOrDefault());
+                JaccardDBOperations++;
+                JaccardCounter++;
+            }
+            JaccardStopwatch.Stop();
             return ProdProposition;
         }
 
 
-        public Product EuclideanDistance(ObjectId listId, ObjectId userId)
+        public List<Product> EuclideanDistance(ObjectId listId, ObjectId userId)
         {
+            
+            EuclideanStopwatch.Start();
             List<SimilarityListObject> EulideanSimilarityList = new List<SimilarityListObject>();
             CurrentUser = db.Users.AsQueryable().Where(x => x.Id == userId.ToString()).FirstOrDefault();
-            Product ProdProposition = new Product();
+            EuclideanDBOperations++;
+            List<Product> ProdProposition = new List<Product>();
             var UsersList = db.Users.AsQueryable().ToList();
+            EuclideanDBOperations++;
             foreach (var item in UsersList)
             {
                 if (item.Id != userId.ToString())
@@ -101,19 +142,24 @@ namespace Assistant.Controllers
                     };
                     EulideanSimilarityList.Add(euclidean);
                 }
+                EuclideanCounter++;
             }
 
             foreach (var item in EulideanSimilarityList)
             {
                 var GetValue = GetNecessaryData(item.userId,2);
                 item.similarityValue = GetValue;
+                EuclideanCounter++;
             }
             var Winner = EulideanSimilarityList.OrderBy(x => x.similarityValue).Select(x => x.userId).FirstOrDefault();
+            EuclideanDBOperations++;
             //var UserWhoWins = db.Users.AsQueryable().Where(x => x.Id == Winner.ToString()).FirstOrDefault();
             var UserLists = db.MongoLists.AsQueryable().Where(x => x.UserId == Winner).Select(x => x.ProductList).ToList();
+            EuclideanDBOperations++;
             Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             List<Product> ProdList = db.Products.AsQueryable().ToList();
             var currentList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            EuclideanDBOperations++;
             for (int k = 0; k < currentList.ProductList.Count; k++)
             {
                 var item = currentList.ProductList[k].Name;
@@ -121,11 +167,14 @@ namespace Assistant.Controllers
                 {
                     var itemProd = ProdList.Where(x => x.Name == item).FirstOrDefault();
                     ProdList.Remove(itemProd);
+                    EuclideanDBOperations++;
                 }
+                EuclideanCounter++;
             }
             foreach (var item in ProdList)
             {
                 GetCount.Add(item.Id, 0);
+                EuclideanCounter++;
             }
             foreach (var currentUserList in UserLists)
             {
@@ -135,20 +184,31 @@ namespace Assistant.Controllers
                     {
                         GetCount[item.Id] += 1;
                     }
+                    EuclideanCounter++;
                 }
             }
-            var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).FirstOrDefault();
-            ProdProposition = ProdList.Where(x => x.Id == GetFinalProd).FirstOrDefault();
+            var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).Take(3).ToList();
+            EuclideanDBOperations++;
+            for (int i = 0; i < GetFinalProd.Count; i++)
+            {
+                ProdProposition.Add(db.Products.AsQueryable().Where(x => x.Id == GetFinalProd[i]).FirstOrDefault());
+                EuclideanDBOperations++;
+                EuclideanCounter++;
+            }
+            EuclideanStopwatch.Stop();
             return ProdProposition;
         }
 
 
-        public Product AssociationRule(ObjectId listId, ObjectId userId)
+        public List<Product> AssociationRule(ObjectId listId, ObjectId userId)
         {
-            
+            AssociationStopwatch.Start();
+            AssociationCounter++;
             Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             var Prods = db.Products.AsQueryable().ToList();
+            AssociationDBOperations++;
             var GetList = db.MongoLists.AsQueryable().Where(x => x.Id == listId).FirstOrDefault();
+            AssociationDBOperations++;
             int counter = Prods.Count;
             List<ObjectId> GetListIds = new List<ObjectId>();
             GetListIds = GetList.ProductList.Select(x => x.Id).ToList();
@@ -158,6 +218,7 @@ namespace Assistant.Controllers
                 {
                     GetCount.Add(Prods[i].Id, 0);
                 }
+                AssociationCounter++;
             }
            
             
@@ -166,6 +227,7 @@ namespace Assistant.Controllers
                 for (int i = 0; i < GetList.ProductList.Count; i++)
                 {
                     var ListToCheck = db.MongoLists.AsQueryable().Where(x => x.ProductList.Contains(GetList.ProductList[i])).ToList();
+                    AssociationDBOperations++;
                     for (int y = 0; y < ListToCheck.Count; y++)
                     {
                         var CurrentlyCheckingList = ListToCheck[y];
@@ -177,26 +239,41 @@ namespace Assistant.Controllers
                                 var Value = GetCount.Where(x => x.Key == GetId).Select(x => x.Value);
                                 GetCount[GetId] += 1;
                             }
+                            AssociationCounter++;
 
                         }
                     }
                 }
             }
-            Product ProdProposition = new Product();
-            var ObjId=GetCount.OrderBy(x => x.Value).Select(x=>x.Key).Take(1).FirstOrDefault();
-            ProdProposition = db.Products.AsQueryable().Where(x => x.Id == ObjId).FirstOrDefault();
+            List<Product> ProdProposition = new List<Product>();
+            var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).Take(3).ToList();
+
+            for (int i = 0; i < GetFinalProd.Count; i++)
+            {
+                ProdProposition.Add(db.Products.AsQueryable().Where(x => x.Id == GetFinalProd[i]).FirstOrDefault());
+                AssociationDBOperations++;
+                AssociationCounter++;
+            }
+            AssociationStopwatch.Stop();
             return ProdProposition;
         }
 
 
-        public Product CaranAlgh(ObjectId listId, ObjectId userId)
+        public List<Product> CaranAlgh(ObjectId listId, ObjectId userId)
         {
+            CaranStopwatch.Start();
+            CaranCounter++;
             List<SimilarityListObject> CaranSimilarityList = new List<SimilarityListObject>();
+            //pobranie ID aktualnego użytkownika
             CurrentUser = db.Users.AsQueryable().Where(x => x.Id == userId.ToString()).FirstOrDefault();
-            Product ProdProposition = new Product();
+            CaranDBOperations++;
+            
+            List<Product> ProdProposition = new List<Product>();
+            //pobranie listy użytkowników
             var UsersList = db.Users.AsQueryable().ToList();
-
-            foreach (var item in UsersList)
+            CaranDBOperations++;
+            //utworzenie słownika z podobiństwami
+            foreach (var item in UsersList) 
             {
                 if (item.Id != userId.ToString())
                 {
@@ -207,17 +284,23 @@ namespace Assistant.Controllers
                     };
                     CaranSimilarityList.Add(jaccard);
                 }
+                CaranCounter++;
             }
+            //pętla po liście użytkowników
             foreach (var item in CaranSimilarityList)
             {
                 var GetValue = GetNecessaryData(item.userId, 1);
                 item.similarityValue = GetValue;
+                CaranCounter++;
             }
+            //wybór najlepszej dwunastki
             var Winner = CaranSimilarityList.OrderBy(x => x.similarityValue).Select(x => x.userId).Take(6).ToList();
+            CaranDBOperations++;
             List<ApplicationUser> ListToEuclidean = new List<ApplicationUser>();
             for (int i = 0; i < Winner.Count; i++)
             {
                 ListToEuclidean.Add(UsersList.Where(x => x.Id == Winner.ElementAt(i).ToString()).FirstOrDefault());
+                CaranCounter++;
             }
             List<SimilarityListObject> EulideanSimilarityList = new List<SimilarityListObject>();
             foreach (var item in ListToEuclidean)
@@ -228,11 +311,13 @@ namespace Assistant.Controllers
                         similarityValue = 0
                     };
                     EulideanSimilarityList.Add(euclidean);
+                CaranCounter++;
             }
             foreach (var item in EulideanSimilarityList)
             {
                 var GetValue = GetNecessaryData(item.userId, 2);
                 item.similarityValue = GetValue;
+                CaranCounter++;
             }
             var ListAfterEuclidean=EulideanSimilarityList.OrderBy(x => x.similarityValue).Select(x=>x.userId).Take(3).ToList();
 
@@ -259,12 +344,29 @@ namespace Assistant.Controllers
                                  GetBestProducts.Add(prodItem.Id,1);
                             }
                         }
+                        if (currentEditedList.ProductList.Contains(prodItem))
+                        {
+                            for (int i = 0; i < currentList.Count; i++)
+                            {
+                                if (GetBestProducts.ContainsKey(prodItem.Id))
+                                {
+                                    GetBestProducts[prodItem.Id] += 2;
+                                }
+                                else
+                                {
+                                    GetBestProducts.Add(prodItem.Id, 2);
+                                }
+                            }
+                        }
+                        CaranCounter++;
                     }
+
                 }
             }
             var CurrentProds = GetBestProducts.OrderBy(x => x.Value).Select(x => x.Key).Take(3).ToList();
             Dictionary<ObjectId, int> GetCount = new Dictionary<ObjectId, int>();
             var Prods = db.Products.AsQueryable().ToList();
+            CaranDBOperations++;
             int counter = Prods.Count;
             List<ObjectId> GetListIds = new List<ObjectId>();
             GetListIds = currentEditedList.ProductList.Select(x => x.Id).ToList();
@@ -274,14 +376,17 @@ namespace Assistant.Controllers
                 {
                     GetCount.Add(Prods[i].Id, 0);
                 }
+                CaranCounter++;
             }
 
 
                 for (int i = 0; i < CurrentProds.Count; i++)
                 {
                 var prod = db.Products.AsQueryable().Where(x => x.Id == CurrentProds[i]).FirstOrDefault();
-                    var ListToCheck = db.MongoLists.AsQueryable().Where(x => x.ProductList.Contains(prod)).ToList();
-                    for (int y = 0; y < ListToCheck.Count; y++)
+                CaranDBOperations++;
+                var ListToCheck = db.MongoLists.AsQueryable().Where(x => x.ProductList.Contains(prod)).ToList();
+                CaranDBOperations++;
+                for (int y = 0; y < ListToCheck.Count; y++)
                     {
                         var CurrentlyCheckingList = ListToCheck[y];
                         for (int j = 0; j < CurrentlyCheckingList.ProductList.Count; j++)
@@ -292,14 +397,22 @@ namespace Assistant.Controllers
                                 var Value = GetCount.Where(x => x.Key == GetId).Select(x => x.Value);
                                 GetCount[GetId] += 1;
                             }
-                        }
+                        CaranCounter++;
+                    }
                     }
                 }
 
-            var ObjectIdOfProdPropositio = GetCount.OrderBy(x => x.Value).Select(x => x.Key).FirstOrDefault();
-            ProdProposition = db.Products.AsQueryable().Where(x => x.Id == ObjectIdOfProdPropositio).FirstOrDefault();
+            var GetFinalProd = GetCount.OrderBy(x => x.Value).Select(x => x.Key).Take(3).ToList();
+
+            for (int i = 0; i < GetFinalProd.Count; i++)
+            {
+                ProdProposition.Add(db.Products.AsQueryable().Where(x => x.Id == GetFinalProd[i]).FirstOrDefault());
+                CaranDBOperations++;
+                CaranCounter++;
+            }
+            CaranStopwatch.Stop();
             return ProdProposition;
-        }
+         }
 
 
 
@@ -321,16 +434,6 @@ namespace Assistant.Controllers
             {
                 EuclideanSimilarity UserSimilarity = new EuclideanSimilarity(user.Education, user.Age, user.Salary, user.Gender, user.Home);
                 similarity = CalculateEuclideanSimilarity(UserSimilarity, CurrentUser);
-            }
-            if (algh == 3)
-            {
-                JaccardSimilarity UserSimilarity = new JaccardSimilarity(user.Education, user.Age, user.Salary, user.Gender, user.Home);
-                similarity = CalculateJaccardSimilarity(UserSimilarity, CurrentUser);
-            }
-            if (algh == 4)
-            {
-                JaccardSimilarity UserSimilarity = new JaccardSimilarity(user.Education, user.Age, user.Salary, user.Gender, user.Home);
-                similarity = CalculateJaccardSimilarity(UserSimilarity, CurrentUser);
             }
 
 
@@ -362,7 +465,11 @@ namespace Assistant.Controllers
             {
                 similarity++;
             }
-            return similarity;
+            double allParameters = 5;
+
+
+            double simToReturn = similarity / (allParameters * 2) - similarity;
+            return simToReturn;
         }
 
         public double CalculateEuclideanSimilarity(EuclideanSimilarity UserSimilarity, ApplicationUser user)

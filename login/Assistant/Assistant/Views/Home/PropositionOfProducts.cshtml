@@ -1,4 +1,6 @@
-﻿<div class="row">
+﻿@model Assistant.Models.similarity.PropositionList
+
+<div class="row">
     <div class="col-8">
         <div class="lead">
             <h2>Lista propozycji</h2>
@@ -11,221 +13,204 @@
         </div>
     </div>
 </div>
-<div class="row">
-    @*JACCARD*@
-    <div class="col-7">
-        <input type="hidden" name="Name" id="ProdNameJaccard" value="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()" />
-        @ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()
-    </div>
-    <div class="col-3">
-        <button type="submit" id="AddProductJaccard" class="btn btn-primary">Dodaj</button>
-    </div>
-    <div class="col-1">
-        <button type="submit" id="RefreshProductJaccard" class="btn btn-primary">
-            <i class="fa fa-refresh"></i>
-        </button>
+<div class="row mt-3"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-9 left_bg">
+            <div class="lead">
+                <b>Propozycje oparte o Podobieństwo Jaccarda</b>
+            </div>
+        </div>
+
+        <div class="col-3 text-center right_bg" id="RefreshJaccard">
+            <button type="submit" id="RefreshProductsJaccard" class="btn btn-primary">
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+        <div class="col-3 text-center" id="RefreshJaccardSpinner" style='display:none;'>
+            <div class="spinner-border text-primary" role="status" >
+                <span class="sr-only">Wczytywanie...</span>
+            </div>
+        </div>
     </div>
 </div>
+<div class="row mt-3"></div>
+@foreach (var item in Model.JaccardProducts)
+{
+    <div class="row">
+        <div class="col-8">
+            @item.Name
+        </div>
 
+        <div class="col-3">
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary AddProduct" value="@item.Name">Dodaj</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3"></div>
+}
 <div class="row mt-3"></div>
 
-<div class="row">
-    @*Euclidean*@
-    <div class="col-7">
+<div class="container">
+    <div class="row">
+        <div class="col-9 left_bg">
+            <div class="lead">
+                <b>Propozycje oparte o Dystans Euklidesa</b>
+            </div>
+        </div>
 
-        <input type="hidden" name="Name" id="ProdNameEuclidean" value="@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()" />
-        @ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()
-    </div>
-    <div class="col-3">
-        <button type="submit" id="AddProductEuclidean" class="btn btn-primary">Dodaj</button>
-    </div>
-    <div class="col-1">
-        <button type="submit" id="RefreshProductEuclidean" class="btn btn-primary">
-            <i class="fa fa-refresh"></i>
-        </button>
+
+        <div class="col-3 text-center right_bg" id="RefreshEuclidean">
+            <button type="submit" id="RefreshProductsEuclidean" class="btn btn-primary">
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+        <div class="col-3 text-center" id="RefreshEuclideanSpinner" style='display:none;'>
+            <div class="spinner-border text-primary" role="status" >
+                <span class="sr-only">Wczytywanie...</span>
+            </div>
+        </div>
     </div>
 </div>
+<div class="row mt-3"></div>
+@foreach (var item in Model.EuclideanProducts)
+{
+    <div class="row">
+        <div class="col-8">
+            @item.Name
+        </div>
 
-
-
+        <div class="col-3">
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary AddProduct" value="@item.Name">Dodaj</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3"></div>
+}
 <div class="row mt-3"></div>
 
-<div class="row">
-    @*Caran*@
-    <div class="col-7">
 
-
-        <input type="hidden" name="Name" id="ProdNameCaran" value="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()" />
-        @ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()
-    </div>
-    <div class="col-3">
-        <button type="submit" id="AddProductCaran" class="btn btn-primary">Dodaj</button>
-    </div>
-    <div class="col-1">
-        <button type="submit" id="RefreshProductCaran" class="btn btn-primary">
-            <i class="fa fa-refresh"></i>
-        </button>
-
-    </div>
- </div>
-
-
-
-    @{if (ViewData["AssociationRule"] != null)
-        {
-            <div class="row mt-3"></div>
-
-
-            <div class="row">
-                @*association*@
-                <div class="col-7">
-
-
-                    <input type="hidden" name="Name" id="ProdNameAssociation" value="@ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()" />
-                    @ViewData.Where(x => x.Key == "AssociationRule").Select(x => x.Value).FirstOrDefault()
-                </div>
-                <div class="col-3">
-                    <button type="submit" id="AddProductAssociation" class="btn btn-primary">Dodaj</button>
-                </div>
-                <div class="col-1">
-                    <button type="submit" id="RefreshProductAssociation" class="btn btn-primary">
-                        <i class="fa fa-refresh"></i>
-                    </button>
+@if (Model.AssociationProducts != null)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-9 left_bg">
+                <div class="lead">
+                    <b>Propozycje oparte o Regułę Asocjacji</b>
                 </div>
             </div>
 
-        }
-    }
+
+            <div class="col-3 text-center right_bg" id="RefreshAssociation">
+                <button type="submit" id="RefreshProductsAssociation" class="btn btn-primary">
+                    <i class="fa fa-refresh"></i>
+                </button>
+            </div>
+            <div class="col-3 text-center" id="RefreshAssociationSpinner" style='display:none;'>
+                <div class="spinner-border text-primary" role="status" >
+                    <span class="sr-only">Wczytywanie...</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row mt-3"></div>
 
+    @foreach (var item in Model.AssociationProducts)
+    {
+        <div class="row">
+            <div class="col-8">
+                @item.Name
+            </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <script>
+            <div class="col-3">
+                <div class="col-3">
+                    <button type="submit" class="btn btn-primary AddProduct" value="@item.Name">Dodaj</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3"></div>
+    }
+    <div class="row mt-3"></div>
+}
 
-    var newText = "Odśwież propozycje";
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-9 left_bg">
+            <div class="lead">
+                <b>Propozycje oparte o Algorytm Łączący</b>
+            </div>
+        </div>
+
+
+        <div class="col-3 text-center right_bg" id="RefreshCaran">
+            <button type="submit" id="RefreshProductsCaran" class="btn btn-primary">
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+        <div class="col-3 text-center" id="RefreshCaranSpinner" style='display:none;'>
+            <div class="spinner-border text-primary" role="status" >
+                <span class="sr-only">Wczytywanie...</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3"></div>
+@foreach (var item in Model.CaranProducts)
+{
+    <div class="row">
+        <div class="col-8">
+            @item.Name
+        </div>
+
+        <div class="col-3">
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary AddProduct" value="@item.Name">Dodaj</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3"></div>
+}
+<div class="row mt-3"></div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<script>
+
     $('#spinnerAddingProd').hide();
-    $("#GetPropositions").click(function () {
-        $(this).text(newText);
-    });
     $(document).ready(function () {
-
-        $("#GetPropositions").click(function () {
-            $('#spinnerAddingProd').hide();
-            $("#div1").load("/Home/PropositionOfProducts");
+        $(".AddProduct").click(function () {
+            $('#spinnerAddingProd').show();
+            var prodName = $(this).attr('value');
+            console.log(prodName);
+                var id = $(this).closest("container");
+                console.log(id);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddProduct", "Home")',
+                dataType:"text",
+                data: { prodName: prodName },
+                error: function (err) {
+                    console.log(err)
+                },
+                success: function () {
+                    $("#ProdList").load("/Home/ProductList");
+                    $('#spinnerAddingProd').hide();
+                }
+            })
         });
     });
 
 
-
-
-        $(document).ready(function () {
-            $("#AddProductJaccard").click(function () {
-                $('#spinnerAddingProd').show();
-            var prodName = $("#ProdNameJaccard").val();
-           // var test="@ViewData.Where(x => x.Key == "Jaccard").Select(x => x.Value).FirstOrDefault()";
-
-        //console.log(test);
-
-        $.ajax({
-        type: "POST",
-        url: '@Url.Action("AddProduct", "Home")',
-        dataType:"text",
-        data: { prodName: prodName },
-        error: function (err) {
-        console.log(err)
-        },
-        success: function () {
-        $("#ProdList").load("/Home/ProductList");
-        $('#spinnerAddingProd').hide();
-        }
-            })
-                                    });
-        });
-
-
-
-
-        $(document).ready(function () {
-        $("#AddProductEuclidean").click(function () {
-        $('#spinnerAddingProd').show();
-        var prodName = $("#ProdNameEuclidean").val();
-        // var test="@ViewData.Where(x => x.Key == "Euclidean").Select(x => x.Value).FirstOrDefault()";
-        console.log(prodName);
-        //console.log(test);
-
-        $.ajax({
-        type: "POST",
-        url: '@Url.Action("AddProduct", "Home")',
-        dataType:"text",
-        data: { prodName: prodName },
-        error: function (err) {
-        console.log(err)
-        },
-        success: function () {
-        $("#ProdList").load("/Home/ProductList");
-        $('#spinnerAddingProd').hide();
-        }
-        })
-
-        });
-        });
-
-
-        $(document).ready(function () {
-        $("#AddProductCaran").click(function () {
-        $('#spinnerAddingProd').show();
-        var prodName = $("#ProdNameCaran").val();
-        // var test="@ViewData.Where(x => x.Key == "Caran").Select(x => x.Value).FirstOrDefault()";
-        console.log(prodName);
-        //console.log(test);
-
-        $.ajax({
-        type: "POST",
-        url: '@Url.Action("AddProduct", "Home")',
-        dataType:"text",
-        data: { prodName: prodName },
-        error: function (err) {
-        console.log(err)
-        },
-        success: function () {
-        $("#ProdList").load("/Home/ProductList");
-        $('#spinnerAddingProd').hide();
-        }
-        })
-
-        });
-        });
-
-        $(document).ready(function () {
-        $("#AddProductAssociation").click(function () {
-        $('#spinnerAddingProd').show();
-        var prodName = $("#ProdNameAssociation").val();
-        // var test="@ViewData.Where(x => x.Key == "Association").Select(x => x.Value).FirstOrDefault()";
-        console.log(prodName);
-        //console.log(test);
-
-        $.ajax({
-        type: "POST",
-        url: '@Url.Action("AddProduct", "Home")',
-        dataType:"text",
-        data: { prodName: prodName },
-        error: function (err) {
-        console.log(err)
-        },
-        success: function () {
-        $("#ProdList").load("/Home/ProductList");
-        $('#spinnerAddingProd').hide();
-        }
-        })
-        });
-        });
-
-    //JACCARD
+        //Jaccard
             $(document).ready(function () {
-                $("#RefreshProductJaccard").click(function () {
-
-
+                $("#RefreshProductsJaccard").click(function () {
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("PropositionOfProducts", "Home")',
@@ -235,10 +220,14 @@
                         },
                         data: { refreshId: 1},
                         beforeSend: function () {
-                            $('#spinnerAddingProd').show();
+                            $('#RefreshJaccard').hide();
+                            $('#RefreshJaccardSpinner').show();
                         },
                         success: function (data) {
+                            console.log(data);
                             $("#propositions").html(data);
+                            $('#RefreshJaccardSpinner').hide();
+                            $('#RefreshJaccard').show();
                         },
                         complete: function () {
                         },
@@ -246,10 +235,9 @@
                     })
             })
 
-    //EUCLIDEAN
-    $(document).ready(function () {
-        $("#RefreshProductEuclidean").click(function () {
-
+        //Euclidean
+                    $(document).ready(function () {
+                    $("#RefreshProductsEuclidean").click(function () {
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("PropositionOfProducts", "Home")',
@@ -259,22 +247,24 @@
                         },
                         data: { refreshId: 2},
                         beforeSend: function () {
-                            $('#spinnerAddingProd').show();
+                            $('#RefreshEuclidean').hide();
+                            $('#RefreshEuclideanSpinner').show();
                         },
                         success: function (data) {
+                            console.log(data);
                             $("#propositions").html(data);
+                            $('#RefreshEuclideanSpinner').hide();
+                            $('#RefreshEuclidean').show();
                         },
                         complete: function () {
                         },
                     })
                     })
-    })
+                    })
 
-
-    //CARAN
-    $(document).ready(function () {
-        $("#RefreshProductCaran").click(function () {
-
+    //Association
+                        $(document).ready(function () {
+                    $("#RefreshProductsAssociation").click(function () {
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("PropositionOfProducts", "Home")',
@@ -284,22 +274,24 @@
                         },
                         data: { refreshId: 4},
                         beforeSend: function () {
-                            $('#spinnerAddingProd').show();
+                            $('#RefreshAssociation').hide();
+                            $('#RefreshAssociationSpinner').show();
                         },
                         success: function (data) {
+                            console.log(data);
                             $("#propositions").html(data);
+                            $('#RefreshAssociationSpinner').hide();
+                            $('#RefreshAssociation').show();
                         },
                         complete: function () {
                         },
                     })
                     })
-    })
+                        })
 
-
-    //ASSOCIATION
-    $(document).ready(function () {
-        $("#RefreshProductAssociation").click(function () {
-
+    //Caran
+                        $(document).ready(function () {
+                    $("#RefreshProductsCaran").click(function () {
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("PropositionOfProducts", "Home")',
@@ -309,17 +301,142 @@
                         },
                         data: { refreshId: 3},
                         beforeSend: function () {
-                            $('#spinnerAddingProd').show();
+                            $('#RefreshCaran').hide();
+                            $('#RefreshCaranSpinner').show();
                         },
                         success: function (data) {
+                            console.log(data);
                             $("#propositions").html(data);
+                            $('#RefreshCaranSpinner').hide();
+                            $('#RefreshCaran').show();
                         },
                         complete: function () {
                         },
                     })
                     })
-    })
+            })
+</script>
+
+<style>
+    .container {
+        display: grid;
+    }
+
+    .left_bg,
+    .right_bg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 
 
 
-    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="row">
+        <div class="col-8">
+            <div class="lead">
+                <b>Propozycje oparte o Dystans Euklidesa</b>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <button type="submit" id="RefreshProductJaccard" class="btn btn-primary">
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+    </div>
+    @foreach (var item in Model.EuclideanProducts)
+    {
+        <div class="row">
+            <div class="col-8">
+                @item.Name
+            </div>
+
+            <div class="col-3">
+                <div class="spinner-border text-primary" role="status" id="buttonAddJaccardProd" style="padding:15px;margin-left:5px">
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row mt-3"></div>
+
+
+
+    @if (Model.AssociationProducts.Count > 0)
+    {
+        <div class="row">
+            <div class="col-8">
+                <div class="lead">
+                    <b>Propozycje oparte o Regułę Asocjacji</b>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <button type="submit" id="RefreshProductJaccard" class="btn btn-primary">
+                    <i class="fa fa-refresh"></i>
+                </button>
+            </div>
+        </div>
+        @foreach (var item in Model.AssociationProducts)
+        {
+            <div class="row">
+                <div class="col-8">
+                    @item.Name
+                </div>
+
+                <div class="col-3">
+                    <div class="spinner-border text-primary" role="status" id="buttonAddJaccardProd" style="padding:15px;margin-left:5px">
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    <div class="row mt-3"></div>
+
+
+
+    <div class="row">
+        <div class="col-8">
+            <div class="lead">
+                <b>Propozycje oparte o Algorytm łączący</b>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <button type="submit" id="RefreshProductJaccard" class="btn btn-primary">
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+    </div>
+    @foreach (var item in Model.CaranProducts)
+    {
+        <div class="row">
+            <div class="col-8">
+                @item.Name
+            </div>
+
+            <div class="col-3">
+                <div class="spinner-border text-primary" role="status" id="buttonAddJaccardProd" style="padding:15px;margin-left:5px">
+                </div>
+            </div>
+        </div>
+    }*@

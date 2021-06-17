@@ -1,7 +1,7 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Rejestracja";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -132,7 +132,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
+            <h4>Stwórz nowe konto</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
@@ -141,20 +141,20 @@
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Password"></label>
+                <label asp-for="Input.Password"> Hasło</label>
                 <input asp-for="Input.Password" class="form-control" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
+                <label asp-for="Input.ConfirmPassword">Potwierdź hasło</label>
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Gender"> Płeć </label><br />
 
-                <label><input asp-for="Input.Gender" value="Male" type="radio" />Male</label><br />
-                <label><input asp-for="Input.Gender" value="Female" type="radio" />Female</label><br />
+                <label><input asp-for="Input.Gender" value="Male" type="radio" />Mężczyzna</label><br />
+                <label><input asp-for="Input.Gender" value="Female" type="radio" />Kobieta</label><br />
 
 
             </div>
@@ -168,16 +168,18 @@
 
             </div>
             <div class="form-group">
-                <label asp-for="Input.Home"> Miejsce Zamieszkania </label><br />
 
-                @Html.DropDownListFor(model => model.Input.Home, listItems, "Miejsce zamieszkania")
-
+                <label asp-for="Input.Home"> Miejsce Zamieszkania (województwo) </label><br />
+                
+                    @Html.DropDownListFor(model => model.Input.Home, listItems, new { style = "width: 200px", size = 3 })
+                    @*@Html.DropDownListFor(model => model.Input.Home, listItems, "Miejsce zamieszkania", new { style = "width: 200px", size = 5 })*@
+                
             </div>
-            <div class="form-group">
-                <label asp-for="Input.Age" typeof="number"></label>
-                <input asp-for="Input.Age" class="form-control" />
-            </div>   
-            @*<div class="form-group">
+                <div class="form-group" style="width:40px">
+                    <label asp-for="Input.Age" typeof="number"> Wiek</label>
+                    <input asp-for="Input.Age" class="form-control" />
+                </div>
+                @*<div class="form-group">
             <label asp-for="Input.Height"> Wzrost </label><br />
 
             <label><input asp-for="Input.Height" value="Poniżej 165cm" type="radio" />Poniżej 3000zł</label><br />
@@ -185,14 +187,14 @@
 
 
         </div>*@            <div class="form-group">
-                <label asp-for="Input.Education"> Wykształcenie </label><br />
+                    <label asp-for="Input.Education"> Wykształcenie </label><br />
 
-                @Html.DropDownListFor(model => model.Input.Education, Education, "Miejsce zamieszkania")
-
+                    @Html.DropDownListFor(model => model.Input.Education, Education, "Miejsce zamieszkania")
+               
 
             </div>
 
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">Zarejestruj</button>
         </form>
     </div>
 </div>
@@ -200,3 +202,14 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+<style>
+    #ddlCars {
+        min-height: 190px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: absolute;
+        width: 300px;
+        display: contents;
+        z-index: 4;
+    }
+</style>

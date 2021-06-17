@@ -13,8 +13,7 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using MongoDB.Driver;
 using MongoDB.Bson;
-
-
+using Assistant.Models.similarity;
 
 namespace Assistant.Controllers
 {
@@ -49,7 +48,7 @@ namespace Assistant.Controllers
         private UserManager<ApplicationUser> _userManager;
         AlgorithmsController ctrl = new AlgorithmsController();
         //public MongoDbContext MongoDbContext = new MongoDbContext();
-
+        public static PropositionList PropList = new PropositionList();
 
         [HttpGet]
         public IActionResult Connection_Error()
@@ -74,12 +73,12 @@ namespace Assistant.Controllers
         public IActionResult Main_menu()
         {
            
-            var test=db.MongoLists.AsQueryable().Where(x => x.Name == "JaccardTest").ToList();
-            foreach (var item in test)
-            {
-                FilterDefinition<MongoDBProdList> filter = new BsonDocument("Name", item.Name);
-                db.MongoLists.DeleteOne(filter);
-            }
+            //var test=db.MongoLists.AsQueryable().Where(x => x.Name == "JaccardTest").ToList();
+            //foreach (var item in test)
+            //{
+            //    FilterDefinition<MongoDBProdList> filter = new BsonDocument("Name", item.Name);
+            //    db.MongoLists.DeleteOne(filter);
+            //}
             //GetUsersData();
             List<Product> ProdList = new List<Product>();
             ProdList = db.Products.AsQueryable().ToList();
@@ -281,8 +280,7 @@ namespace Assistant.Controllers
             listToEdit = db.MongoLists.Find(x => x.Id == ObjectId.Parse(Id)).FirstOrDefault();
             currentlyEditedListId = listToEdit.Id;
          
-            return RedirectToAction(nameof(Create_list), listToEdit);
-
+            return RedirectToAction(nameof(Create_list));
         }
 
 
@@ -487,143 +485,39 @@ namespace Assistant.Controllers
 
         [HttpGet]
         public IActionResult PropositionOfProducts(int? refreshId)
-        {   
-        //public static Product JaccardProdGlobal = new Product();
-        //public static Product EuclideanProdGlobal = new Product();
-        //public static Product AssociationProdGlobal = new Product();
-        //public static Product CaranProdGlobal = new Product();
-        Product CaranProd = new Product();
-            Product JaccardProd = new Product();
-            Product EuclideanProd = new Product();
-            Product AssociationProd = new Product();
+        {
             var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
             var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (refreshId != null)
+
+            if (refreshId == 1)
             {
-                if (refreshId == 1)
-                {
-
-                    JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
-                    JaccardProdGlobal = JaccardProd;
-                    ViewData["Jaccard"] = JaccardProdGlobal.Name;
-                    ViewData["JaccardId"] = JaccardProdGlobal.Id;
-                    ViewData["Euclidean"] = EuclideanProdGlobal.Name;
-                    ViewData["EuclideanId"] = EuclideanProdGlobal.Id;
-                    ViewData["Caran"] = CaranProdGlobal.Name;
-                    ViewData["CaranId"] = CaranProdGlobal.Id;
-                    ViewData["AssociationRule"] = AssociationProdGlobal.Name;
-                    ViewData["AssociationRuleId"] = AssociationProdGlobal.Id;
-                }
-                if (refreshId == 2)
-                {
-
-                    EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
-                    EuclideanProdGlobal = EuclideanProd;
-                    ViewData["Jaccard"] = JaccardProdGlobal.Name;
-                    ViewData["JaccardId"] = JaccardProdGlobal.Id;
-                    ViewData["Euclidean"] = EuclideanProdGlobal.Name;
-                    ViewData["EuclideanId"] = EuclideanProdGlobal.Id;
-                    ViewData["Caran"] = CaranProdGlobal.Name;
-                    ViewData["CaranId"] = CaranProdGlobal.Id;
-                    ViewData["AssociationRule"] = AssociationProdGlobal.Name;
-                    ViewData["AssociationRuleId"] = AssociationProdGlobal.Id;
-                }
-                if (refreshId == 3)
-                {
-
-                    AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
-                    AssociationProdGlobal = AssociationProd;
-                    ViewData["Jaccard"] = JaccardProdGlobal.Name;
-                    ViewData["JaccardId"] = JaccardProdGlobal.Id;
-                    ViewData["Euclidean"] = EuclideanProdGlobal.Name;
-                    ViewData["EuclideanId"] = EuclideanProdGlobal.Id;
-                    ViewData["Caran"] = CaranProdGlobal.Name;
-                    ViewData["CaranId"] = CaranProdGlobal.Id;
-                    ViewData["AssociationRule"] = AssociationProdGlobal.Name;
-                    ViewData["AssociationRuleId"] = AssociationProdGlobal.Id;
-                }
-                if (refreshId == 4)
-                {
-
-                    CaranProd = ctrl.CaranAlgh(currentlyEditedListId, userId);
-                    CaranProdGlobal = CaranProd;
-                    ViewData["Jaccard"] = JaccardProdGlobal.Name;
-                    ViewData["JaccardId"] = JaccardProdGlobal.Id;
-                    ViewData["Euclidean"] = EuclideanProdGlobal.Name;
-                    ViewData["EuclideanId"] = EuclideanProdGlobal.Id;
-                    ViewData["Caran"] = CaranProdGlobal.Name;
-                    ViewData["CaranId"] = CaranProdGlobal.Id;
-                    ViewData["AssociationRule"] = AssociationProdGlobal.Name;
-                    ViewData["AssociationRuleId"] = AssociationProdGlobal.Id;
-                }
-                Random rnd = new Random();
-                ViewData["DynamicTest"] = rnd.Next(1, 100);
+                PropList.JaccardProducts = ctrl.Jaccard(currentlyEditedListId, userId);
             }
-            else {
+            else if (refreshId == 2)
+            {
+                PropList.EuclideanProducts = ctrl.EuclideanDistance(currentlyEditedListId, userId);
+            }
+            else if (refreshId == 3)
+            {
+                PropList.CaranProducts = ctrl.CaranAlgh(currentlyEditedListId, userId);
+            }
+            else if (refreshId == 4)
+            {
+                PropList.AssociationProducts = ctrl.AssociationRule(currentlyEditedListId, userId);
+            }
+            else { 
 
-            JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
-            EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
-            CaranProd = ctrl.CaranAlgh(currentlyEditedListId, userId);
-            JaccardProdGlobal = JaccardProd;
-            EuclideanProdGlobal = EuclideanProd;
-            CaranProdGlobal = CaranProd;
+            PropList.JaccardProducts = ctrl.Jaccard(currentlyEditedListId, userId);
+            PropList.EuclideanProducts = ctrl.EuclideanDistance(currentlyEditedListId, userId);
+            PropList.CaranProducts = ctrl.CaranAlgh(currentlyEditedListId, userId);
                 if (ListCheck.Count > 0)
-            {
-                AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
-                AssociationProdGlobal = AssociationProd;
-                ViewData["AssociationRule"] = AssociationProdGlobal.Name;
-                ViewData["AssociationRuleId"] = AssociationProdGlobal.Id;
+                {
+                    PropList.AssociationProducts = ctrl.AssociationRule(currentlyEditedListId, userId);
+                }
             }
-            ViewData["Jaccard"] = JaccardProdGlobal.Name;
-            ViewData["JaccardId"] = JaccardProdGlobal.Id;
-            ViewData["Euclidean"] = EuclideanProdGlobal.Name;
-            ViewData["EuclideanId"] = EuclideanProdGlobal.Id;
-            ViewData["Caran"] = CaranProdGlobal.Name;
-            ViewData["CaranId"] = CaranProdGlobal.Id;
-
-            Random rnd = new Random();
-            ViewData["DynamicTest"] = rnd.Next(1, 100);
-            }
-
-            return PartialView("PropositionOfProducts");
+            return PartialView("PropositionOfProducts",PropList);
         }
-        [HttpGet]
-        public void RefreshJaccard()
-        {
-            var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
-            var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var JaccardProd = ctrl.Jaccard(currentlyEditedListId, userId);
-            ViewData["Jaccard"] = JaccardProd.Name;
-            ViewData["JaccardId"] = JaccardProd.Id;
-        }
-        [HttpGet]
-        public void RefreshEuclidean()
-        {
-            var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
-            var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var EuclideanProd = ctrl.EuclideanDistance(currentlyEditedListId, userId);
-            ViewData["Euclidean"] = EuclideanProd.Name;
-            ViewData["EuclideanId"] = EuclideanProd.Id;
-        }
-        [HttpGet]
-        public void RefreshAssociation()
-        {
-            var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
-            var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var AssociationProd = ctrl.AssociationRule(currentlyEditedListId, userId);
-            ViewData["AssociationRule"] = AssociationProd.Name;
-            ViewData["AssociationRuleId"] = AssociationProd.Id;
-        }
-        [HttpGet]
-        public Product RefreshCaran()
-        {
-            var ListCheck = db.MongoLists.AsQueryable().Where(x => x.Id == currentlyEditedListId).Select(x => x.ProductList).FirstOrDefault();
-            var userId = ObjectId.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var CaranProd = ctrl.CaranAlgh(currentlyEditedListId, userId);
-            ViewData["Caran"] = CaranProd.Name;
-            ViewData["CaranId"] = CaranProd.Id;
-            return CaranProd;
-        }
+       
 
 
         [HttpGet]
@@ -705,7 +599,7 @@ namespace Assistant.Controllers
             db.MongoLists.DeleteMany("{}");
             List<ApplicationUser> UsersToAdd = new List<ApplicationUser>();
 
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 200; i++)
             {
                 var User = CreateNewUserToMongoDBAsync();
                 UsersToAdd.Add(User.Result);

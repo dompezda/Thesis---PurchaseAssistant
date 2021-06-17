@@ -16,10 +16,9 @@ namespace Assistant.Models
 
         public MongoDBProdList()
         {
-            //Id = ObjectId.GenerateNewId();
+            Id = ObjectId.GenerateNewId();
             CreateDate = DateTime.Now;
             ProductList = new List<Product>();
-
         }
     }
 }

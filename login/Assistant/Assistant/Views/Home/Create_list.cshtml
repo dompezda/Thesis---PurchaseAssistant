@@ -55,8 +55,7 @@
         <div class="spinner-border text-primary" role="status" style="padding: 15px;
         margin-left: 5px;
         width: 5rem;
-        height: 5rem;
-">
+        height: 5rem;">
 
         </div>
 
@@ -85,7 +84,6 @@
             $(document).ready(function () {
                 $("#GetPropositions").click(function () {
                     console.log("clicked button: Trwa generownie propozycji")
-                    console.log($(button))
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("PropositionOfProducts", "Home")',
@@ -127,6 +125,41 @@
                 url: '@Url.Action("AddProduct", "Home")',
                 dataType:"text",
                 data: { prodName: prodName },
+                error: function (err) {
+                    console.log(err)
+                },
+                success: function () {
+                    $("#ProdList").load("/Home/ProductList");
+                    $('#spinnerAddProd').hide();
+                }
+            })
+
+        });
+    });
+        $(document).ready(function () {
+            $('#spinnerAddProd').show();
+            $.ajax({
+                type: "GET",
+                dataType:"text",
+                error: function (err) {
+                    console.log(err)
+                },
+                success: function () {
+                    $("#ProdList").load("/Home/ProductList");
+                    $('#spinnerAddProd').hide();
+                },
+                complete: function () {
+                    $('#spinnerAddProd').hide();
+                }
+        });
+    });
+
+                $(document).ready(function () {
+        $("#AddProduct").click(function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddProduct", "Home")',
+                dataType:"text",
                 error: function (err) {
                     console.log(err)
                 },

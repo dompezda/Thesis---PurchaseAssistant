@@ -13,19 +13,10 @@ namespace Assistant.Models
 {
     public class ApplicationUser : MongoIdentityUser
     {
-
-
         public string Home { get; set; }
         public string Gender { get; set; }
         public string Salary { get; set; }
         public string Age { get; set; }
-
-        //public string Height { get; set; }
-
         public string Education { get; set; }
-
-
-
-
     }
 }
