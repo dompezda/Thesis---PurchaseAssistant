@@ -23,9 +23,9 @@ namespace Assistant.Data
 
         public MongoDbContext()
         {
-             string _user = "ThesisUser2";
-             string _password = "IOWS6A1wiSlD2Wlu";
-             string _database = "PAssistant";
+             string _user = "****";
+             string _password = "****";
+             string _database = "****";
 
             string _connectionstring = $"mongodb+srv://{_user}:{_password}@cluster0.od5jh.mongodb.net/{_database}?retryWrites=true&w=majority";
             //string _connectionstring = $"mongodb + srv://cluster0.od5jh.mongodb.net/{_database}?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
